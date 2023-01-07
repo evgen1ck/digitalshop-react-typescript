@@ -28,7 +28,7 @@ const router = createBrowserRouter (
 
 ReactDOM.createRoot(document.getElementById("application") as HTMLElement).render(
     <React.StrictMode>
-        <div className="flex flex-col min-h-screen justify-between bg-light-additional dark:bg-dark-additional text-light-normal dark:text-dark-normal">
+        <div className="bg-light-main dark:bg-dark-main text-light-normal dark:text-dark-normal flex flex-col min-h-screen justify-between font-sans text-base">
             <RouterProvider router={router} />
             <FooterLayout />
         </div>
