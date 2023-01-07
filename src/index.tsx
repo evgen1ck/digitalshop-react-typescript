@@ -10,16 +10,17 @@ import {
 import './index.css';
 import Home from "./routes/Home";
 import About from "./routes/About";
-import RootLayout from "./layouts/RootLayout";
+import RootLayout from "./layouts/HeaderLayout";
 import Dashboard from './routes/Dashboard';
 import NoMatch from './routes/NoMatch';
+import FooterLayout from './layouts/FooterLayout';
 
 const router = createBrowserRouter (
     createRoutesFromElements (
         <Route path="/" element={<RootLayout />}>
             <Route index element={<Home />} />
             <Route path="about" element={<About />} />
-            <Route path="dashboard" element={<Dashboard />} />
+            <Route id="dashboard" path="dashboard" element={<Dashboard />} />
             <Route path="*" element={<NoMatch />} />
         </Route>
     )
@@ -27,6 +28,9 @@ const router = createBrowserRouter (
 
 ReactDOM.createRoot(document.getElementById("application") as HTMLElement).render(
     <React.StrictMode>
-        <RouterProvider router={router} />
+        <div className="flex flex-col min-h-screen justify-between bg-light-additional dark:bg-dark-additional text-light-normal dark:text-dark-normal">
+            <RouterProvider router={router} />
+            <FooterLayout />
+        </div>
     </React.StrictMode>
 );
