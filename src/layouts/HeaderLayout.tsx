@@ -48,7 +48,7 @@ export default function HeaderLayout() {
                         <div className="lg:flex-grow">
                             {links.map(link => {
                                 return (
-                                    <Link to={link.link} key={link.name} className="transition ease-in-out delay-50 hover:-translate-y-1 duration-300 hover:text-light-focusing dark:hover:text-dark-focusing block mt-4 lg:inline-block lg:mt-0 ml-4 font-medium">
+                                    <Link to={link.link} key={link.name} className="hover:border-b-2 transition ease-in-out delay-50 hover:-translate-y-1 duration-300 hover:text-light-focusing dark:hover:text-dark-focusing block mt-4 lg:inline-block lg:mt-0 ml-4 font-medium">
                                         {link.name}
                                     </Link>
 
@@ -57,7 +57,7 @@ export default function HeaderLayout() {
                         </div>
                         <div className="w-full block flex-grow lg:flex lg:items-center lg:w-auto">
                             <div className="lg:flex-grow">
-                                <Link to="/registration" className="transition ease-in-out delay-50 hover:-translate-y-1 duration-300 hover:text-light-focusing dark:hover:text-dark-focusing block lg:inline-block py-2 font-medium uppercase max-w-md:hidden inline-block text-sm px-4 leading-none mt-4 lg:mt-0">
+                                <Link to="/registration" className="hover:border-b-2 transition ease-in-out delay-50 hover:-translate-y-1 duration-300 hover:text-light-focusing dark:hover:text-dark-focusing block lg:inline-block py-2 font-medium uppercase max-w-md:hidden inline-block text-sm mx-4 leading-none mt-4 lg:mt-0">
                                     Зарегистрироваться
                                 </Link>
                                 <Link to="/authorization" className="transition ease-in-out delay-50 hover:-translate-y-1 duration-300 hover:text-light-focusing dark:hover:text-dark-focusing block lg:inline-block py-2 font-medium uppercase max-w-md:hidden inline-block px-4 leading-none shadow border-2 rounded mt-4 lg:mt-0">
