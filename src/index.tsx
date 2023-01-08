@@ -14,12 +14,14 @@ import RootLayout from "./layouts/HeaderLayout";
 import Dashboard from './routes/Dashboard';
 import NoMatch from './routes/NoMatch';
 import FooterLayout from './layouts/FooterLayout';
+import Registration from './routes/Registration';
 
 const router = createBrowserRouter (
     createRoutesFromElements (
         <Route path="/" element={<RootLayout />}>
             <Route index element={<Home />} />
             <Route path="about" element={<About />} />
+            <Route path="registration" element={<Registration />} />
             <Route id="dashboard" path="dashboard" element={<Dashboard />} />
             <Route path="*" element={<NoMatch />} />
         </Route>
@@ -28,7 +30,7 @@ const router = createBrowserRouter (
 
 ReactDOM.createRoot(document.getElementById("application") as HTMLElement).render(
     <React.StrictMode>
-        <div className="bg-light-main dark:bg-dark-main text-light-normal dark:text-dark-normal flex flex-col min-h-screen justify-between font-sans text-base">
+        <div className="bg-light-main dark:bg-dark-main text-light-normal dark:text-dark-normal tracking-wide flex flex-col min-h-screen justify-between font-sans text-base font-medium antialiased">
             <RouterProvider router={router} />
             <FooterLayout />
         </div>

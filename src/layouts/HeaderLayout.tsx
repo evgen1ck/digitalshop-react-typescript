@@ -44,11 +44,11 @@ export default function HeaderLayout() {
                             </svg>
                         </button>
                     </div>
-                    <div className="w-full block flex-grow lg:flex lg:items-center lg:w-auto">
+                    <div className="w-full block flex-grow lg:flex lg:items-center lg:w-auto ">
                         <div className="lg:flex-grow">
                             {links.map(link => {
                                 return (
-                                    <Link to={link.link} key={link.name} className="hover:border-b-2 transition ease-in-out delay-50 hover:-translate-y-1 duration-300 hover:text-light-focusing dark:hover:text-dark-focusing block mt-4 lg:inline-block lg:mt-0 ml-4 font-medium">
+                                    <Link to={link.link} key={link.name} className="hover:border-b-2 transition ease-in-out delay-50 hover:-translate-y-1 duration-300 hover:text-light-focusing dark:hover:text-dark-focusing block lg:inline-block lg:mt-0 ml-4 font-medium">
                                         {link.name}
                                     </Link>
 

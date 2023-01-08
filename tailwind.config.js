@@ -7,6 +7,7 @@ module.exports = {
   theme: {
     colors: {
       transparent: 'transparent',
+      'error': '#B22222',
       'light': {
         main: '#E6E6E6',
         additional: '#CCCAC3',
@@ -14,6 +15,7 @@ module.exports = {
         normal: '#2B2B2B',
         second: '#767676',
         active: '#fff',
+        field: '#fff',
       },
       'dark': {
         main: '#142F49',
@@ -22,6 +24,7 @@ module.exports = {
         normal: '#fff',
         second: '#8694A9',
         active: '#8614A9',
+        field: '#172035',
       },
     },
     extend: {
