@@ -14,13 +14,15 @@ import RootLayout from "./layouts/RootLayout";
 import Dashboard from './routes/Dashboard';
 import NoMatch from './routes/NoMatch';
 import Registration from './routes/Registration';
+import Authorization from './routes/Authorization';
 
 const router = createBrowserRouter (
     createRoutesFromElements (
         <Route path="/" element={<RootLayout />}>
+            <Route path="authorization" element={<Authorization />} />
+            <Route path="registration" element={<Registration />} />
             <Route index element={<Home />} />
             <Route path="about" element={<About />} />
-            <Route path="registration" element={<Registration />} />
             <Route id="dashboard" path="dashboard" element={<Dashboard />} />
             <Route path="*" element={<NoMatch />} />
         </Route>
