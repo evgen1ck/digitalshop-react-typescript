@@ -1,21 +1,21 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  darkMode: 'class',
+  darkMode: 'class', // for a dark web application theme
   content: [
     "./src/**/*.{js,jsx,ts,tsx}",
   ],
   theme: {
     colors: {
-      transparent: 'transparent',
-      'error': '#B22222',
-      'light': {
-        main: '#E6E6E6',
-        additional: '#CCCAC3',
-        focusing: '#97807A',
-        normal: '#2B2B2B',
-        second: '#767676',
-        active: '#fff',
-        field: '#fff',
+      transparent: 'transparent', // test value, unused in the web application
+      'error': '#B22222', // color for incorrect fields
+      'light': { // colors for light theme
+        main: '#E6E6E6', // background color
+        additional: '#CCCAC3', // background color for header and footer
+        focusing: '#97807A', // hover text color
+        normal: '#2B2B2B', // common text color
+        second: '#767676', // temporarily unused
+        active: '#fff', // temporarily unused
+        field: '#fff', // background color for fields
       },
       'dark': {
         main: '#142F49',

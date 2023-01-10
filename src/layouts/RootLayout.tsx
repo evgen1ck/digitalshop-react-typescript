@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Outlet, Link } from "react-router-dom";
 
-export default function HeaderLayout() {
+export default function RootLayout() {
 
     interface ILink {
         name: string
@@ -27,9 +27,11 @@ export default function HeaderLayout() {
     ]
     const [links] = useState(initialLinks)
 
+    // sticky top-0 z-40 flex-none w-full mx-auto bg-white border-b border-gray-200 dark:border-gray-600 dark:bg-gray-800
+
     return (
         <>
-            <div className="bg-light-additional dark:bg-dark-additional">
+            <header className="bg-light-additional dark:bg-dark-additional top-0 z-40 flex-none w-full mx-auto">
                 <nav className="flex items-center justify-between flex-wrap p-6 max-w-6xl m-auto">
                     <div className="flex items-center flex-shrink-0 mr-6">
                         <Link to="/" className="hover:text-light-focusing dark:hover:text-dark-focusing">
@@ -48,10 +50,9 @@ export default function HeaderLayout() {
                         <div className="lg:flex-grow">
                             {links.map(link => {
                                 return (
-                                    <Link to={link.link} key={link.name} className="hover:border-b-2 transition ease-in-out delay-50 hover:-translate-y-1 duration-300 hover:text-light-focusing dark:hover:text-dark-focusing block lg:inline-block lg:mt-0 ml-4 font-medium">
+                                    <Link to={link.link} key={link.name} className=" hover:scale-110 transition ease-in-out delay-50 hover:-translate-y-1 duration-300 hover:text-light-focusing dark:hover:text-dark-focusing block lg:inline-block lg:mt-0 ml-4 font-medium">
                                         {link.name}
                                     </Link>
-
                                 )})
                             }
                         </div>
@@ -67,8 +68,35 @@ export default function HeaderLayout() {
                         </div>
                     </div>
                 </nav>
-            </div>
+            </header>
+
             <Outlet />
+
+            <footer className="bg-light-additional dark:bg-dark-additional py-6">
+                <div className="w-full px-6 mx-auto max-w-6xl shadow lg:flex md:items-center lg:justify-between">
+
+                    <span className="text-sm text-gray-500 sm:text-center dark:text-gray-400">
+                        <a href="https://digitalshop.evgenick.com/" className="hover:underline uppercase">Evgenick's digitals</a> - 2023 Все права на гитхабе
+                    </span>
+
+
+                    <ul className="flex flex-wrap items-center mt-3 text-sm text-gray-500 dark:text-gray-400 sm:mt-0">
+                        <li>
+
+                        </li>
+                        <li>
+                            <a href="#" className="mr-4 hover:underline md:mr-6">Политика приватности</a>
+                        </li>
+                        <li>
+                            <a href="#" className="mr-4 hover:underline md:mr-6">Лицензия</a>
+                        </li>
+                        <li>
+                            <a href="#" className="hover:underline">Контакты</a>
+                        </li>
+                    </ul>
+                </div>
+
+            </footer>
         </>
     );
 }

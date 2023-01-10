@@ -9,16 +9,13 @@
     leading-tight - выставление высоты строки
 */
 @layer base {
-    input {
+    input, select {
         @apply
         border-2 rounded appearance-none leading-tight
-        focus:outline-none
+        focus:outline-none focus:scale-105
         border-light-second dark:border-dark-second
         bg-light-field dark:bg-dark-field
         focus:border-light-focusing dark:focus:border-dark-focusing
         focus:text-light-focusing dark:focus:text-dark-focusing;
-    }
-    link {
-
     }
 }

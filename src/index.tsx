@@ -10,10 +10,9 @@ import {
 import './index.css';
 import Home from "./routes/Home";
 import About from "./routes/About";
-import RootLayout from "./layouts/HeaderLayout";
+import RootLayout from "./layouts/RootLayout";
 import Dashboard from './routes/Dashboard';
 import NoMatch from './routes/NoMatch';
-import FooterLayout from './layouts/FooterLayout';
 import Registration from './routes/Registration';
 
 const router = createBrowserRouter (
@@ -30,9 +29,8 @@ const router = createBrowserRouter (
 
 ReactDOM.createRoot(document.getElementById("application") as HTMLElement).render(
     <React.StrictMode>
-        <div className="bg-light-main dark:bg-dark-main text-light-normal dark:text-dark-normal tracking-wide flex flex-col min-h-screen justify-between font-sans text-base font-medium antialiased">
+        <div className="bg-light-main dark:bg-dark-main text-light-normal dark:text-dark-normal tracking-wide justify-between flex flex-col min-h-screen font-sans text-base font-medium antialiased">
             <RouterProvider router={router} />
-            <FooterLayout />
         </div>
     </React.StrictMode>
 );
