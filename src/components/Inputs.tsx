@@ -1,6 +1,6 @@
 import React from "react";
 
-export default interface IMain {
+export interface IMain {
     fields: IFields[] // array of elements
 }
 

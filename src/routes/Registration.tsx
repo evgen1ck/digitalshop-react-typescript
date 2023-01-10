@@ -1,5 +1,5 @@
 import React from 'react';
-import IMain, { GetElementInput, GetSelect } from '../components/Inputs';
+import { IMain, GetElementInput, GetSelect } from '../components/Inputs';
 
 export default function Registration() {
 
