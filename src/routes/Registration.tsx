@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { IMain, GetElementInput, GetSelect } from '../components/Inputs';
+import {IMain, MyControls} from '../components/Controls';
 
 export default function Registration() {
 
@@ -107,14 +107,13 @@ export default function Registration() {
                                                 {field.nameField}
                                             </label>
 
-                                            {field.elementType === "input" ? GetElementInput(field) : GetSelect(field)}
+                                            {field.elementType === "input" ? MyControls.Input(field) : MyControls.Select(field)}
 
                                             {field.hasWarnLabel ? <p className="text-light-second dark:text-dark-second text-sm italic invisible">test</p> : false }
                                         </div>
                                     ))}
                                 </div>
-                                )
-                            )}
+                                ))}
                             <div className="flex items-center px-4">
                                 <input id="link-checkbox" type="checkbox" value=""
                                        className="cursor-pointer w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
@@ -125,7 +124,7 @@ export default function Registration() {
                             </div>
                             <div className="flex flex-wrap mt-12 m-auto">
                                 <div className="text-center w-full">
-                                    <button type="submit" className="transition ease-in-out delay-50 hover:-translate-y-1 duration-300 inline-block outline hover:text-light-focusing dark:hover:text-dark-focusing px-6 py-2.5 text-2xl uppercase rounded shadow-md ">
+                                    <button type="submit" className="transition ease-in-out delay-50 hover:-translate-y-1 duration-300 inline-block outline hover:text-light-focusing dark:hover:text-dark-focusing px-6 py-2.5 text-xl uppercase rounded shadow-md ">
                                         Зарегистрироваться
                                     </button>
                                 </div>

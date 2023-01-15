@@ -2,20 +2,74 @@
 @tailwind components;
 @tailwind utilities;
 
-/*
-    border-2 - создание рамок с толщиной 2px
-    rounded - закругление рамок
-    appearance-none - обнуление стандартных настроек для типа элемента
-    leading-tight - выставление высоты строки
-*/
-@layer base {
-    input, select {
-        @apply
-        border-2 rounded appearance-none leading-tight
-        focus:outline-none focus:scale-105
-        border-light-second dark:border-dark-second
-        bg-light-field dark:bg-dark-field
-        focus:border-light-focusing dark:focus:border-dark-focusing
-        focus:text-light-focusing dark:focus:text-dark-focusing;
-    }
+.system-animation {
+    @apply
+    transition ease-in-out duration-300 focus:outline-none
+    hover:scale-105 focus:scale-105;
+    transition-delay: 50ms;  /* if using just "delay-50" then will be an error here */
+}
+
+.system-shadow {
+    @apply
+    shadow-sm focus:shadow-md
+    shadow-light-second dark:shadow-dark-second
+    focus:shadow-light-focusing focus:dark:shadow-dark-focusing;
+}
+
+.system-field {
+    @apply
+    border-light-second dark:border-dark-second
+    bg-light-field dark:bg-dark-field
+    focus:border-light-focusing dark:focus:border-dark-focusing
+    focus:text-light-focusing dark:focus:text-dark-focusing;
+}
+
+.input-classic {
+    @apply
+    appearance-none leading-tight border-2 rounded
+    system-shadow system-animation system-field;
+}
+
+.select-classic {
+    @apply
+    appearance-none leading-tight border-2 rounded cursor-pointer
+    system-shadow system-animation system-field;
+}
+
+.btn-classic {
+    @apply
+    appearance-none leading-tight
+    hover:-translate-y-1
+    hover:text-light-focusing dark:hover:text-dark-focusing
+    focus:text-light-focusing dark:focus:text-dark-focusing
+    system-animation;
+}
+
+.btn-classic-frame {
+    @apply
+    appearance-none leading-tight border-2 rounded
+    hover:-translate-y-1
+    bg-light-field dark:bg-dark-field
+    hover:text-light-focusing dark:hover:text-dark-focusing
+    hover:border-light-focusing dark:hover:border-dark-focusing
+    shadow hover:shadow-light-focusing hover:dark:shadow-dark-focusing
+    system-animation system-field;
+}
+
+.checkbox-classic {
+    @apply p-1
+    appearance-none leading-tight border-2 rounded bg-clip-content cursor-pointer
+    checked:bg-light-second dark:checked:bg-dark-second
+    hover:checked:bg-light-focusing hover:dark:checked:bg-dark-focusing
+    hover:border-light-focusing hover:dark:border-dark-focusing
+    system-animation system-field;
+}
+
+.module-classic {
+    @apply p-3
+    flex items-center
+    appearance-none leading-tight border-2 rounded cursor-pointer
+    hover:shadow-light-focusing hover:dark:shadow-dark-focusing
+    hover:border-light-focusing hover:dark:border-dark-focusing
+    system-shadow system-animation system-field;
 }

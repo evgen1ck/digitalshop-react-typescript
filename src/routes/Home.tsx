@@ -5,6 +5,7 @@ export default function Home() {
     const [navbar, setNavbar] = useState(false);
 
     return (
+
         <nav className="w-full dark:bg-dark-additional shadow">
             <div className="justify-between px-4 mx-auto lg:max-w-6xl md:items-center md:flex md:px-8">
                 <div>
@@ -70,5 +71,9 @@ export default function Home() {
                 </div>
             </div>
         </nav>
+
+
+
+
     );
 }
