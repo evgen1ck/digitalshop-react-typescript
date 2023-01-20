@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import {IMain, MyControls} from '../components/Controls';
+import {MyControls} from '../components/Controls';
+import { IMain } from '../models/SystemInterfaces';
 
 export default function Registration() {
 

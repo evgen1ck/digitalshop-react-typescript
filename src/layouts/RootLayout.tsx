@@ -1,12 +1,9 @@
 import React, { useState } from 'react';
 import { Outlet, Link } from "react-router-dom";
+import {ILink} from "../models/SystemInterfaces";
 
 export default function RootLayout() {
 
-    interface ILink {
-        name: string
-        link: string
-    }
     const initialLinks: ILink[] = [
         {
             name: 'Главная',
@@ -56,10 +53,10 @@ export default function RootLayout() {
                         </div>
                         <div className="w-full block flex-grow lg:flex lg:items-center lg:w-auto">
                             <div className="lg:flex-grow">
-                                <Link to="/registration" className="btn-classic select-none block lg:inline-block lg:mt-0 ml-4 mr-6">
+                                <Link to="/signup" className="btn-classic select-none block lg:inline-block lg:mt-0 ml-4 mr-6">
                                     Зарегистрироваться
                                 </Link>
-                                <Link to="/authorization" className="btn-classic-frame select-none bg-light-additional dark:bg-dark-additional block lg:inline-block py-2 uppercase max-w-md:hidden inline-block px-4 mt-4 lg:mt-0">
+                                <Link to="/login" className="btn-classic-frame select-none bg-light-additional dark:bg-dark-additional block lg:inline-block py-2 uppercase max-w-md:hidden inline-block px-4 mt-4 lg:mt-0">
                                     Войти
                                 </Link>
                             </div>
@@ -68,19 +65,18 @@ export default function RootLayout() {
                 </nav>
             </header>
 
-
-
             <Outlet />
-
-
 
             <footer className="bg-light-additional dark:bg-dark-additional py-6 text-sm drop-shadow-sm">
                 <div className="w-full px-6 mx-auto max-w-6xl lg:justify-between lg:flex flex-wrap grid text-center lg:space-y-0 space-y-2">
                     <span>
-                        <Link to="/" className="hover:underline uppercase">Evgenick's digitals</Link> © Copyright {new Date().getFullYear() + " "}
+                        <Link to="/" className="hover:underline uppercase">Evgenick's digitals</Link> © Copyright {new Date().getFullYear()}
                     </span>
                     <span>
-                        <a>Сделано </a><a href="https://helloworld.evgenick.com" className="underline">Кочетковым Евгением</a>
+                        <a href="https://docs.digitalshop.evgenick.com" className="hover:underline">Документация</a>
+                    </span>
+                    <span>
+                        <a>Сделано </a><a href="https://helloworld.evgenick.com" className="hover:underline">Кочетковым Евгением</a>
                     </span>
                 </div>
             </footer>

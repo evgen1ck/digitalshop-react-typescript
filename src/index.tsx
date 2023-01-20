@@ -11,19 +11,32 @@ import './index.css';
 import Home from "./routes/Home";
 import About from "./routes/About";
 import RootLayout from "./layouts/RootLayout";
-import Dashboard from './routes/Dashboard';
 import NoMatch from './routes/NoMatch';
-import Registration from './routes/Registration';
-import Authorization from './routes/Authorization';
+import Signup from './routes/Registration';
+import Login from './routes/Login';
+
+// import { useSelector } from "../../redux/store";
+// import { Navigate, useLocation } from "react-router-dom";
+//
+// function ProtectedRoute(props: any) {
+//     const { children } = props;
+//     const location = useLocation();
+//     const { isLoggedIn } = useSelector((store) => store.auth);
+//
+//     if (!isLoggedIn) {
+//         return <Navigate to="/login" state={{ from: location }} />
+//     }
+//
+//     return children;
+// }
 
 const router = createBrowserRouter (
     createRoutesFromElements (
         <Route path="/" element={<RootLayout />}>
-            <Route path="authorization" element={<Authorization />} />
-            <Route path="registration" element={<Registration />} />
             <Route index element={<Home />} />
+            <Route path="login" element={<Login />} />
+            <Route path="signup" element={<Signup />} />
             <Route path="about" element={<About />} />
-            <Route id="dashboard" path="dashboard" element={<Dashboard />} />
             <Route path="*" element={<NoMatch />} />
         </Route>
     )
