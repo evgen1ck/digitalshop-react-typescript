@@ -23,6 +23,34 @@ export default function RootLayout() {
         }
     ]
     const [links] = useState(initialLinks)
+    const [checked, setChecked] = useState(localStorage.getItem('color-theme') === 'dark');
+
+
+    if (localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        document.documentElement.classList.add('dark');
+    } else {
+        document.documentElement.classList.remove('dark')
+    }
+
+    function switchTheme() {
+        if (localStorage.getItem('color-theme')) {
+            if (localStorage.getItem('color-theme') === 'light') {
+                document.documentElement.classList.add('dark');
+                localStorage.setItem('color-theme', 'dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+                localStorage.setItem('color-theme', 'light');
+            }
+        } else {
+            if (document.documentElement.classList.contains('dark')) {
+                document.documentElement.classList.remove('dark');
+                localStorage.setItem('color-theme', 'light');
+            } else {
+                document.documentElement.classList.add('dark');
+                localStorage.setItem('color-theme', 'dark');
+            }
+        }
+    }
 
     return (
         <>
@@ -65,7 +93,17 @@ export default function RootLayout() {
                 </nav>
             </header>
 
-            <Outlet />
+            <div className="w-full px-4 mx-auto max-w-6xl">
+                <div className="lg:flex">
+                    <div className="flex-auto w-full min-w-0 lg:static lg:max-h-full lg:overflow-visible">
+                        <div className="flex w-full">
+                            <div className="flex-auto max-w-4xl min-w-0 lg:my-12 lg:px-8 m-auto">
+                                <Outlet />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
             <footer className="bg-light-additional dark:bg-dark-additional py-6 text-sm drop-shadow-sm">
                 <div className="w-full px-6 mx-auto max-w-6xl lg:justify-between lg:flex flex-wrap grid text-center lg:space-y-0 space-y-2">
@@ -73,10 +111,13 @@ export default function RootLayout() {
                         <Link to="/" className="hover:underline uppercase">Evgenick's digitals</Link> © Copyright {new Date().getFullYear()}
                     </span>
                     <span>
-                        <a href="https://docs.digitalshop.evgenick.com" className="hover:underline">Документация</a>
-                    </span>
-                    <span>
                         <a>Сделано </a><a href="https://helloworld.evgenick.com" className="hover:underline">Кочетковым Евгением</a>
+                        <a> | </a>
+                        <a href="https://docs.digitalshop.evgenick.com" className="hover:underline">Документация</a>
+                        <a> | </a>
+                        <button onClick={() => switchTheme()} className="hover:underline">
+                            {checked ? "Светлая тема" : "Тёмная тема"}
+                        </button>
                     </span>
                 </div>
             </footer>

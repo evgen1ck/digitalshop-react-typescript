@@ -36,6 +36,14 @@
     system-shadow system-animation system-field;
 }
 
+.btn-usual-link {
+    @apply
+    appearance-none leading-tight
+    hover:underline
+    hover:text-light-focusing dark:hover:text-dark-focusing
+    focus:text-light-focusing dark:focus:text-dark-focusing
+}
+
 .btn-classic {
     @apply
     appearance-none leading-tight
@@ -47,12 +55,12 @@
 
 .btn-classic-frame {
     @apply
-    appearance-none leading-tight border-2 rounded
+    appearance-none leading-tight border-2 rounded shadow
     hover:-translate-y-1
     bg-light-field dark:bg-dark-field
     hover:text-light-focusing dark:hover:text-dark-focusing
     hover:border-light-focusing dark:hover:border-dark-focusing
-    shadow hover:shadow-light-focusing hover:dark:shadow-dark-focusing
+    hover:shadow-light-focusing hover:dark:shadow-dark-focusing
     system-animation system-field;
 }
 

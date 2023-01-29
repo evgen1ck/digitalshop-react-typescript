@@ -1,7 +1,8 @@
-import { MyControls } from "../components/Controls";
 import React, { useState } from "react";
+import { MyControls } from "../components/Controls";
 import { IMain } from "../models/SystemInterfaces";
-import {MainPageBlock, RowBlock, RowBlockLower, RowBlockUpper} from "../components/PageBlocks";
+import { RowBlock, RowBlockLower, RowBlockUpper } from "../components/PageBlocks";
+import {Link} from "react-router-dom";
 
 export default function Login() {
 
@@ -35,11 +36,10 @@ export default function Login() {
     const [checked, setChecked] = useState(true);
 
     return (
-        <MainPageBlock>
-
+        <>
             <RowBlock>
-                <div className="text-center w-full ">
-                    <div className=" text-3xl font-bold mb-6 uppercase">Авторизация</div>
+                <div className="text-center w-full">
+                    <div className="text-3xl font-bold mb-0 lg:mb-6 uppercase">Авторизация</div>
                 </div>
             </RowBlock>
 
@@ -72,13 +72,20 @@ export default function Login() {
             </RowBlock>
 
             <RowBlock>
-                <div className="text-center w-full mt-12">
+                <div className="text-center w-full mt-4">
                     <button type="submit" className="btn-classic-frame select-none px-6 py-2.5 text-xl uppercase">
                         Войти
                     </button>
                 </div>
             </RowBlock>
 
-        </MainPageBlock>
+            <RowBlock>
+                <div className="text-center w-full lg:flex lg:justify-center">
+                    <p className="leading-tight mx-3">Нет аккаунта? </p>
+                    <Link to="/signup" className="btn-usual-link ">Создайте!</Link>
+                </div>
+
+            </RowBlock>
+        </>
     )
 }
