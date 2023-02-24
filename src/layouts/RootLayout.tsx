@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import { Outlet, Link } from "react-router-dom";
 import {ILink} from "../models/SystemInterfaces";
 
@@ -23,34 +23,38 @@ export default function RootLayout() {
         }
     ]
     const [links] = useState(initialLinks)
-    const [checked, setChecked] = useState(localStorage.getItem('color-theme') === 'dark');
 
 
-    if (localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-        document.documentElement.classList.add('dark');
-    } else {
-        document.documentElement.classList.remove('dark')
-    }
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    localStorage.setItem(
+        'color-theme',
+        localStorage.getItem('color-theme') === 'dark' || (!localStorage.getItem('color-theme') && prefersDark)
+            ? 'dark'
+            : 'light'
+    );
 
-    function switchTheme() {
-        if (localStorage.getItem('color-theme')) {
-            if (localStorage.getItem('color-theme') === 'light') {
-                document.documentElement.classList.add('dark');
-                localStorage.setItem('color-theme', 'dark');
-            } else {
-                document.documentElement.classList.remove('dark');
-                localStorage.setItem('color-theme', 'light');
-            }
-        } else {
-            if (document.documentElement.classList.contains('dark')) {
-                document.documentElement.classList.remove('dark');
-                localStorage.setItem('color-theme', 'light');
-            } else {
-                document.documentElement.classList.add('dark');
-                localStorage.setItem('color-theme', 'dark');
-            }
+
+
+    const [isDarkMode, setIsDarkMode] = useState(localStorage.getItem('color-theme') === 'dark')
+
+    useEffect(() => {
+        const currentMode = localStorage.getItem('color-theme');
+        if (currentMode === 'dark') {
+            setIsDarkMode(true);
+            document.documentElement.classList.add('dark');
         }
-    }
+    }, []);
+
+    const handleModeChange = () => {
+        setIsDarkMode(!isDarkMode);
+        if (isDarkMode) {
+            localStorage.setItem('color-theme', 'light');
+            document.documentElement.classList.remove('dark')
+        } else {
+            localStorage.setItem('color-theme', 'dark');
+            document.documentElement.classList.add('dark');
+        }
+    };
 
     return (
         <>
@@ -115,8 +119,8 @@ export default function RootLayout() {
                         <a> | </a>
                         <a href="https://docs.digitalshop.evgenick.com" className="hover:underline">Документация</a>
                         <a> | </a>
-                        <button onClick={() => switchTheme()} className="hover:underline">
-                            {checked ? "Светлая тема" : "Тёмная тема"}
+                        <button onClick={() => handleModeChange()} className="hover:underline">
+                            {isDarkMode ? "Светлая тема" : "Тёмная тема"}
                         </button>
                     </span>
                 </div>

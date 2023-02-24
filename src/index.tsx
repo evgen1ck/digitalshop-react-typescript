@@ -44,7 +44,7 @@ const router = createBrowserRouter (
 
 ReactDOM.createRoot(document.getElementById("application") as HTMLElement).render(
     <React.StrictMode>
-        <div className="bg-light-main dark:bg-dark-main text-light-normal dark:text-dark-normal tracking-wide justify-between flex flex-col min-h-screen font-sans text-base font-medium antialiased">
+        <div className="bg-light-main dark:bg-dark-main text-light-normal dark:text-dark-normal tracking-wide justify-between flex flex-col min-h-screen font-sans text-base font-medium antialiased transition-colors duration-300 ease-linear">
             <RouterProvider router={router} />
         </div>
     </React.StrictMode>

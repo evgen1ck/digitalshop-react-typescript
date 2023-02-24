@@ -1,8 +1,10 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { Link } from 'react-router-dom';
 import {MyControls} from '../components/Controls';
 import { IMain } from '../models/SystemInterfaces';
 import {RowBlock, RowBlockLower, RowBlockUpper} from "../components/PageBlocks";
+import InputWithValidation, {TEXT, EMAIL, PASSWORD} from "../components/InputWithValidation";
+import {isEmail, isNotBlank} from "../validator/Validator";
 
 export default function Registration() {
 
@@ -88,6 +90,21 @@ export default function Registration() {
         },
     ]
 
+    const [emailValue, setEmailValue] = useState("");
+    const [emailError, setEmailError] = useState("");
+    const [passwordValue, setPasswordValue] = useState("");
+    const [passwordError, setPasswordError] = useState("");
+
+    const handleEmailChange = (value: string, error: string) => {
+        setEmailValue(value);
+        setEmailError(error);
+    };
+
+    const handlePasswordChange = (value: string, error: string) => {
+        setPasswordValue(value);
+        setPasswordError(error);
+    };
+
     return (
         <>
             <RowBlock>
@@ -96,69 +113,50 @@ export default function Registration() {
                 </div>
             </RowBlock>
 
-            {initialFields && initialFields.map(({ fields}) => (
-                <RowBlockUpper>
-                    {fields && fields.map(field => (
-                        <RowBlockLower>
-                            <label className="block uppercase font-bold mb-2" htmlFor={field.id.toString()}>
-                                {field.nameField}
-                            </label>
+            <RowBlockUpper>
+                <InputWithValidation
+                    nameField={"Псевдоним"}
+                    placeholder={"ivanchik"}
+                    id={"field-nickname"}
+                    type={TEXT}
+                    hasWarnLabel={true}
+                    spellCheck={false}
+                    validators={[isNotBlank]}
+                    value={emailValue}
+                    error={emailError}
+                    onChange={handleEmailChange} />
+            </RowBlockUpper>
 
-                            {field.elementType === "input" ? MyControls.Input(field) : MyControls.Select(field)}
+            <RowBlockUpper>
+                <InputWithValidation
+                    nameField={"Электронная почта (с подтверждением)"}
+                    placeholder={"ivan-ivanov@mail.ru"}
+                    id={"field-email"}
+                    type={EMAIL}
+                    hasWarnLabel={true}
+                    spellCheck={false}
+                    validators={[isNotBlank, isEmail]}
+                    value={emailValue}
+                    error={emailError}
+                    onChange={handleEmailChange} />
+            </RowBlockUpper>
 
-                            {field.hasWarnLabel ? <p className="text-light-second dark:text-dark-second text-sm italic invisible">test</p> : false }
-                        </RowBlockLower>
-                    ))}
-                </RowBlockUpper>
-            ))}
+
+            {/*{initialFields && initialFields.map(({ fields}) => (*/}
+            {/*    <RowBlockUpper>*/}
+            {/*        {fields && fields.map(field => (*/}
+            {/*            <RowBlockLower>*/}
+            {/*                <label className="block uppercase font-bold mb-2" htmlFor={field.id.toString()}>*/}
+            {/*                    {field.nameField}*/}
+            {/*                </label>*/}
+
+            {/*                {field.elementType === "input" ? MyControls.Input(field) : MyControls.Select(field)}*/}
+
+            {/*                {field.hasWarnLabel ? <p className="text-light-second dark:text-dark-second text-sm italic invisible">test</p> : false }*/}
+            {/*            </RowBlockLower>*/}
+            {/*        ))}*/}
+            {/*    </RowBlockUpper>*/}
+            {/*))}*/}
         </>
     )
-    // return (
-    //     <div className="w-full px-4 mx-auto max-w-6xl">
-    //         <div className="lg:flex">
-    //             <div className="flex-auto w-full min-w-0 lg:static lg:max-h-full lg:overflow-visible">
-    //                 <div className="flex w-full">
-    //                     <div className="flex-auto max-w-4xl min-w-0 my-12 pt-6 lg:px-8 lg:pt-8 pb:12 xl:pb-24 lg:pb-16 m-auto">
-    //                         <div className="flex flex-wrap m-auto">
-    //                             <div className="text-center w-full">
-    //                                 <div className="text-center w-full">
-    //                                     <h3 className="text-4xl font-bold mb-10 uppercase">Регистрация</h3>
-    //                                 </div>
-    //                             </div>
-    //                         </div>
-    //                         {initialFields && initialFields.map(({ fields}) => (
-    //                             <div className="flex flex-wrap mb-4 m-auto">
-    //                                 {fields && fields.map(field => (
-    //                                     <div className="flex-grow mb-2 lg:mb-0 px-4">
-    //                                         <label className="block uppercase font-bold mb-2" htmlFor={field.id.toString()}>
-    //                                             {field.nameField}
-    //                                         </label>
-    //
-    //                                         {field.elementType === "input" ? MyControls.Input(field) : MyControls.Select(field)}
-    //
-    //                                         {field.hasWarnLabel ? <p className="text-light-second dark:text-dark-second text-sm italic invisible">test</p> : false }
-    //                                     </div>
-    //                                 ))}
-    //                             </div>
-    //                             ))}
-    //                         <div className="flex items-center px-4">
-    //                             <input id="link-checkbox" type="checkbox" value=""
-    //                                    className="cursor-pointer w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
-    //                                 <label htmlFor="link-checkbox"
-    //                                        className="cursor-pointer ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">I agree with the
-    //                                     <Link to="/" className="text-blue-600 dark:text-blue-500 hover:underline">terms and conditions</Link>.
-    //                                 </label>
-    //                         </div>
-    //                         <div className="flex flex-wrap mt-12 m-auto">
-    //                             <div className="text-center w-full">
-    //                                 <button type="submit" className="transition ease-in-out delay-50 hover:-translate-y-1 duration-300 inline-block outline hover:text-light-focusing dark:hover:text-dark-focusing px-6 py-2.5 text-xl uppercase rounded shadow-md ">
-    //                                     Зарегистрироваться
-    //                                 </button>
-    //                             </div>
-    //                         </div>
-    //                     </div>
-    //                 </div>
-    //             </div>
-    //         </div>
-    //     </div>
 }

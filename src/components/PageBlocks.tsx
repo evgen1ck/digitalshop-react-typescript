@@ -13,11 +13,12 @@ export function RowBlock(props: any) {
     );
 }
 
-export function RowBlockUpper(props: any) {
+export function RowBlockUpper(props: any, test?: any) {
 
+    let add: string = "flex flex-wrap mb-2 lg:mb-4 m-auto" + test
     return (
         <>
-            <div className="flex flex-wrap mb-2 lg:mb-4 m-auto">
+            <div className={add}>
                 {props.children}
             </div>
         </>
