@@ -1,109 +1,58 @@
-import React, {useState} from 'react';
-import { Link } from 'react-router-dom';
-import {MyControls} from '../components/Controls';
-import { IMain } from '../models/SystemInterfaces';
-import {RowBlock, RowBlockLower, RowBlockUpper} from "../components/PageBlocks";
+import React, {useRef, useState} from 'react';
+import {RowBlock, RowBlockUpper} from "../components/PageBlocks";
 import InputWithValidation, {TEXT, EMAIL, PASSWORD} from "../components/InputWithValidation";
-import {isEmail, isNotBlank} from "../validator/Validator";
+import {
+    isContainsSpace,
+    isEmail,
+    isMinMaxLen,
+    isNickname,
+    isNotBlank,
+    isPassword
+} from "../validator/Validator";
 
 export default function Registration() {
-
-    const initialFields: IMain[] = [
-        {
-            fields: [
-                {
-                    nameField: "Имя",
-                    placeholder: "Иван",
-                    id: "field-first-name",
-                    type: "text",
-                    elementType: "input",
-                    hasWarnLabel: true,
-                },
-                {
-                    nameField: "Фамилия",
-                    placeholder: "Иванов",
-                    id: "field-last-name",
-                    type: "text",
-                    elementType: "input",
-                    hasWarnLabel: true,
-                },
-            ],
-        },
-        {
-            fields: [
-                {
-                    nameField: "Электронная почта",
-                    placeholder: "ivan.ivanov@mail.ru",
-                    id: "field-email",
-                    type: "email",
-                    elementType: "input",
-                    hasWarnLabel: true,
-                },
-            ],
-        },
-        {
-            fields: [
-                {
-                    nameField: "Пароль",
-                    placeholder: "********",
-                    id: "field-password",
-                    type: "password",
-                    elementType: "input",
-                    hasWarnLabel: true,
-                },
-                {
-                    nameField: "Повторите пароль",
-                    placeholder: "********",
-                    id: "field-repeat-password",
-                    type: "password",
-                    elementType: "input",
-                    hasWarnLabel: false,
-                },
-            ],
-
-        },
-        {
-            fields: [
-                {
-                    nameField: "Основная валюта",
-                    placeholder: "none (its select)",
-                    id: "field-currency",
-                    type: "text",
-                    elementType: "select",
-                    hasWarnLabel: false,
-                    selects: [
-                        {
-                            id: "rub",
-                            value: "₽ - Русский рубль",
-                        },
-                        {
-                            id: "usd",
-                            value: "₸ - Казахстанский тенге",
-                        },
-                        {
-                            id: "usd",
-                            value: "$ - Доллар США",
-                        },
-                    ]
-                }
-            ],
-        },
-    ]
+    const [nicknameValue, setNicknameValue] = useState("");
+    const [nicknameError, setNicknameError] = useState("");
+    const inputNicknameRef = useRef<HTMLInputElement>(null);
+    const handleNicknameChange = (value: string, error: string) => {
+        setNicknameValue(value);
+        setNicknameError(error);
+    };
 
     const [emailValue, setEmailValue] = useState("");
     const [emailError, setEmailError] = useState("");
-    const [passwordValue, setPasswordValue] = useState("");
-    const [passwordError, setPasswordError] = useState("");
-
+    const inputEmailRef = useRef<HTMLInputElement>(null);
     const handleEmailChange = (value: string, error: string) => {
         setEmailValue(value);
         setEmailError(error);
     };
 
+    const [passwordValue, setPasswordValue] = useState("");
+    const [passwordError, setPasswordError] = useState("");
+    const inputPasswordRef = useRef<HTMLInputElement>(null);
     const handlePasswordChange = (value: string, error: string) => {
         setPasswordValue(value);
         setPasswordError(error);
     };
+
+    const [repeatPasswordValue, setRepeatPasswordValue] = useState("");
+    const [repeatPasswordError, setRepeatPasswordError] = useState("");
+    const inputRepeatPasswordRef = useRef<HTMLInputElement>(null);
+    const handleRepeatPasswordChange = (value: string, error: string) => {
+        setRepeatPasswordValue(value);
+        setRepeatPasswordError(error);
+    };
+
+    function handleSignupClick() {
+        inputNicknameRef.current?.focus();
+        inputNicknameRef.current?.blur();
+        inputEmailRef.current?.focus();
+        inputEmailRef.current?.blur();
+        inputPasswordRef.current?.focus();
+        inputPasswordRef.current?.blur();
+        inputRepeatPasswordRef.current?.focus();
+        inputRepeatPasswordRef.current?.blur();
+    }
 
     return (
         <>
@@ -121,25 +70,63 @@ export default function Registration() {
                     type={TEXT}
                     hasWarnLabel={true}
                     spellCheck={false}
-                    validators={[isNotBlank]}
-                    value={emailValue}
-                    error={emailError}
-                    onChange={handleEmailChange} />
+                    validators={[isNotBlank, isMinMaxLen(5, 32), isContainsSpace, isNickname]}
+                    value={nicknameValue}
+                    error={nicknameError}
+                    onChange={handleNicknameChange}
+                    inputRef={inputNicknameRef}
+                    insertSpace={false} />
             </RowBlockUpper>
 
             <RowBlockUpper>
                 <InputWithValidation
-                    nameField={"Электронная почта (с подтверждением)"}
-                    placeholder={"ivan-ivanov@mail.ru"}
+                    nameField={"Электронная почта"}
+                    placeholder={"ivan.ivanov@mail.ru"}
                     id={"field-email"}
                     type={EMAIL}
                     hasWarnLabel={true}
                     spellCheck={false}
-                    validators={[isNotBlank, isEmail]}
+                    validators={[isNotBlank, isMinMaxLen(6, 64), isContainsSpace, isEmail]}
                     value={emailValue}
                     error={emailError}
-                    onChange={handleEmailChange} />
+                    onChange={handleEmailChange}
+                    inputRef={inputEmailRef}
+                    insertSpace={false} />
             </RowBlockUpper>
+
+            <RowBlockUpper>
+                <InputWithValidation
+                    nameField={"Пароль"}
+                    placeholder={"********"}
+                    id={"field-password"}
+                    type={PASSWORD}
+                    hasWarnLabel={true}
+                    spellCheck={false}
+                    validators={[isNotBlank, isMinMaxLen(6, 64), isContainsSpace, isPassword]}
+                    value={passwordValue}
+                    error={passwordError}
+                    onChange={handlePasswordChange}
+                    inputRef={inputPasswordRef}
+                    insertSpace={false} />
+
+                <InputWithValidation
+                    nameField={"Повторите пароль"}
+                    placeholder={"********"}
+                    id={"field-repeat-password"}
+                    type={PASSWORD}
+                    hasWarnLabel={true}
+                    spellCheck={false}
+                    validators={[isNotBlank, isMinMaxLen(6, 64), isContainsSpace, isPassword]}
+                    value={repeatPasswordValue}
+                    error={repeatPasswordError}
+                    onChange={handleRepeatPasswordChange}
+                    inputRef={inputRepeatPasswordRef}
+                    insertSpace={false} />
+            </RowBlockUpper>
+
+            <RowBlock>
+                <button onClick={handleSignupClick}>registration</button>
+            </RowBlock>
 
 
             {/*{initialFields && initialFields.map(({ fields}) => (*/}

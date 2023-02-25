@@ -8,87 +8,73 @@ export const isNotBlank = (value: string) => {
 export const isEmail = (value: string) => {
     const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
     if (!emailRegex.test(value)) {
-        return "Введена некорректная почта";
+        return "Некорректная почта";
     }
     return "";
 };
 
+export const isPassword = (value: string) => {
+    const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*()_+,\-.\/:;<=>?@[\\\]^`{|}~])[A-Za-z\d!@#$%^&*()_+,\-.\/:;<=>?@[\\\]^`{|}~]{6,}$/;
+    if (!passwordRegex.test(value)) {
+        return "Пароль не безопасен";
+    }
+    return "";
+};
 
+export const isContainsSpace = (value: string) => {
+    if (value.includes(" ")) {
+        return `Текст содержит пробел`;
+    }
+    return "";
+};
 
+export const isMinMaxLen = (min: number, max: number) => (value: string) => {
+    const len = value.length;
+    if (len < min) {
+        return `Текст должен иметь минимум ${min} символов`;
+    } else if (len > max) {
+        return `Текст должен иметь максимум ${max} символов`;
+    }
+    return "";
+};
 
+export const isLen = (length: number) => (value: string) => {
+    const l = value.length;
+    if (l !== length) {
+        return `Текст не является нужной длины (необходимо ${length} символов)`;
+    }
+    return "";
+};
 
-function IsMinMaxLen(min: number, max: number): (str: string) => Error | null {
-    return (str: string) => {
-        const len = str.length;
-        if (len < min) {
-            return new Error(`Введённый текст слишком короткий (минимум ${min} символов против ваших ${len})`);
-        } else if (len > max) {
-            return new Error(`Введённый текст слишком длинный (максимум ${max} символов против ваших ${len})`);
-        }
-        return null;
-    };
-}
+export const isUrl = (value: string) => {
+    try {
+        new URL(value);
+    } catch (error) {
+        return "Текст не является ссылкой";
+    }
+    return "";
+};
 
-function IsLen(length: number): (str: string) => Error | null {
-    return function (str: string): Error | null {
-        const l = str.length;
-        if (l !== length) {
-            return new Error(`the value is not the required length characters (required is ${length} vs your ${l} character(s))`);
-        }
-        return null;
-    };
-}
+export const isInt64 = (value: string) => {
+    const num = Number(value);
+    if (!Number.isInteger(num) || num > Number.MAX_SAFE_INTEGER || num < Number.MIN_SAFE_INTEGER) {
+        return "Текст не является числом";
+    }
+    return "";
+};
 
-// function IsEmail(): (str: string) => Error | null {
-//     return function (str: string): Error | null {
-//         const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-//         if (!regex.test(str)) {
-//             return new Error(`the value is not an email`);
-//         }
-//         return null;
-//     };
-// }
+export const isUint64 = (value: string) => {
+    const num = Number(value);
+    if (!Number.isInteger(num) || num > Number.MAX_SAFE_INTEGER || num < 0) {
+        return "Текст не является положительном числом";
+    }
+    return "";
+};
 
-
-
-function IsUrl(): (str: string) => Error | null {
-    return function (str: string): Error | null {
-        try {
-            new URL(str);
-        } catch (error) {
-            return new Error(`the value is not a url`);
-        }
-        return null;
-    };
-}
-
-function IsInt64(): (str: string) => Error | null {
-    return function (str: string): Error | null {
-        const num = Number(str);
-        if (!Number.isInteger(num) || num > Number.MAX_SAFE_INTEGER || num < Number.MIN_SAFE_INTEGER) {
-            return new Error(`the value is not an integer data type`);
-        }
-        return null;
-    };
-}
-
-function IsUint64(): (str: string) => Error | null {
-    return function (str: string): Error | null {
-        const num = Number(str);
-        if (!Number.isInteger(num) || num > Number.MAX_SAFE_INTEGER || num < 0) {
-            return new Error(`the value is not an unsigned integer data type`);
-        }
-        return null;
-    };
-}
-
-function IsContainsSpace(): (str: string) => Error | null {
-    return function (str: string): Error | null {
-        for (let i = 0; i < str.length; i++) {
-            if (str[i] === " ") {
-                return new Error(`the value contains a space (space in ${i + 1} character)`);
-            }
-        }
-        return null;
-    };
-}
+export const isNickname = (value: string) => {
+    const regex = /^[a-zA-Z0-9_-]+$/;
+    if (!regex.test(value)) {
+        return "Псевдоним может содержать только английские буквы, цифры, символы - и _";
+    }
+    return "";
+};

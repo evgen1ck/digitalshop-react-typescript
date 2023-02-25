@@ -1,4 +1,6 @@
 import React, {useEffect, useState} from 'react';
+import Select from "react-select";
+import OptionTypeBase from "react-select";
 import { Outlet, Link } from "react-router-dom";
 import {ILink} from "../models/SystemInterfaces";
 
@@ -24,7 +26,6 @@ export default function RootLayout() {
     ]
     const [links] = useState(initialLinks)
 
-
     const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
     localStorage.setItem(
         'color-theme',
@@ -33,10 +34,7 @@ export default function RootLayout() {
             : 'light'
     );
 
-
-
     const [isDarkMode, setIsDarkMode] = useState(localStorage.getItem('color-theme') === 'dark')
-
     useEffect(() => {
         const currentMode = localStorage.getItem('color-theme');
         if (currentMode === 'dark') {
@@ -44,7 +42,6 @@ export default function RootLayout() {
             document.documentElement.classList.add('dark');
         }
     }, []);
-
     const handleModeChange = () => {
         setIsDarkMode(!isDarkMode);
         if (isDarkMode) {
