@@ -9,8 +9,9 @@ import {
     isNotBlank,
     isPassword
 } from "../validator/Validator";
+import {Link} from "react-router-dom";
 
-export default function Registration() {
+export default function Signup() {
     const [nicknameValue, setNicknameValue] = useState("");
     const [nicknameError, setNicknameError] = useState("");
     const inputNicknameRef = useRef<HTMLInputElement>(null);
@@ -125,25 +126,19 @@ export default function Registration() {
             </RowBlockUpper>
 
             <RowBlock>
-                <button onClick={handleSignupClick}>registration</button>
+                <div className="text-center w-full mt-4">
+                    <button type="submit" className="btn-classic-frame select-none px-6 py-2.5 text-xl uppercase" onClick={handleSignupClick}>
+                        Зарегистрироваться
+                    </button>
+                </div>
             </RowBlock>
 
-
-            {/*{initialFields && initialFields.map(({ fields}) => (*/}
-            {/*    <RowBlockUpper>*/}
-            {/*        {fields && fields.map(field => (*/}
-            {/*            <RowBlockLower>*/}
-            {/*                <label className="block uppercase font-bold mb-2" htmlFor={field.id.toString()}>*/}
-            {/*                    {field.nameField}*/}
-            {/*                </label>*/}
-
-            {/*                {field.elementType === "input" ? MyControls.Input(field) : MyControls.Select(field)}*/}
-
-            {/*                {field.hasWarnLabel ? <p className="text-light-second dark:text-dark-second text-sm italic invisible">test</p> : false }*/}
-            {/*            </RowBlockLower>*/}
-            {/*        ))}*/}
-            {/*    </RowBlockUpper>*/}
-            {/*))}*/}
+            <RowBlock>
+                <div className="text-center w-full lg:flex lg:justify-center">
+                    <p className="leading-tight mx-1">Есть аккаунт?</p>
+                    <Link to="/login" className="btn-usual-link">Войдите!</Link>
+                </div>
+            </RowBlock>
         </>
     )
 }

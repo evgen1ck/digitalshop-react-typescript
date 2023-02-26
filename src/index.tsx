@@ -9,10 +9,9 @@ import {
 
 import './index.css';
 import Home from "./routes/Home";
-import About from "./routes/About";
 import RootLayout from "./layouts/RootLayout";
 import NoMatch from './routes/NoMatch';
-import Signup from './routes/Registration';
+import Signup from './routes/Signup';
 import Login from './routes/Login';
 
 // import { useSelector } from "../../redux/store";
@@ -36,7 +35,6 @@ const router = createBrowserRouter (
             <Route index element={<Home />} />
             <Route path="login" element={<Login />} />
             <Route path="signup" element={<Signup />} />
-            <Route path="about" element={<About />} />
             <Route path="*" element={<NoMatch />} />
         </Route>
     )
