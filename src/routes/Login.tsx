@@ -1,37 +1,10 @@
 import React, { useState } from "react";
-import { MyControls } from "../components/Controls";
-import { IMain } from "../models/SystemInterfaces";
 import { RowBlock, RowBlockLower, RowBlockUpper } from "../components/PageBlocks";
 import {Link} from "react-router-dom";
 
 export default function Login() {
 
-    const initialFields: IMain[] = [
-        {
-            fields: [
-                {
-                    nameField: "Электронная почта",
-                    placeholder: "ivan.ivanov@mail.ru",
-                    id: "field-email",
-                    type: "email",
-                    elementType: "input",
-                    hasWarnLabel: true,
-                },
-            ],
-        },
-        {
-            fields: [
-                {
-                    nameField: "Пароль",
-                    placeholder: "********",
-                    id: "field-password",
-                    type: "password",
-                    elementType: "input",
-                    hasWarnLabel: true,
-                },
-            ],
-        },
-    ]
+
 
     const [checked, setChecked] = useState(true);
 
@@ -43,21 +16,6 @@ export default function Login() {
                 </div>
             </RowBlock>
 
-            {initialFields && initialFields.map(({ fields}) => (
-                <RowBlockUpper>
-                    {fields && fields.map(field => (
-                        <RowBlockLower>
-                            <label className="block uppercase font-bold mb-2" htmlFor={field.id.toString()}>
-                                {field.nameField}
-                            </label>
-
-                            {field.elementType === "input" ? MyControls.Input(field) : MyControls.Select(field)}
-
-                            {field.hasWarnLabel ? <p className="text-light-second dark:text-dark-second text-sm italic invisible">test</p> : false }
-                        </RowBlockLower>
-                    ))}
-                </RowBlockUpper>
-            ))}
 
             <RowBlock>
                 <div className="flex">

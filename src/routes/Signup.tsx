@@ -1,6 +1,7 @@
 import React, {useRef, useState} from 'react';
 import {RowBlock, RowBlockUpper} from "../components/PageBlocks";
 import InputWithValidation, {TEXT, EMAIL, PASSWORD} from "../components/InputWithValidation";
+import { useMutation } from "@apollo/client";
 import {
     isContainsSpace,
     isEmail,
@@ -10,6 +11,8 @@ import {
     isPassword
 } from "../validator/Validator";
 import {Link} from "react-router-dom";
+import {client, SIGNUP_WITHOUT_CODE_MUTATION} from "../graphql/Graphql";
+import Modal from "../components/Modal";
 
 export default function Signup() {
     const [nicknameValue, setNicknameValue] = useState("");
@@ -44,7 +47,32 @@ export default function Signup() {
         setRepeatPasswordError(error);
     };
 
+    const [signupWithoutCodeMutation, { data, error, loading }] = useMutation(SIGNUP_WITHOUT_CODE_MUTATION);
+
+    const [showModal, setShowModal] = useState(false);
+    function closeModal() {
+        setShowModal(false);
+    }
+
+    async function signup(nickname: string, email: string, password: string) {
+        try {
+            await signupWithoutCodeMutation({ variables: { nickname: nickname, email: email, password: password } });
+            if (loading) {
+                console.log("LOADING...")
+            } else if (data) {
+                console.log("MY_DATA:" + data.authSignupWithoutCode)
+            }
+        }
+        catch (_) {
+            if (error) {
+                console.log(error?.message)
+            }
+        }
+    }
+
+    const [isSubmitting, setIsSubmitting] = useState(false);
     function handleSignupClick() {
+        setIsSubmitting(true);
         inputNicknameRef.current?.focus();
         inputNicknameRef.current?.blur();
         inputEmailRef.current?.focus();
@@ -53,9 +81,19 @@ export default function Signup() {
         inputPasswordRef.current?.blur();
         inputRepeatPasswordRef.current?.focus();
         inputRepeatPasswordRef.current?.blur();
+
+        if (nicknameError !== "" || emailError !== "" || passwordError !== "" || repeatPasswordError !== "") {
+            setShowModal(true);
+            setIsSubmitting(false);
+            return
+        }
+
+        signup(nicknameValue, emailValue, passwordValue);
+
+        setIsSubmitting(false);
     }
 
-    return (
+        return (
         <>
             <RowBlock>
                 <div className="text-center w-full">
@@ -97,6 +135,7 @@ export default function Signup() {
 
             <RowBlockUpper>
                 <InputWithValidation
+                    addToClassName="sm:w-1/2"
                     nameField={"Пароль"}
                     placeholder={"********"}
                     id={"field-password"}
@@ -111,6 +150,7 @@ export default function Signup() {
                     insertSpace={false} />
 
                 <InputWithValidation
+                    addToClassName="sm:w-1/2"
                     nameField={"Повторите пароль"}
                     placeholder={"********"}
                     id={"field-repeat-password"}
@@ -127,8 +167,10 @@ export default function Signup() {
 
             <RowBlock>
                 <div className="text-center w-full mt-4">
-                    <button type="submit" className="btn-classic-frame select-none px-6 py-2.5 text-xl uppercase" onClick={handleSignupClick}>
-                        Зарегистрироваться
+                    <button className="btn-classic-frame select-none px-6 py-2.5 text-xl uppercase"
+                            type="submit"
+                            onClick={handleSignupClick}
+                            disabled={isSubmitting}>Зарегистрироваться
                     </button>
                 </div>
             </RowBlock>
@@ -139,6 +181,14 @@ export default function Signup() {
                     <Link to="/login" className="btn-usual-link">Войдите!</Link>
                 </div>
             </RowBlock>
+
+
+            <Modal onShow={showModal} title="ddd" onClose={closeModal}>
+                <h1>{data}</h1>
+                <h1>{error?.message}</h1>
+            </Modal>
+
+
         </>
     )
 }

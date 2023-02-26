@@ -1,37 +1,36 @@
-import React from "react";
+import React, { FC, ReactNode } from "react";
 
-export function RowBlock(props: any) {
-
-    return (
-        <>
-            <RowBlockUpper>
-                <RowBlockLower>
-                    {props.children}
-                </RowBlockLower>
-            </RowBlockUpper>
-        </>
-    );
+interface RowBlockUpperLowerProps {
+    addToClassName?: string;
+    children: ReactNode;
 }
 
-export function RowBlockUpper(props: any, test?: any) {
-
-    let add: string = "flex flex-wrap mb-2 lg:mb-4 m-auto" + test
-    return (
-        <>
-            <div className={add}>
-                {props.children}
-            </div>
-        </>
-    );
+interface RowBlockProps {
+    children: ReactNode;
 }
 
-export function RowBlockLower(props: any) {
-
+export const RowBlockUpper: FC<RowBlockUpperLowerProps> = ({ addToClassName, children }) => {
     return (
-        <>
-            <div className="flex-grow mb-2 lg:mb-0 px-4">
-                {props.children}
-            </div>
-        </>
+        <div className={`flex flex-wrap mb-2 lg:mb-4 m-auto ${addToClassName}`}>
+            {children}
+        </div>
     );
-}
+};
+
+export const RowBlockLower: FC<RowBlockUpperLowerProps> = ({ addToClassName, children }) => {
+    return (
+        <div className={`flex-grow mb-2 lg:mb-0 px-4 ${addToClassName}`}>
+            {children}
+        </div>
+    );
+};
+
+export const RowBlock: FC<RowBlockProps> = ({ children }) => (
+    <>
+        <RowBlockUpper>
+            <RowBlockLower>
+                {children}
+            </RowBlockLower>
+        </RowBlockUpper>
+    </>
+);

@@ -1,6 +1,10 @@
 import React, {useEffect, useState} from 'react';
 import { Outlet, Link } from "react-router-dom";
-import {ILink} from "../models/SystemInterfaces";
+
+interface ILink {
+    name: string
+    link: string
+}
 
 export default function RootLayout() {
 
@@ -22,33 +26,33 @@ export default function RootLayout() {
             link: 'about'
         }
     ]
+
     const [links] = useState(initialLinks)
 
     const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    localStorage.setItem(
-        'color-theme',
-        localStorage.getItem('color-theme') === 'dark' || (!localStorage.getItem('color-theme') && prefersDark)
-            ? 'dark'
-            : 'light'
-    );
+    const storedTheme = localStorage.getItem('color-theme');
+    const initialTheme = storedTheme === 'dark' || (!storedTheme && prefersDark) ? 'dark' : 'light';
+    localStorage.setItem('color-theme', initialTheme);
 
-    const [isDarkMode, setIsDarkMode] = useState(localStorage.getItem('color-theme') === 'dark')
+    const [isDarkMode, setIsDarkMode] = useState(initialTheme === 'dark');
+
     useEffect(() => {
-        const currentMode = localStorage.getItem('color-theme');
-        if (currentMode === 'dark') {
-            setIsDarkMode(true);
+        if (isDarkMode) {
             document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+        localStorage.setItem('color-theme', isDarkMode ? 'dark' : 'light');
+    }, [isDarkMode]);
+    useEffect(() => {
+        const previousTheme = localStorage.getItem('color-theme');
+        if (previousTheme === 'light') {
+            document.documentElement.classList.remove('dark');
         }
     }, []);
+
     const handleModeChange = () => {
         setIsDarkMode(!isDarkMode);
-        if (isDarkMode) {
-            localStorage.setItem('color-theme', 'light');
-            document.documentElement.classList.remove('dark')
-        } else {
-            localStorage.setItem('color-theme', 'dark');
-            document.documentElement.classList.add('dark');
-        }
     };
 
     return (
@@ -68,7 +72,7 @@ export default function RootLayout() {
                             </svg>
                         </button>
                     </div>
-                    <div className="w-full block flex-grow lg:flex lg:items-center lg:w-auto ">
+                    <div className="w-full block flex-grow lg:flex lg:items-center lg:w-auto">
                         <div className="lg:flex-grow">
                             {links.map(link => {
                                 return (

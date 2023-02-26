@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import {RowBlockLower} from "./PageBlocks";
 
 interface InputWithValidationProps {
+    addToClassName?: string;
     nameField: string;
     placeholder: string;
     id: string;
@@ -26,6 +27,7 @@ export default function InputWithValidation ({
                                                  id,
                                                  type,
                                                  hasWarnLabel,
+                                                 addToClassName,
                                                  spellCheck,
                                                  validators,
                                                  value,
@@ -58,7 +60,7 @@ export default function InputWithValidation ({
     };
 
     return (
-        <RowBlockLower>
+        <RowBlockLower addToClassName={addToClassName}>
             <label className="block uppercase font-bold mb-2"
                    htmlFor={id}>{nameField}
             </label>
