@@ -1,5 +1,6 @@
-import React, {useEffect, useState} from 'react';
+import React, { useState } from 'react';
 import { Outlet, Link } from "react-router-dom";
+import SwitchTheme from "../utils/switchTheme";
 
 interface ILink {
     name: string
@@ -29,35 +30,11 @@ export default function RootLayout() {
 
     const [links] = useState(initialLinks)
 
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    const storedTheme = localStorage.getItem('color-theme');
-    const initialTheme = storedTheme === 'dark' || (!storedTheme && prefersDark) ? 'dark' : 'light';
-    localStorage.setItem('color-theme', initialTheme);
-
-    const [isDarkMode, setIsDarkMode] = useState(initialTheme === 'dark');
-
-    useEffect(() => {
-        if (isDarkMode) {
-            document.documentElement.classList.add('dark');
-        } else {
-            document.documentElement.classList.remove('dark');
-        }
-        localStorage.setItem('color-theme', isDarkMode ? 'dark' : 'light');
-    }, [isDarkMode]);
-    useEffect(() => {
-        const previousTheme = localStorage.getItem('color-theme');
-        if (previousTheme === 'light') {
-            document.documentElement.classList.remove('dark');
-        }
-    }, []);
-
-    const handleModeChange = () => {
-        setIsDarkMode(!isDarkMode);
-    };
+   const {isDarkMode, toggleDarkMode} = SwitchTheme();
 
     return (
         <>
-            <header className="bg-light-additional dark:bg-dark-additional top-0 z-40 flex-none w-full mx-auto shadow-md">
+            <header className="bg-light-additional dark:bg-dark-additional top-0 z-40 flex-none w-full mx-auto shadow-md select-none">
                 <nav className="flex items-center justify-between flex-wrap p-6 max-w-6xl m-auto">
                     <div className="flex items-center flex-shrink-0 mr-6">
                         <Link to="/" className="hover:text-light-focusing dark:hover:text-dark-focusing">
@@ -76,7 +53,7 @@ export default function RootLayout() {
                         <div className="lg:flex-grow">
                             {links.map(link => {
                                 return (
-                                    <Link to={link.link} key={link.name} className="btn-classic select-none block lg:inline-block lg:mt-0 ml-4">
+                                    <Link to={link.link} key={link.name} className="btn-classic block lg:inline-block lg:mt-0 ml-4">
                                         {link.name}
                                     </Link>
                                 )})
@@ -84,10 +61,10 @@ export default function RootLayout() {
                         </div>
                         <div className="w-full block flex-grow lg:flex lg:items-center lg:w-auto">
                             <div className="lg:flex-grow">
-                                <Link to="/signup" className="btn-classic select-none block lg:inline-block lg:mt-0 ml-4 mr-6">
+                                <Link to="/signup" className="btn-classic block lg:inline-block lg:mt-0 ml-4 mr-6">
                                     Зарегистрироваться
                                 </Link>
-                                <Link to="/login" className="btn-classic-frame select-none bg-light-additional dark:bg-dark-additional block lg:inline-block py-2 uppercase max-w-md:hidden inline-block px-4 mt-4 lg:mt-0">
+                                <Link to="/login" className="btn-classic-frame bg-light-additional dark:bg-dark-additional block lg:inline-block py-2 uppercase max-w-md:hidden inline-block px-4 mt-4 lg:mt-0">
                                     Войти
                                 </Link>
                             </div>
@@ -108,17 +85,17 @@ export default function RootLayout() {
                 </div>
             </div>
 
-            <footer className="bg-light-additional dark:bg-dark-additional py-6 text-sm drop-shadow-sm">
+            <footer className="bg-light-additional dark:bg-dark-additional py-6 text-sm drop-shadow-sm select-none">
                 <div className="w-full px-6 mx-auto max-w-6xl lg:justify-between lg:flex flex-wrap grid text-center lg:space-y-0 space-y-2">
                     <span>
-                        <Link to="/" className="hover:underline uppercase">Evgenick's digitals</Link> © Copyright {new Date().getFullYear()}
+                        <Link to="/" className="hover:underline uppercase ">Evgenick's digitals</Link> © Copyright {new Date().getFullYear()}
                     </span>
                     <span>
                         <a>Сделано </a><a href="https://helloworld.evgenick.com" className="hover:underline">Кочетковым Евгением</a>
                         <a> | </a>
                         <a href="https://docs.digitalshop.evgenick.com" className="hover:underline">Документация</a>
                         <a> | </a>
-                        <button onClick={() => handleModeChange()} className="hover:underline">
+                        <button onClick={() => toggleDarkMode()} className="hover:underline">
                             {isDarkMode ? "Светлая тема" : "Тёмная тема"}
                         </button>
                     </span>

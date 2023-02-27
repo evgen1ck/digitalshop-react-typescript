@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 
 const NoMatch = () => {
     return (
-        <div className="justify-between my-16">
+        <div className="justify-between my-16 select-none">
             <div className="text-center">
                 <h1 className="text-9xl font-bold mb-8">404</h1>
                 <h3 className="text-4xl font-bold mb-12">Страница не найдена или её не существует.</h3>

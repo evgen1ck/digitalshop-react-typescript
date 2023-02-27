@@ -1,7 +1,7 @@
-import {ApolloClient, gql, InMemoryCache} from "@apollo/client";
+import { ApolloClient, gql, InMemoryCache } from "@apollo/client";
 
 export const client = new ApolloClient({
-    uri: 'http://127.0.0.1:9990/api/v1',
+    uri: 'https://api.digitalshop.evgenick.com/api/v1',
     cache: new InMemoryCache(),
 });
 

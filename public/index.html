@@ -1,6 +1,21 @@
 <!DOCTYPE html>
-<html lang="ru" class="dark">
+<html lang="ru">
   <head>
+    <script type="text/javascript">
+      // code for init theme
+      if (localStorage.getItem('color-theme') === null) {
+        if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+          document.documentElement.classList.add('dark');
+          localStorage.setItem('color-theme', 'dark');
+        } else {
+          localStorage.setItem('color-theme', 'light');
+        }
+      } else {
+        if (localStorage.getItem('color-theme') === 'dark') {
+          document.documentElement.classList.add('dark');
+        }
+      }
+    </script>
     <meta charset="utf-8" />
     <script src="https://accounts.google.com/gsi/client" async defer></script>
     <meta name="google-site-verification" content="Wb38B3_NEwDT1iGdDAydTRhGh3MQECbNqN2fi2RVR7k" />

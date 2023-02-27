@@ -1,4 +1,4 @@
-import React, {useEffect, useLayoutEffect, useState} from 'react';
+import React from 'react';
 import ReactDOM from 'react-dom/client';
 import {
     createBrowserRouter,
@@ -12,18 +12,18 @@ import RootLayout from './layouts/RootLayout';
 import NoMatch from './routes/NoMatch';
 import Signup from './routes/Signup';
 import Login from './routes/Login';
-import {ApolloProvider} from "@apollo/client";
-import {client} from "./graphql/Graphql";
+import { ApolloProvider } from "@apollo/client";
+import { client } from "./graphql/graphql";
 
-// import { useSelector } from "../../redux/store";
-// import { Navigate, useLocation } from "react-router-dom";
+// interface ProtectedRouteProps {
+//     children: ReactNode;
+// }
 //
-// function ProtectedRoute(props: any) {
-//     const { children } = props;
+// function ProtectedRoute({ children }: ProtectedRouteProps) {
 //     const location = useLocation();
-//     const { isLoggedIn } = useSelector((store) => store.auth);
+//     const isLoggedIn = localStorage.getItem("token");
 //
-//     if (!isLoggedIn) {
+//     if (isLoggedIn != null) {
 //         return <Navigate to="/login" state={{ from: location }} />
 //     }
 //
@@ -44,7 +44,7 @@ const router = createBrowserRouter(
 ReactDOM.createRoot(document.getElementById('root')!).render(
     <React.StrictMode>
         <ApolloProvider client={client}>
-            <div className="bg-light-main dark:bg-dark-main text-light-normal dark:text-dark-normal tracking-wide justify-between flex flex-col min-h-screen font-sans text-base font-medium antialiased">
+            <div className="bg-light-main dark:bg-dark-main text-light-normal dark:text-dark-normal tracking-wide justify-between flex flex-col min-h-screen font-sans text-base font-medium antialiased transition-colors duration-300 ease-linear">
                 <RouterProvider router={router} />
             </div>
         </ApolloProvider>

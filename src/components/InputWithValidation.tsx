@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import {RowBlockLower} from "./PageBlocks";
+import { RowBlockLower } from "./PageBlocks";
 
 interface InputWithValidationProps {
     addToClassName?: string;
@@ -61,7 +61,7 @@ export default function InputWithValidation ({
 
     return (
         <RowBlockLower addToClassName={addToClassName}>
-            <label className="block uppercase font-bold mb-2"
+            <label className="block uppercase font-bold mb-2 select-none"
                    htmlFor={id}>{nameField}
             </label>
             <input
@@ -78,7 +78,7 @@ export default function InputWithValidation ({
                 onFocus={handleFocus}
             />
             {hasWarnLabel && (
-                <p className={`text-light-second dark:text-dark-second text-sm italic 
+                <p className={`text-light-second dark:text-dark-second text-sm italic select-none 
                 ${error || isFocused ? "" : "invisible"}`}>{error ? error : "⠀"}</p>
             )}
         </RowBlockLower>

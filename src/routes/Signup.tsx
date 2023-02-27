@@ -1,5 +1,5 @@
-import React, {useRef, useState} from 'react';
-import {RowBlock, RowBlockUpper} from "../components/PageBlocks";
+import React, { useRef, useState } from 'react';
+import { RowBlock, RowBlockUpper } from "../components/PageBlocks";
 import InputWithValidation, {TEXT, EMAIL, PASSWORD} from "../components/InputWithValidation";
 import { useMutation } from "@apollo/client";
 import {
@@ -9,9 +9,9 @@ import {
     isNickname,
     isNotBlank,
     isPassword
-} from "../validator/Validator";
-import {Link} from "react-router-dom";
-import {client, SIGNUP_WITHOUT_CODE_MUTATION} from "../graphql/Graphql";
+} from "../utils/dataValidators";
+import { Link } from "react-router-dom";
+import { SIGNUP_WITHOUT_CODE_MUTATION } from "../graphql/graphql";
 import Modal from "../components/Modal";
 
 export default function Signup() {
@@ -88,7 +88,7 @@ export default function Signup() {
             return
         }
 
-        signup(nicknameValue, emailValue, passwordValue);
+        signup(nicknameValue, emailValue, passwordValue).then(r => {});
 
         setIsSubmitting(false);
     }
@@ -97,7 +97,7 @@ export default function Signup() {
         <>
             <RowBlock>
                 <div className="text-center w-full">
-                    <h3 className="text-3xl font-bold mb-6 uppercase">Регистрация</h3>
+                    <h3 className="text-3xl font-bold mb-6 uppercase select-none">Регистрация</h3>
                 </div>
             </RowBlock>
 
@@ -176,7 +176,7 @@ export default function Signup() {
             </RowBlock>
 
             <RowBlock>
-                <div className="text-center w-full lg:flex lg:justify-center">
+                <div className="text-center w-full lg:flex lg:justify-center select-none">
                     <p className="leading-tight mx-1">Есть аккаунт?</p>
                     <Link to="/login" className="btn-usual-link">Войдите!</Link>
                 </div>

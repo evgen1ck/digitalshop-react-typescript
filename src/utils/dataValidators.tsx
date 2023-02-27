@@ -14,7 +14,7 @@ export const isEmail = (value: string) => {
 };
 
 export const isPassword = (value: string) => {
-    const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*()_+,\-.\/:;<=>?@[\\\]^`{|}~])[A-Za-z\d!@#$%^&*()_+,\-.\/:;<=>?@[\\\]^`{|}~]{6,}$/;
+    const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*()_+,\-.\/:;<=>?[\\\]`{|}~])[A-Za-z\d!@#$%^&*()_+,\-.\/:;<=>?[\\\]`{|}~]{6,}$/;
     if (!passwordRegex.test(value)) {
         return "Пароль не безопасен";
     }
