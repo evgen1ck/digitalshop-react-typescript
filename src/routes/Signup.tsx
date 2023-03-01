@@ -12,7 +12,7 @@ import {
 } from "../utils/dataValidators";
 import { Link } from "react-router-dom";
 import { SIGNUP_WITHOUT_CODE_MUTATION } from "../graphql/graphql";
-import Modal from "../components/Modal";
+import Modals from "../components/Modals";
 
 export default function Signup() {
     const [nicknameValue, setNicknameValue] = useState("");
@@ -70,6 +70,8 @@ export default function Signup() {
         }
     }
 
+    const [show, setShow] = useState<boolean>(false)
+
     const [isSubmitting, setIsSubmitting] = useState(false);
     function handleSignupClick() {
         setIsSubmitting(true);
@@ -82,16 +84,29 @@ export default function Signup() {
         inputRepeatPasswordRef.current?.focus();
         inputRepeatPasswordRef.current?.blur();
 
-        if (nicknameError !== "" || emailError !== "" || passwordError !== "" || repeatPasswordError !== "") {
-            setShowModal(true);
+        if (passwordValue !== repeatPasswordValue) {
+            setPasswordError("Пароли не совпадают");
+            setRepeatPasswordError("Пароли не совпадают");
             setIsSubmitting(false);
-            return
+            console.log("aboc");
+            setShow(() => !show);
+            return;
         }
 
+        if (nicknameError !== "" || emailError !== "" || passwordError !== "" || repeatPasswordError !== "") {
+            setIsSubmitting(false);
+            return;
+        }
+// setIsSubmitting(false);3
+
+// dwwda##ddeer444D
         signup(nicknameValue, emailValue, passwordValue).then(r => {});
 
         setIsSubmitting(false);
     }
+
+
+
 
         return (
         <>
@@ -109,7 +124,7 @@ export default function Signup() {
                     type={TEXT}
                     hasWarnLabel={true}
                     spellCheck={false}
-                    validators={[isNotBlank, isMinMaxLen(5, 32), isContainsSpace, isNickname]}
+                    requiredValidators={[isNotBlank, isMinMaxLen(5, 32), isContainsSpace, isNickname]}
                     value={nicknameValue}
                     error={nicknameError}
                     onChange={handleNicknameChange}
@@ -125,7 +140,7 @@ export default function Signup() {
                     type={EMAIL}
                     hasWarnLabel={true}
                     spellCheck={false}
-                    validators={[isNotBlank, isMinMaxLen(6, 64), isContainsSpace, isEmail]}
+                    requiredValidators={[isNotBlank, isMinMaxLen(6, 64), isContainsSpace, isEmail]}
                     value={emailValue}
                     error={emailError}
                     onChange={handleEmailChange}
@@ -142,7 +157,7 @@ export default function Signup() {
                     type={PASSWORD}
                     hasWarnLabel={true}
                     spellCheck={false}
-                    validators={[isNotBlank, isMinMaxLen(6, 64), isContainsSpace, isPassword]}
+                    requiredValidators={[isNotBlank, isMinMaxLen(6, 64), isContainsSpace, isPassword]}
                     value={passwordValue}
                     error={passwordError}
                     onChange={handlePasswordChange}
@@ -157,7 +172,7 @@ export default function Signup() {
                     type={PASSWORD}
                     hasWarnLabel={true}
                     spellCheck={false}
-                    validators={[isNotBlank, isMinMaxLen(6, 64), isContainsSpace, isPassword]}
+                    requiredValidators={[isNotBlank, isMinMaxLen(6, 64), isContainsSpace, isPassword]}
                     value={repeatPasswordValue}
                     error={repeatPasswordError}
                     onChange={handleRepeatPasswordChange}
@@ -183,10 +198,12 @@ export default function Signup() {
             </RowBlock>
 
 
-            <Modal onShow={showModal} title="ddd" onClose={closeModal}>
-                <h1>{data}</h1>
-                <h1>{error?.message}</h1>
-            </Modal>
+
+
+            <Modals onShow={show} setShow={setShow} >
+                <p>Reusable Modal with options to customize.</p>
+                <input type="email" placeholder="Email" />
+            </Modals>
 
 
         </>

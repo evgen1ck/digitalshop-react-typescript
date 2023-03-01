@@ -9,17 +9,31 @@ interface InputWithValidationProps {
     type: string;
     hasWarnLabel: boolean;
     spellCheck: boolean;
-    validators: ((value: string) => string)[];
+    requiredValidators: ((value: string) => string)[];
     value: string;
     error: string;
     onChange: (value: string, errorMessage: string) => void;
     inputRef: React.RefObject<HTMLInputElement>;
     insertSpace: boolean;
+    iconName?: string;
 }
 
 export const TEXT = "text";
 export const EMAIL = "text";
 export const PASSWORD = "password";
+
+// type IconManifest = {
+//     [key: string]: React.ComponentType<any>;
+// };
+//
+// const icons: IconManifest = {
+//     BsFillKeyFill
+// };
+//
+// function getIconComponent(iconName: string, icons: IconManifest) {
+//     const Icon = icons[iconName];
+//     return Icon ? <Icon /> : null;
+// }
 
 export default function InputWithValidation ({
                                                  nameField,
@@ -29,7 +43,7 @@ export default function InputWithValidation ({
                                                  hasWarnLabel,
                                                  addToClassName,
                                                  spellCheck,
-                                                 validators,
+                                                 requiredValidators,
                                                  value,
                                                  error,
                                                  onChange,
@@ -52,12 +66,13 @@ export default function InputWithValidation ({
 
     const handleBlur = () => {
         let errorMessage = "";
-        for (const validator of validators) {
+        for (const validator of requiredValidators) {
             errorMessage = validator(value.trim());
             if (errorMessage) break;
         }
         onChange(value, errorMessage);
     };
+
 
     return (
         <RowBlockLower addToClassName={addToClassName}>
