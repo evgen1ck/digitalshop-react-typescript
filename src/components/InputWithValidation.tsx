@@ -16,11 +16,13 @@ interface InputWithValidationProps {
     inputRef: React.RefObject<HTMLInputElement>;
     insertSpace: boolean;
     iconName?: string;
+    maxLength?: number;
 }
 
 export const TEXT = "text";
-export const EMAIL = "text";
+export const EMAIL = "email";
 export const PASSWORD = "password";
+export const NUMBER = "number";
 
 // type IconManifest = {
 //     [key: string]: React.ComponentType<any>;
@@ -48,6 +50,7 @@ export default function InputWithValidation ({
                                                  error,
                                                  onChange,
                                                  inputRef,
+                                                 maxLength,
                                                  insertSpace } : InputWithValidationProps) {
 
     function handleKeyDown(event: React.KeyboardEvent<HTMLInputElement>) {
@@ -64,8 +67,8 @@ export default function InputWithValidation ({
         setIsFocused(true);
     };
 
+    let errorMessage = "";
     const handleBlur = () => {
-        let errorMessage = "";
         for (const validator of requiredValidators) {
             errorMessage = validator(value.trim());
             if (errorMessage) break;
@@ -83,6 +86,7 @@ export default function InputWithValidation ({
                 className="input-classic block w-full p-3 mb-1"
                 id={id}
                 placeholder={placeholder}
+                maxLength={maxLength ? maxLength : 64}
                 type={type}
                 onKeyDown={handleKeyDown}
                 onBlur={handleBlur}
@@ -94,6 +98,7 @@ export default function InputWithValidation ({
             />
             {hasWarnLabel && (
                 <p className={`text-light-second dark:text-dark-second text-sm italic select-none 
+                ${type === PASSWORD ? "select-none" : false}
                 ${error || isFocused ? "" : "invisible"}`}>{error ? error : "⠀"}</p>
             )}
         </RowBlockLower>

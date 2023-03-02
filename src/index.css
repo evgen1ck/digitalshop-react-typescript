@@ -2,6 +2,31 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+    input[type="number"]::-webkit-inner-spin-button,
+    input[type="number"]::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+}
+/*input:-webkit-autofill,*/
+/*input:-webkit-autofill:hover,*/
+/*input:-webkit-autofill:focus, textarea:-webkit-autofill,*/
+/*textarea:-webkit-autofill:hover,*/
+/*textarea:-webkit-autofill:focus,select:-webkit-autofill,*/
+/*select:-webkit-autofill:hover,*/
+/*select:-webkit-autofill:focus {*/
+/*    -webkit-text-fill-color: white;*/
+/*    -webkit-box-shadow: 0 0 0px 1000px #253341 inset;*/
+/*    box-shadow: 0 0 0px 1000px beige inset;*/
+/*    transition: background-color 5000s ease-in-out 0s;*/
+/*    color: white;*/
+/*}*/
+
+.card-zoom-image {
+    @apply absolute  transition-all duration-500 ease-in-out transform  ;
+}
+
 .system-animation {
     @apply
     transition ease-in-out duration-300 focus:outline-none

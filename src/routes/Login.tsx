@@ -30,8 +30,9 @@ export default function Login() {
         inputPasswordRef.current?.blur();
         setIsSubmitting(false);
     }
-        return (
-        <>
+
+    return (
+        <div className="mx-auto max-w-4xl">
             <RowBlock>
                 <div className="text-center w-full">
                     <h3 className="text-3xl font-bold mb-6 uppercase select-none">Авторизация</h3>
@@ -93,6 +94,6 @@ export default function Login() {
                     <Link to="/recover-password" className="btn-usual-link">Восстановите!</Link>
                 </div>
             </RowBlock>
-        </>
+        </div>
     )
 }

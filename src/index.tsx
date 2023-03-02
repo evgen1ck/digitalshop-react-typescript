@@ -14,6 +14,7 @@ import Signup from './routes/Signup';
 import Login from './routes/Login';
 import { ApolloProvider } from "@apollo/client";
 import { client } from "./graphql/graphql";
+import Games from "./routes/Games";
 
 // interface ProtectedRouteProps {
 //     children: ReactNode;
@@ -36,6 +37,7 @@ const router = createBrowserRouter(
             <Route index element={<Home />} />
             <Route path="login" element={<Login />} />
             <Route path="signup" element={<Signup />} />
+            <Route path="games" element={<Games />} />
             <Route path="*" element={<NoMatch />} />
         </Route>
     )

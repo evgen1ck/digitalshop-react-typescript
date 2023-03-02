@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Outlet, Link } from "react-router-dom";
 import SwitchTheme from "../utils/switchTheme";
+import {Toaster} from "react-hot-toast";
 
 interface ILink {
     name: string
@@ -73,11 +74,11 @@ export default function RootLayout() {
                 </nav>
             </header>
 
-            <div className="w-full px-4 py-6 mx-auto max-w-6xl">
+            <div className="w-full px-4 py-6 mx-auto max-w-7xl">
                 <div className="lg:flex">
                     <div className="flex-auto w-full min-w-0 lg:static lg:max-h-full lg:overflow-visible">
                         <div className="flex w-full">
-                            <div className="flex-auto max-w-4xl min-w-0 lg:my-12 lg:px-8 m-auto ">
+                            <div className="flex-auto min-w-0 lg:my-12 lg:px-8 m-auto ">
                                 <Outlet />
                             </div>
                         </div>
@@ -101,6 +102,11 @@ export default function RootLayout() {
                     </span>
                 </div>
             </footer>
+
+            <Toaster
+                position="bottom-right"
+                reverseOrder={true}
+            />
         </>
     );
 }

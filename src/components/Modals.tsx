@@ -3,11 +3,13 @@ import React, {ReactNode, RefObject, useCallback, useEffect, useRef} from "react
 interface ModalProps {
     onShow: boolean;
     setShow: (value: boolean) => void;
+    onClick?: () => void;
     children: ReactNode;
+    canLeave?: boolean;
+    title: string;
 }
 
-const Modals: React.FC<ModalProps> = ({ setShow, children, onShow } : ModalProps) => {
-
+const Modals: React.FC<ModalProps> = ({ setShow, children, onShow, canLeave, title } : ModalProps) => {
     const modalRef = useRef<HTMLDivElement>(null)
 
     // handle what happens on click outside of modal
@@ -15,7 +17,7 @@ const Modals: React.FC<ModalProps> = ({ setShow, children, onShow } : ModalProps
 
     // handle what happens on key press
     const handleKeyPress = useCallback((event: KeyboardEvent) => {
-        if (event.key === "Escape") setShow(false)
+        if (canLeave && event.key === "Escape") setShow(false)
     }, [])
 
     useOnClickOutside(modalRef, handleClickOutside)
@@ -35,23 +37,16 @@ const Modals: React.FC<ModalProps> = ({ setShow, children, onShow } : ModalProps
     return (
         <>
             {onShow && (
-                <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
+                <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none select-none">
 
-                    <div className="fixed inset-0 bg-light-additional opacity-30" onClick={() => setShow(!onShow)}></div>
+                    <div className="fixed inset-0 bg-light-main dark:bg-dark-additional opacity-95" onClick={canLeave ? () => setShow(!onShow) : () => null}></div>
 
-                    <div className="relative w-auto my-6 mx-auto max-w-3xl">
+                    <div className="relative w-auto my-6 flex-wrap mx-auto sm:w-1/3">
                         <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full dark:bg-dark-main outline-none focus:outline-none">
                             <div className="flex items-start justify-between p-5 border-b border-solid border-slate-200 rounded-t">
-                                <h3 className="text-3xl font-semibold">awdawdaw</h3>
+                                <h3 className="text-3xl font-semibold mx-5">{title}</h3>
                             </div>
                             <div className="relative p-6 flex-auto">{children}</div>
-                            <div className="flex items-center justify-end p-6 border-t border-solid border-slate-200 rounded-b">
-                                <button
-                                    className="text-red-500 background-transparent font-bold uppercase px-6 py-2 text-sm outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
-                                    type="button"
-                                    tabIndex={-1}
-                                    onClick={() => setShow(!onShow)}>Закрыть</button>
-                            </div>
                         </div>
                     </div>
                 </div>

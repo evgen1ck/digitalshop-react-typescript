@@ -11,7 +11,7 @@ interface RowBlockProps {
 
 export const RowBlockUpper: FC<RowBlockUpperLowerProps> = ({ addToClassName, children }) => {
     return (
-        <div className={`flex flex-wrap mb-2 lg:mb-4 m-auto ${addToClassName}`}>
+        <div className={`flex flex-wrap mb-2 lg:mb-4 m-auto ${addToClassName ? addToClassName : false}`}>
             {children}
         </div>
     );
@@ -19,7 +19,7 @@ export const RowBlockUpper: FC<RowBlockUpperLowerProps> = ({ addToClassName, chi
 
 export const RowBlockLower: FC<RowBlockUpperLowerProps> = ({ addToClassName, children }) => {
     return (
-        <div className={`flex-grow mb-2 lg:mb-0 px-4 ${addToClassName}`}>
+        <div className={`flex-grow mb-2 lg:mb-0 px-4 ${addToClassName ? addToClassName : false}`}>
             {children}
         </div>
     );
