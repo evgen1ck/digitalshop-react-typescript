@@ -1,22 +1,21 @@
 import React, { useRef, useState } from 'react';
 import { RowBlock, RowBlockUpper } from "../components/PageBlocks";
-import InputWithValidation, {TEXT, EMAIL, PASSWORD, NUMBER} from "../components/InputWithValidation";
+import InputWithValidation, {TEXT, EMAIL, PASSWORD} from "../components/InputWithValidation";
 import {
     isContainsSpace,
-    isEmail, isLen,
+    isEmail,
     isMinMaxLen,
     isNickname,
     isNotBlank,
-    isPassword, isUint64
+    isPassword,
 } from "../utils/dataValidators";
-import { Link } from "react-router-dom";
-import { signupWithoutCodeMutation } from "../graphql/graphql";
-import Modals from "../components/Modals";
-import {toast, Toaster} from "react-hot-toast";
-import {Simulate} from "react-dom/test-utils";
-import error = Simulate.error;
+import {Link, useNavigate} from "react-router-dom";
+import {toast} from "react-hot-toast";
+import UseHttpErrorsHandler from "../utils/http";
+import {AppUrl} from "../index";
 
 export default function Signup() {
+    const navigate = useNavigate();
     const [nicknameValue, setNicknameValue] = useState("");
     const [nicknameError, setNicknameError] = useState("");
     const inputNicknameRef = useRef<HTMLInputElement>(null);
@@ -49,18 +48,8 @@ export default function Signup() {
         setRepeatPasswordError(error);
     };
 
-    const [codeValue, setCodeValue] = useState("");
-    const [codeError, setCodeError] = useState("");
-    const inputCodeRef = useRef<HTMLInputElement>(null);
-    const handleCodeChange = (value: string, error: string) => {
-        setCodeValue(value);
-        setCodeError(error);
-    };
-
-    const [show, setShow] = useState<boolean>(false);
-
     const [isSubmitting, setIsSubmitting] = useState(false);
-    function handleSignupWithoutCodeClick() {
+    function handleSignup() {
         setIsSubmitting(true);
         setNicknameError("");
         setEmailError("");
@@ -96,76 +85,49 @@ export default function Signup() {
             return;
         }
 
-        toast.promise(
-            signupWithoutCodeMutation({
-                nickname: nicknameValue,
-                email: emailValue,
-                password: passwordValue
-            }).then(data => {
-                console.log('Mutation result2:', typeof data + ": 11" + data + '11');
-                if (data == 'ApolloError: this nickname is already in use') {
-                    setNicknameError('Псевдоним уже используется');
-                    setIsSubmitting(false);
-                } else if (data == 'ApolloError: email: the email domain is not exist') {
-                    setEmailError('Домен электронной почты не существует');
-                    setIsSubmitting(false);
-                } else if (data == 'ApolloError: this email is already in use') {
-                    setEmailError('Электронная почта уже используется');
-                    setIsSubmitting(false);
-                } else if (data == true) {
-                    setCodeValue("");
-                    setCodeError("");
-                    setShow(true);
-                    setIsSubmitting(false);
-                }
-            }).catch(error => {
-                console.log(error);
-                setIsSubmitting(false);
-            }),
-            {
-                loading: 'Регистрируем...',
-                success: <b>Пора подтвердить почту!</b>,
-                error: () => {
-                    setIsSubmitting(false); console.log("d")
-                    return <b>Ошибка сервера.</b>
-                },
-            }
-        );
+        fetchSignup().then(_ => setIsSubmitting(false));
     }
 
-    function handleSignupWithCodeClick() {
-        setNicknameError("");
-        if (nicknameValue === "" || emailValue === "" || passwordValue === "" || repeatPasswordValue === "") {
-            toast.error("Заполните все поля ввода данных")
-            setIsSubmitting(false);
-            return;
-        }
+    async function fetchSignup() {
+        try {
+            const requestBody = {
+                nickname: nicknameValue,
+                email: emailValue,
+                password: passwordValue,
+            };
+            const response = await fetch(AppUrl+"/api/v1/auth/signup", {
+                method: 'POST',
+                headers: {
+                    "Content-Type": "application/json",
+                    //"Authorization": `Bearer ${TIMEWEB_CLOUD_TOKEN}`
+                },
+                body: JSON.stringify(requestBody),
+            });
 
-        if (nicknameError !== "" || emailError !== "" || passwordError !== "" || repeatPasswordError !== "") {
-            toast.error("Введите корректные данные")
-            setIsSubmitting(false);
-            return;
-        }
-
-        inputCodeRef.current?.focus();
-        inputCodeRef.current?.blur();
-
-        signupWithoutCodeMutation({
-            nickname: nicknameValue,
-            email: emailValue,
-            password: passwordValue
-        }).then(data => {
-            console.log('Mutation resultd:', typeof data);
-            setCodeValue("");
-            setCodeError("");
-            setShow(true);
-        }).catch(error => {
-            console.error('Mutation error:', error);
-            if (error === 'email: the email domain is not exist') {
-                setEmailError('Домен электронной почты не существует');
+            if (!response.ok) {
+                const data = await response.json();
+                switch (true) {
+                    case data.description.toLowerCase().includes("the email domain is not exist".toLowerCase()):
+                        setEmailError('Домен электронной почты не существует');
+                        return;
+                    case data.description.toLowerCase().includes("this nickname is already in use".toLowerCase()):
+                        setNicknameError('Псевдоним уже используется');
+                        return;
+                    case data.description.toLowerCase().includes("this email is already in use".toLowerCase()):
+                        setEmailError('Электронная почта уже используется');
+                        return;
+                }
+                await UseHttpErrorsHandler(response);
                 return;
             }
-        });
+
+            //const data = await response.json();
+            //console.log("Data received:", data);
+            navigate('/completion-of-signup', { state: { email: emailValue } });
+        } catch (error) {
+            toast.error("Неизвестная ошибка");
+            console.error("Error fetching data: ", error);
+        }
     }
 
     // dwwda##ddeer444D
@@ -245,7 +207,7 @@ export default function Signup() {
                 <div className="text-center w-full mt-4">
                     <button className="btn-classic-frame select-none px-6 py-2.5 text-xl uppercase"
                             type="submit"
-                            onClick={handleSignupWithoutCodeClick}
+                            onClick={handleSignup}
                             disabled={isSubmitting}>Зарегистрироваться
                     </button>
                 </div>
@@ -258,30 +220,30 @@ export default function Signup() {
                 </div>
             </RowBlock>
 
-            <Modals onShow={show} setShow={setShow} canLeave={true} title="Регистрация">
-                <RowBlockUpper>
-                    <InputWithValidation
-                        nameField={"Код подтверждения почты"}
-                        placeholder={"123456"}
-                        id={"field-confirmation-code"}
-                        type={NUMBER}
-                        maxLength={6}
-                        hasWarnLabel={true}
-                        spellCheck={false}
-                        requiredValidators={[isNotBlank, isLen(6), isContainsSpace, isUint64]}
-                        value={codeValue}
-                        error={codeError}
-                        onChange={handleCodeChange}
-                        inputRef={inputCodeRef}
-                        insertSpace={false} />
-                </RowBlockUpper>
+            {/*<Modals onShow={show} setShow={setShow} canLeave={true} title="Регистрация">*/}
+            {/*    <RowBlockUpper>*/}
+            {/*        <InputWithValidation*/}
+            {/*            nameField={"Код подтверждения почты"}*/}
+            {/*            placeholder={"123456"}*/}
+            {/*            id={"field-confirmation-code"}*/}
+            {/*            type={NUMBER}*/}
+            {/*            maxLength={6}*/}
+            {/*            hasWarnLabel={true}*/}
+            {/*            spellCheck={false}*/}
+            {/*            requiredValidators={[isNotBlank, isLen(6), isContainsSpace, isUint64]}*/}
+            {/*            value={codeValue}*/}
+            {/*            error={codeError}*/}
+            {/*            onChange={handleCodeChange}*/}
+            {/*            inputRef={inputCodeRef}*/}
+            {/*            insertSpace={false} />*/}
+            {/*    </RowBlockUpper>*/}
 
-                <RowBlockUpper>
-                    <button className="btn-classic block lg:inline-block lg:mt-0 ml-4 mr-6" onClick={handleSignupWithCodeClick}>
-                        Подтвердить
-                    </button>
-                </RowBlockUpper>
-            </Modals>
+            {/*    <RowBlockUpper>*/}
+            {/*        <button className="btn-classic block lg:inline-block lg:mt-0 ml-4 mr-6" onClick={handleSignupWithCodeClick}>*/}
+            {/*            Подтвердить*/}
+            {/*        </button>*/}
+            {/*    </RowBlockUpper>*/}
+            {/*</Modals>*/}
         </div>
     )
 }
