@@ -1,10 +1,10 @@
-import React from 'react';
+import React, {ReactNode} from 'react';
 import ReactDOM from 'react-dom/client';
 import {
     createBrowserRouter,
-    createRoutesFromElements,
+    createRoutesFromElements, Navigate,
     Route,
-    RouterProvider
+    RouterProvider, useLocation
 } from 'react-router-dom';
 import './index.css';
 import Home from './routes/Home';
@@ -15,23 +15,24 @@ import Login from './routes/Login';
 import Games from "./routes/Games";
 import CompletionOfSignup from "./routes/CompletionOfSignup";
 import ConfirmSignup from "./routes/ConfirmSignup";
+import {AuthProvider} from "./storage/auth";
 
-// interface ProtectedRouteProps {
-//     children: ReactNode;
-// }
-//
-// function ProtectedRoute({ children }: ProtectedRouteProps) {
-//     const location = useLocation();
-//     const isLoggedIn = localStorage.getItem("token");
-//
-//     if (isLoggedIn != null) {
-//         return <Navigate to="/login" state={{ from: location }} />
-//     }
-//
-//     return children;
-// }
+interface ProtectedRouteProps {
+    children: ReactNode;
+}
 
-export const AppUrl = "https://digitalshop.evgenick.com"
+function ProtectedRoute({ children }: ProtectedRouteProps) {
+    const location = useLocation();
+    const isLoggedIn = localStorage.getItem("token");
+
+    if (isLoggedIn != null) {
+        return <Navigate to="/login" state={{ from: location }} />
+    }
+
+    return children;
+}
+
+export const AppUrl = "http://localhost:9990"
 
 const router = createBrowserRouter(
     createRoutesFromElements(
@@ -49,8 +50,10 @@ const router = createBrowserRouter(
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
     <React.StrictMode>
-        <div className="bg-light-main dark:bg-dark-main text-light-normal dark:text-dark-normal tracking-wide justify-between flex flex-col min-h-screen font-sans text-base font-medium antialiased transition-colors duration-300 ease-linear">
-            <RouterProvider router={router} />
-        </div>
+        <AuthProvider>
+            <div className="bg-light-main dark:bg-dark-main text-light-normal dark:text-dark-normal tracking-wide justify-between flex flex-col min-h-screen font-sans text-base font-medium antialiased transition-colors duration-300 ease-linear">
+                <RouterProvider router={router} />
+            </div>
+        </AuthProvider>
     </React.StrictMode>
 );
