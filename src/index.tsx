@@ -31,7 +31,7 @@ import ConfirmSignup from "./routes/ConfirmSignup";
 //     return children;
 // }
 
-export const AppUrl = "http://localhost:9990"
+export const AppUrl = "https://digitalshop.evgenick.com"
 
 const router = createBrowserRouter(
     createRoutesFromElements(

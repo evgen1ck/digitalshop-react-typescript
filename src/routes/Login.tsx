@@ -1,16 +1,22 @@
 import React, {useRef, useState} from "react";
 import { RowBlock, RowBlockUpper } from "../components/PageBlocks";
-import {Link} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import InputWithValidation, {EMAIL, PASSWORD, TEXT} from "../components/InputWithValidation";
-import {isContainsSpace, isEmail, isMinMaxLen, isNotBlank, isPassword} from "../utils/dataValidators";
+import {isContainsSpace, isMinMaxLen, isNotBlank, isPassword} from "../utils/dataValidators";
+import {toast} from "react-hot-toast";
+import {CreateUserAuth, useAuthContext} from "../storage/auth";
+import {AuthLoginQuery} from "../queries/auth";
 
 export default function Login() {
-    const [emailValue, setEmailValue] = useState("");
-    const [emailError, setEmailError] = useState("");
+    const navigate = useNavigate()
+    const { setLoggedIn } = useAuthContext()
+
+    const [loginValue, setLoginValue] = useState("");
+    const [loginError, setLoginError] = useState("");
     const inputEmailRef = useRef<HTMLInputElement>(null);
     const handleEmailChange = (value: string, error: string) => {
-        setEmailValue(value);
-        setEmailError(error);
+        setLoginValue(value);
+        setLoginError(error);
     };
 
     const [passwordValue, setPasswordValue] = useState("");
@@ -22,13 +28,41 @@ export default function Login() {
     };
 
     const [isSubmitting, setIsSubmitting] = useState(false);
+
     function handleSignupClick() {
         setIsSubmitting(true);
+        setLoginError("");
+        setPasswordError("");
+
         inputEmailRef.current?.focus();
         inputEmailRef.current?.blur();
         inputPasswordRef.current?.focus();
         inputPasswordRef.current?.blur();
-        setIsSubmitting(false);
+
+        if (loginValue === "" || loginValue === "" || passwordValue === "") {
+            toast.error("Заполните все поля ввода данных")
+            setIsSubmitting(false);
+            return;
+        }
+
+        if (loginError != "" || loginError != "" || passwordError != "") {
+            toast.error("Введите корректные данные")
+            setIsSubmitting(false);
+            return;
+        }
+
+        AuthLoginQuery({
+            login: loginValue,
+            password: passwordValue,
+            setLoginError: setLoginError,
+            setPasswordError: setPasswordError,
+            navigate: navigate
+        }).then(data => {
+            data && CreateUserAuth(data, navigate, true, setLoggedIn)
+            setIsSubmitting(false)
+        }).catch(_ => {
+            setIsSubmitting(false)
+        })
     }
 
     return (
@@ -41,15 +75,15 @@ export default function Login() {
 
             <RowBlockUpper>
                 <InputWithValidation
-                    nameField={"Электронная почта"}
-                    placeholder={"ivan.ivanov@mail.ru"}
-                    id={"field-email"}
-                    type={EMAIL}
+                    nameField={"Электронная почта или псевдоним"}
+                    placeholder={"ivan.ivanov@mail.ru / ivanchik"}
+                    id={"field-login"}
+                    type={TEXT}
                     hasWarnLabel={true}
                     spellCheck={false}
-                    requiredValidators={[isNotBlank, isMinMaxLen(6, 64), isContainsSpace, isEmail]}
-                    value={emailValue}
-                    error={emailError}
+                    requiredValidators={[isNotBlank, isMinMaxLen(5, 64), isContainsSpace]}
+                    value={loginValue}
+                    error={loginError}
                     onChange={handleEmailChange}
                     inputRef={inputEmailRef}
                     insertSpace={false} />

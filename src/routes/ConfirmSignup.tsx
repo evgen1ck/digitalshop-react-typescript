@@ -1,22 +1,47 @@
 import React, {useEffect, useState} from 'react';
-import {Link} from 'react-router-dom';
-import UseHttpErrorsHandler from "../utils/http";
-import {toast} from "react-hot-toast";
-import {AppUrl} from "../index";
+import {Link, useNavigate} from 'react-router-dom';
+import {CreateUserAuth, useAuthContext} from "../storage/auth";
+import {AuthSignupWithTokenQuery} from "../queries/auth";
 
 
 const CompletionOfSignup = () => {
+    const navigate = useNavigate()
+    const { setLoggedIn } = useAuthContext()
     const [data, setData] = useState(null);
-    useEffect(() => {
-        const abortController = new AbortController();
+    const [loading, setLoading] = useState(true);
 
-        fetchCompletionOfSignup(abortController.signal).then(data => setData(data));
+    useEffect(() => {
+        const abortController = new AbortController;
+
+        let token: string = new URLSearchParams(window.location.search).get('token') || '';
+        AuthSignupWithTokenQuery({
+            token: token,
+            signal: abortController.signal,
+            navigate: navigate
+        }).then(data => {
+            setData(data)
+            data && CreateUserAuth(data, navigate, true, setLoggedIn)
+            setLoading(false)
+        }).catch(() => {
+            setLoading(false)
+        });
 
         return () => {
             abortController.abort();
         };
     }, []);
 
+    if (loading) {
+        return (
+            <div className="justify-between select-none">
+                <div className="text-center">
+                    <h3 className="text-3xl font-bold mb-12">
+                        Ожидаем ответ от сервера...
+                    </h3>
+                </div>
+            </div>
+        )
+    }
 
     return (
         <div className="justify-between select-none">
@@ -25,7 +50,7 @@ const CompletionOfSignup = () => {
                 <h3 className="text-3xl font-bold mb-12">
                     {!!data ?
                         'Мы удостоверились, что электронная почта принадлежит Вам':
-                        'Мы не удостоверились, что электронная почта принадлежит Вам'}<br/><br/>
+                        'Возможно, вы уже переходили по этой ссылке или её время действия истекло'}<br/><br/>
                     {!!data ?
                         'Теперь Вы можете перейти на главную страницу':
                         'Попробуйте заново зарегистрироваться или обновите страницу'}
@@ -37,38 +62,5 @@ const CompletionOfSignup = () => {
         </div>
     );
 };
-
-async function fetchCompletionOfSignup(signal: AbortSignal) {
-    try {
-
-        const requestBody = {
-            token: getCurrentToken(),
-        };
-        const response = await fetch(AppUrl+"/api/v1/auth/signup-with-token", {
-            method: 'POST',
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(requestBody),
-            signal: signal,
-        });
-
-        if (!response.ok) {
-            await UseHttpErrorsHandler(response);
-            return;
-        }
-
-       return await response.json()
-    } catch (error) {
-        toast.error("Неизвестная ошибка");
-        console.error("Error fetching data: ", error);
-    }
-}
-
-const getCurrentToken = () => {
-    const urlParams = new URLSearchParams(window.location.search);
-    return urlParams.get('token');
-};
-
 
 export default CompletionOfSignup;

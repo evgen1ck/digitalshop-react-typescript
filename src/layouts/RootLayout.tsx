@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
-import { Outlet, Link } from "react-router-dom";
-import SwitchTheme from "../utils/switchTheme";
+import {Outlet, Link, useNavigate} from "react-router-dom";
+import SwitchTheme from "../storage/switchTheme";
 import {Toaster} from "react-hot-toast";
+import {CheckUserAuth, CreateUserAuth, DeleteUserAuth, useAuthContext} from "../storage/auth";
+import {AuthLogoutQuery, AuthSignupQuery, AuthSignupWithTokenQuery} from "../queries/auth";
 
 interface ILink {
     name: string
@@ -28,11 +30,25 @@ export default function RootLayout() {
             link: 'about'
         }
     ]
-
+    const navigate = useNavigate()
     const [links] = useState(initialLinks)
+    const { isDarkMode, toggleDarkMode } = SwitchTheme()
+    const { isLoggedIn, setLoggedIn } = useAuthContext()
+    CheckUserAuth(setLoggedIn)
 
-   const {isDarkMode, toggleDarkMode} = SwitchTheme();
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
+    function handleLogoutClick() {
+        AuthLogoutQuery({
+            token: localStorage.getItem('token') || '',
+            navigate: navigate
+        }).then(_ => {
+            DeleteUserAuth(navigate, true, setLoggedIn)
+            setIsSubmitting(false)
+        }).catch(_ => {
+            setIsSubmitting(false)
+        })
+    }
     return (
         <>
             <header className="bg-light-additional dark:bg-dark-additional top-0 z-40 flex-none w-full mx-auto shadow-md select-none">
@@ -62,12 +78,28 @@ export default function RootLayout() {
                         </div>
                         <div className="w-full block flex-grow lg:flex lg:items-center lg:w-auto">
                             <div className="lg:flex-grow">
-                                <Link to="/signup" className="btn-classic block lg:inline-block lg:mt-0 ml-4 mr-6">
-                                    Зарегистрироваться
-                                </Link>
-                                <Link to="/login" className="btn-classic-frame bg-light-additional dark:bg-dark-additional block lg:inline-block py-2 uppercase max-w-md:hidden inline-block px-4 mt-4 lg:mt-0">
-                                    Войти
-                                </Link>
+                                {!isLoggedIn && (
+                                    <div className="flex justify-end items-center">
+                                        <Link to="/signup" className="btn-classic block lg:inline-block lg:mt-0 ml-4 mr-6">
+                                            Зарегистрироваться
+                                        </Link>
+                                        <Link to="/login" className="btn-classic-frame bg-light-additional dark:bg-dark-additional block lg:inline-block py-2 uppercase max-w-md:hidden inline-block px-4 mt-4 lg:mt-0">
+                                            Войти
+                                        </Link>
+                                    </div>
+                                )}
+                                {isLoggedIn && (
+                                    <div className="flex justify-end items-center">
+                                        <Link to="/profile" className="btn-classic block lg:inline-block lg:mt-0 ml-4 mr-6">
+                                            Профиль аккаунта
+                                        </Link>
+                                        <button className="btn-classic-frame bg-light-additional dark:bg-dark-additional block lg:inline-block py-2 uppercase max-w-md:hidden inline-block px-4 mt-4 lg:mt-0"
+                                                onClick={handleLogoutClick}
+                                                disabled={isSubmitting}>
+                                            Выйти
+                                        </button>
+                                    </div>
+                                )}
                             </div>
                         </div>
                     </div>
@@ -110,3 +142,4 @@ export default function RootLayout() {
         </>
     );
 }
+

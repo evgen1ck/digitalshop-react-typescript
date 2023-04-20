@@ -11,11 +11,11 @@ import {
 } from "../utils/dataValidators";
 import {Link, useNavigate} from "react-router-dom";
 import {toast} from "react-hot-toast";
-import UseHttpErrorsHandler from "../utils/http";
-import {AppUrl} from "../index";
+import {AuthSignupQuery} from "../queries/auth";
 
 export default function Signup() {
-    const navigate = useNavigate();
+    const navigate = useNavigate()
+
     const [nicknameValue, setNicknameValue] = useState("");
     const [nicknameError, setNicknameError] = useState("");
     const inputNicknameRef = useRef<HTMLInputElement>(null);
@@ -49,6 +49,7 @@ export default function Signup() {
     };
 
     const [isSubmitting, setIsSubmitting] = useState(false);
+
     function handleSignup() {
         setIsSubmitting(true);
         setNicknameError("");
@@ -65,72 +66,26 @@ export default function Signup() {
         inputRepeatPasswordRef.current?.focus();
         inputRepeatPasswordRef.current?.blur();
 
-        if (nicknameValue === "" || emailValue === "" || passwordValue === "" || repeatPasswordValue === "") {
-            toast.error("Заполните все поля ввода данных")
-            setIsSubmitting(false);
-            return;
-        }
-
-        if (nicknameError != "" || emailError != "" || passwordError != "" || repeatPasswordError != "") {
-            toast.error("Введите корректные данные")
-            setIsSubmitting(false);
-            return;
-        }
-
         if (passwordValue !== repeatPasswordValue) {
             toast.error("Пароли не совпадают")
-            setPasswordError("Пароли не совпадают");
-            setRepeatPasswordError("Пароли не совпадают");
-            setIsSubmitting(false);
-            return;
+            setPasswordError("Пароли не совпадают")
+            setRepeatPasswordError("Пароли не совпадают")
+            setIsSubmitting(false)
+            return
         }
 
-        fetchSignup().then(_ => setIsSubmitting(false));
+        AuthSignupQuery({
+            nickname: nicknameValue,
+            email: emailValue,
+            password: passwordValue,
+            setEmailError: setEmailError,
+            setNicknameError: setNicknameError,
+            navigate: navigate
+        }).then(() => setIsSubmitting(false)).catch(() => {
+            setIsSubmitting(false)
+        })
     }
 
-    async function fetchSignup() {
-        try {
-            const requestBody = {
-                nickname: nicknameValue,
-                email: emailValue,
-                password: passwordValue,
-            };
-            const response = await fetch(AppUrl+"/api/v1/auth/signup", {
-                method: 'POST',
-                headers: {
-                    "Content-Type": "application/json",
-                    //"Authorization": `Bearer ${TIMEWEB_CLOUD_TOKEN}`
-                },
-                body: JSON.stringify(requestBody),
-            });
-
-            if (!response.ok) {
-                const data = await response.json();
-                switch (true) {
-                    case data.description.toLowerCase().includes("the email domain is not exist".toLowerCase()):
-                        setEmailError('Домен электронной почты не существует');
-                        return;
-                    case data.description.toLowerCase().includes("this nickname is already in use".toLowerCase()):
-                        setNicknameError('Псевдоним уже используется');
-                        return;
-                    case data.description.toLowerCase().includes("this email is already in use".toLowerCase()):
-                        setEmailError('Электронная почта уже используется');
-                        return;
-                }
-                await UseHttpErrorsHandler(response);
-                return;
-            }
-
-            //const data = await response.json();
-            //console.log("Data received:", data);
-            navigate('/completion-of-signup', { state: { email: emailValue } });
-        } catch (error) {
-            toast.error("Неизвестная ошибка");
-            console.error("Error fetching data: ", error);
-        }
-    }
-
-    // dwwda##ddeer444D
     return (
         <div className="mx-auto max-w-4xl">
             <RowBlock>
