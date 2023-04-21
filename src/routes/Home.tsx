@@ -1,75 +1,198 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import {useNavigate} from "react-router-dom";
+import React, {useEffect, useState} from "react";
+import {ProductsQuery} from "../queries/products";
+import {RowBlock} from "../components/PageBlocks";
 
-export default function Home() {
-    const [navbar, setNavbar] = useState(false);
+interface Variant {
+    variant_name: string;
+    variant_id: string;
+    service: string;
+    service_svg_url: string;
+    state: string;
+    item: string;
+    mask: string;
+    text_quantity: string;
+    price: number;
+    discount_money: number;
+    discount_percent: number;
+    final_price: number;
+}
 
-    return (
+interface Subtype {
+    subtype_name: string;
+    type: string;
+    variants: Variant[];
+}
 
-        <nav className="w-full dark:bg-dark-additional shadow">
-            <div className="justify-between px-4 mx-auto lg:max-w-6xl md:items-center md:flex md:px-8">
-                <div>
-                    <div className="flex items-center justify-between py-3 md:py-5 md:block">
-                        <Link to="/about" className="flex items-center">
+interface Product {
+    product_name: string;
+    product_id: string;
+    product_image_url: string;
+    description: string;
+    subtypes: Subtype[];
+}
 
-                            <img src="./home.png" width="24" height="24" />
-                            <span
-                                className="self-center text-xl font-semibold whitespace-nowrap dark:text-white">Test</span>
-                        </Link>
-                        <div className="md:hidden">
-                            <button
-                                className="p-2 text-gray-700 rounded-md outline-none"
-                                onClick={() => setNavbar(!navbar)} >
-                                {navbar ? (
-                                    <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        className="w-6 h-6"
-                                        viewBox="0 0 20 20"
-                                        fill="currentColor" >
-                                        <path
-                                            fillRule="evenodd"
-                                            d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-                                            clipRule="evenodd" />
-                                    </svg>
-                                ) : (
-                                    <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        className="w-6 h-6"
-                                        fill="none"
-                                        viewBox="0 0 24 24"
-                                        stroke="currentColor"
-                                        strokeWidth={2} >
-                                        <path
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                            d="M4 6h16M4 12h16M4 18h16" />
-                                    </svg>
-                                )}
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                <div>
-                    <div
-                        className={`flex-1 justify-self-center pb-3 mt-8 md:block md:pb-0 md:mt-0 ${
-                            navbar ? "block" : "hidden" }`}>
-                        <ul className="items-center justify-center space-y-8 md:flex md:space-x-6 md:space-y-0">
-                            <li className="text-gray-600 hover:text-blue-600">
-                                <a href="#">Home</a>
-                            </li>
-                            <li className="text-gray-600 hover:text-blue-600">
-                                <a href="#">Blog</a>
-                            </li>
-                            <li className="text-gray-600 hover:text-blue-600">
-                                <a href="#">About US</a>
-                            </li>
-                            <li className="text-gray-600 hover:text-blue-600">
-                                <a href="#">Contact US</a>
-                            </li>
-                        </ul>
-                    </div>
+export default function Games() {
+    const navigate = useNavigate()
+    const [data, setData] = useState<Product[] | null>(null);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const abortController = new AbortController;
+
+        ProductsQuery({
+            signal: abortController.signal,
+            navigate: navigate
+        }).then(data => {
+            const products: Product[] = data;
+            setData(products)
+            setLoading(false)
+        }).catch(() => {
+            setLoading(false)
+        })
+
+        return () => {
+            abortController.abort();
+        }
+    }, [])
+
+    if (loading) {
+        return (
+            <div className="justify-between select-none">
+                <div className="text-center">
+                    <h3 className="text-3xl font-bold mb-12">
+                        Ожидаем ответ от сервера...
+                    </h3>
                 </div>
             </div>
-        </nav>
-    );
+        )
+    }
+
+    if (!data) {
+        return (
+            <></>
+        )
+    }
+
+    return (
+        <RowBlock>
+            <div className="space-y-8 select-none">
+                {data.map((product) => (
+                    <div className="px-6 py-4 bg-light-additional2 dark:bg-dark-additional2 rounded-lg border-solid border-2 border-light-second dark:border-dark-second">
+                        <div className="flex justify-center bg-light-additional dark:bg-dark-additional hover:hover:-translate-1.5 system-animation rounded-lg ">
+                            <div className="flex flex-col rounded-lg bg-white shadow-lg md:flex-row h-max border-solid border-2 border-light-second dark:border-dark-second">
+                                <img className="h-2/5 w-full rounded-t-lg object-cover md:h-auto md:w-2/5 md:rounded-l-lg hover:card-zoom-image select-none"
+                                     src={product.product_image_url}
+                                     alt={product.product_name}/>
+                                <div className="flex flex-col justify-start px-6 py-4">
+                                    <h1 className="mb-2 text-3xl font-bold uppercase">
+                                        {product.product_name}
+                                    </h1>
+                                    <p className="mb-4 text-base text-justify leading-tight xl:line-clamp-6  lg:line-clamp-6 md:line-clamp-5 sm:line-clamp-4 max-sm:line-clamp-3">
+                                        {product.description}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        {product.subtypes.map((subtype) => (
+                            <div>
+                                <div className="flex flex-wrap space-x-4 pt-6 pb-3 items-center">
+                                    <h2 className="mb-2 text-2xl font-bold">
+                                        {getModifiedType(subtype.type)}
+                                    </h2>
+                                    <h2 className="mb-1 text-xl font-bold">
+                                        {getModifiedSubtype(subtype.subtype_name)}
+                                    </h2>
+                                </div>
+                                <div className="flex flex-wrap gap-4">
+                                    {subtype.variants.map((variant) => (
+                                        <div className={`flex flex-col rounded-lg bg-white shadow-lg md:flex-row h-max bg-light-additional dark:bg-dark-additional ${variant.text_quantity.includes("out of stock") ? "cursor-not-allowed" : "hover:hover:-translate-y-1.5 system-animation btn-classic-frame cursor-pointer"}`}>
+                                            <div className="flex flex-col justify-start px-6 py-4">
+                                                <span>
+                                                    <h3 className="text-xl font-bold uppercase inline-block">
+                                                        {variant.variant_name}
+                                                    </h3>
+                                                </span>
+                                                <span>
+                                                     <p className="text-base">
+                                                         <b className={`border-solid ${variant.discount_percent > 0 || variant.discount_money > 0 ? "line-through pr-1 text-light-second dark:text-dark-second" : "text-error"}`}>
+                                                            {variant.price}₽
+                                                        </b>
+                                                         {(variant.discount_percent > 0 || variant.discount_money > 0) && (
+                                                             <b className="text-error border-solid">
+                                                                 {variant.final_price}₽
+                                                             </b>
+                                                         )}
+                                                         {variant.discount_percent > 0 && (
+                                                             <span className="ml-2 text-sm text-gray-500">
+                                                                Скидка: {variant.discount_percent}%
+                                                             </span>
+                                                         )}
+                                                         {variant.discount_money > 0 && (
+                                                             <span className="ml-2 text-sm text-gray-500">
+                                                                Скидка: {variant.discount_money}₽
+                                                             </span>
+                                                         )}
+                                                    </p>
+                                                </span>
+                                                <div className="flex justify-between items-center space-x-3">
+                                                    <p className="text-base">
+                                                        {getModifiedTextQuantity(variant.text_quantity)}
+                                                    </p>
+                                                    <p className="text-base">
+                                                        {variant.service.toUpperCase()}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                ))}
+            </div>
+        </RowBlock>
+    )
+}
+
+function getModifiedTextQuantity(s: string) {
+    switch (s) {
+        case "out of stock":
+            return "распродано";
+        case "last in stock":
+            return "последний";
+        case "limited stock":
+            return "последние";
+        case "adequate stock":
+            return "достаточно";
+        case "large stock":
+            return "много";
+        default:
+            return s;
+    }
+}
+
+
+function getModifiedSubtype(s: string) {
+    switch (s) {
+        case "console games":
+            return "Консольные игры";
+        case "computer games":
+            return "Декстопные игры";
+        default:
+            return s;
+    }
+}
+
+function getModifiedType(s: string) {
+    switch (s) {
+        case "replenishment of in-game currency":
+            return "Пополнение внутриигрового счета";
+        case "games":
+            return "Игры";
+        default:
+            return s;
+    }
 }

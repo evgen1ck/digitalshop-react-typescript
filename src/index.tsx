@@ -12,7 +12,6 @@ import RootLayout from './layouts/RootLayout';
 import NoMatch from './routes/NoMatch';
 import Signup from './routes/Signup';
 import Login from './routes/Login';
-import Games from "./routes/Games";
 import CompletionOfSignup from "./routes/CompletionOfSignup";
 import ConfirmSignup from "./routes/ConfirmSignup";
 import {AuthProvider} from "./storage/auth";
@@ -32,8 +31,6 @@ function ProtectedRoute({ children }: ProtectedRouteProps) {
     return children;
 }
 
-export const AppUrl = "http://localhost:9990"
-
 const router = createBrowserRouter(
     createRoutesFromElements(
         <Route path="/" element={<RootLayout />}>
@@ -42,7 +39,6 @@ const router = createBrowserRouter(
             <Route path="signup" element={<Signup />} />
             <Route path="completion-of-signup" element={<CompletionOfSignup />} />
             <Route path="confirm-signup" element={<ConfirmSignup />} />
-            <Route path="games" element={<Games />} />
             <Route path="*" element={<NoMatch />} />
         </Route>
     )

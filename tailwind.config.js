@@ -11,6 +11,7 @@ module.exports = {
       'light': { // colors for light theme
         main: '#E6E6E6', // background color
         additional: '#CCCAC3', // background color for header and footer
+        additional2: '#dddad5', // background color for header and footer
         focusing: '#97807A', // hover text color
         normal: '#2B2B2B', // common text color
         second: '#767676', // temporarily unused
@@ -20,6 +21,7 @@ module.exports = {
       'dark': {
         main: '#142F49',
         additional: '#0F172A',
+        additional2: '#22345e',
         focusing: '#2E93C5',
         normal: '#fff',
         second: '#8694A9',

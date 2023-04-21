@@ -4,11 +4,12 @@ import {UnknownError} from "../storage/defs";
 import React from "react";
 import {NavigateFunction} from "react-router-dom";
 
-export const ApiUrl = "http://localhost:9990/"
-const authSignupUrl = ApiUrl+"api/v1/auth/signup"
-const authSignupWithTokenUrl = ApiUrl+"api/v1/auth/signup-with-token"
-const authLoginUrl = ApiUrl+"api/v1/auth/login"
-const authLogoutUrl = ApiUrl+"api/v1/user/logout"
+export const AppUrl = "https://api.digitalshop.evgenick.com/"
+
+const authSignupUrl = AppUrl+"api/v1/auth/signup"
+const authSignupWithTokenUrl = AppUrl+"api/v1/auth/signup-with-token"
+const authLoginUrl = AppUrl+"api/v1/auth/login"
+const authLogoutUrl = AppUrl+"api/v1/user/logout"
 
 interface AuthSignup {
     nickname: string
@@ -130,8 +131,11 @@ export const AuthLoginQuery = async ({login, password, setLoginError, setPasswor
                 case data.description.toLowerCase().includes("no user with this nickname and email address".toLowerCase()):
                     setLoginError('Аккаунта с этой электронной почтой или псевдонимом не существует')
                     return
-                case data.description.toLowerCase().includes("Invalid password".toLowerCase()):
-                    setPasswordError('Неверный пароль')
+                case data.description.toLowerCase().includes("account has been blocked".toLowerCase()):
+                    setPasswordError('Аккаунт заблокирован')
+                    return
+                case data.description.toLowerCase().includes("account has been deleted".toLowerCase()):
+                    setPasswordError('Аккаунт был удалён')
                     return
             }
             await UseHttpErrorsHandler(response, navigate)
