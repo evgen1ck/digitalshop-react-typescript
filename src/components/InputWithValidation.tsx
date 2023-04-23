@@ -1,22 +1,23 @@
-import React, { useState } from "react";
+import React, {KeyboardEventHandler, useState} from "react";
 import { RowBlockLower } from "./PageBlocks";
 
 interface InputWithValidationProps {
-    addToClassName?: string;
-    nameField: string;
-    placeholder: string;
+    addToClassName?: string
+    nameField: string
+    placeholder: string
     id: string;
-    type: string;
-    hasWarnLabel: boolean;
-    spellCheck: boolean;
-    requiredValidators: ((value: string) => string)[];
-    value: string;
-    error: string;
-    onChange: (value: string, errorMessage: string) => void;
-    inputRef: React.RefObject<HTMLInputElement>;
-    insertSpace: boolean;
-    iconName?: string;
-    maxLength?: number;
+    type: string
+    hasWarnLabel: boolean
+    spellCheck: boolean
+    requiredValidators: ((value: string) => string)[]
+    value: string
+    error: string
+    onChange: (value: string, errorMessage: string) => void
+    inputRef: React.RefObject<HTMLInputElement>
+    insertSpace: boolean
+    iconName?: string
+    maxLength?: number
+    onKeyPress?: KeyboardEventHandler<HTMLInputElement>
 }
 
 export const TEXT = "text";
@@ -51,7 +52,8 @@ export default function InputWithValidation ({
                                                  onChange,
                                                  inputRef,
                                                  maxLength,
-                                                 insertSpace } : InputWithValidationProps) {
+                                                 insertSpace,
+                                                 onKeyPress} : InputWithValidationProps) {
 
     function handleKeyDown(event: React.KeyboardEvent<HTMLInputElement>) {
         if (!insertSpace && event.key === ' ') {
@@ -60,6 +62,8 @@ export default function InputWithValidation ({
         if (event.key === 'Escape') {
             event.currentTarget.blur();
         }
+
+        onKeyPress && onKeyPress(event);
     }
 
     const [isFocused, setIsFocused] = useState(false);
@@ -94,7 +98,6 @@ export default function InputWithValidation ({
                 value={value}
                 onChange={(e) => onChange(e.target.value, "")}
                 ref={inputRef}
-                onFocus={handleFocus}
             />
             {hasWarnLabel && (
                 <p className={`text-light-second dark:text-dark-second text-sm italic select-none 

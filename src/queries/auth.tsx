@@ -4,7 +4,8 @@ import {UnknownError} from "../storage/defs";
 import React from "react";
 import {NavigateFunction} from "react-router-dom";
 
-export const AppUrl = "https://api.digitalshop.evgenick.com/"
+//export const AppUrl = "https://api.digitalshop.evgenick.com/"
+export const AppUrl = "http://localhost:9990/"
 
 const authSignupUrl = AppUrl+"api/v1/auth/signup"
 const authSignupWithTokenUrl = AppUrl+"api/v1/auth/signup-with-token"
