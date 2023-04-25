@@ -1,16 +1,13 @@
-import UseHttpErrorsHandler from "../utils/httpResponds";
-import {toast} from "react-hot-toast";
-import {UnknownError} from "../storage/defs";
-import React from "react";
-import {NavigateFunction} from "react-router-dom";
+import UseHttpErrorsHandler from "../utils/httpResponds" 
+import {toast} from "react-hot-toast" 
+import {AppUrl, UnknownError} from "../storage/defs"
+import React from "react" 
+import {NavigateFunction} from "react-router-dom"
 
-//export const AppUrl = "https://api.digitalshop.evgenick.com/"
-export const AppUrl = "http://localhost:9990/"
-
-const authSignupUrl = AppUrl+"api/v1/auth/signup"
-const authSignupWithTokenUrl = AppUrl+"api/v1/auth/signup-with-token"
-const authLoginUrl = AppUrl+"api/v1/auth/login"
-const authLogoutUrl = AppUrl+"api/v1/user/logout"
+const authSignupUrl = AppUrl+"auth/signup"
+const authSignupWithTokenUrl = AppUrl+"auth/signup-with-token"
+const authLoginUrl = AppUrl+"auth/login"
+const authLogoutUrl = AppUrl+"user/logout"
 
 interface AuthSignup {
     nickname: string
@@ -121,7 +118,7 @@ export const AuthLoginQuery = async ({login, password, setLoginError, setPasswor
                 "Content-Type": "application/json",
             },
             body: JSON.stringify(requestBody),
-        });
+        }) 
 
         if (!response.ok) {
             const data = await response.json()
@@ -163,7 +160,7 @@ export const AuthLogoutQuery = async ({token, navigate}: AuthLogout) => {
                 "Content-Type": "application/json",
                 "Authorization": "Bearer " + token
             },
-        });
+        }) 
 
         if (!response.ok) {
             await UseHttpErrorsHandler(response, navigate)

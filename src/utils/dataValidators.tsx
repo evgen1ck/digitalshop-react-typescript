@@ -1,80 +1,80 @@
 export const isNotBlank = (value: string) => {
     if (value.trim() === "") {
-        return "Поле обязательно к заполнению!";
+        return "Поле обязательно к заполнению!" 
     }
-    return "";
-};
+    return "" 
+} 
 
 export const isEmail = (value: string) => {
-    const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
+    const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i 
     if (!emailRegex.test(value)) {
-        return "Некорректная почта";
+        return "Некорректная почта" 
     }
-    return "";
-};
+    return "" 
+} 
 
 export const isPassword = (value: string) => {
-    const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*()_+,\-.\/:;<=>?[\\\]`{|}~])[A-Za-z\d!@#$%^&*()_+,\-.\/:;<=>?[\\\]`{|}~]{6,}$/;
+    const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*()_+,\-.\/: <=>?[\\\]`{|}~])[A-Za-z\d!@#$%^&*()_+,\-.\/: <=>?[\\\]`{|}~]{6,}$/ 
     if (!passwordRegex.test(value)) {
-        return "Пароль не безопасен";
+        return "Пароль не безопасен" 
     }
-    return "";
-};
+    return "" 
+} 
 
 export const isContainsSpace = (value: string) => {
     if (value.includes(" ")) {
-        return `Текст содержит пробел`;
+        return `Текст содержит пробел` 
     }
-    return "";
-};
+    return "" 
+} 
 
 export const isMinMaxLen = (min: number, max: number) => (value: string) => {
-    const len = value.length;
+    const len = value.length 
     if (len < min) {
-        return `Текст должен иметь минимум ${min} символов`;
+        return `Текст должен иметь минимум ${min} символов` 
     } else if (len > max) {
-        return `Текст должен иметь максимум ${max} символов`;
+        return `Текст должен иметь максимум ${max} символов` 
     }
-    return "";
-};
+    return "" 
+} 
 
 export const isLen = (length: number) => (value: string) => {
-    const l = value.length;
+    const l = value.length 
     if (l !== length) {
-        return `Текст не является нужной длины (необходимо ${length} символов)`;
+        return `Текст не является нужной длины (необходимо ${length} символов)` 
     }
-    return "";
-};
+    return "" 
+} 
 
 export const isUrl = (value: string) => {
     try {
-        new URL(value);
+        new URL(value) 
     } catch (error) {
-        return "Текст не является ссылкой";
+        return "Текст не является ссылкой" 
     }
-    return "";
-};
+    return "" 
+} 
 
 export const isInt64 = (value: string) => {
-    const num = Number(value);
+    const num = Number(value) 
     if (!Number.isInteger(num) || num > Number.MAX_SAFE_INTEGER || num < Number.MIN_SAFE_INTEGER) {
-        return "Текст не является числом";
+        return "Текст не является числом" 
     }
-    return "";
-};
+    return "" 
+} 
 
 export const isUint64 = (value: string) => {
-    const num = Number(value);
+    const num = Number(value) 
     if (!Number.isInteger(num) || num > Number.MAX_SAFE_INTEGER || num < 0) {
-        return "Текст не является положительном числом";
+        return "Текст не является положительном числом" 
     }
-    return "";
-};
+    return "" 
+} 
 
 export const isNickname = (value: string) => {
-    const regex = /^[a-zA-Z0-9_-]+$/;
+    const regex = /^[a-zA-Z0-9_-]+$/ 
     if (!regex.test(value)) {
-        return "Псевдоним может содержать только английские буквы, цифры, символы - и _";
+        return "Псевдоним может содержать только английские буквы, цифры, символы - и _" 
     }
-    return "";
-};
+    return "" 
+} 

@@ -1,6 +1,29 @@
-import {RedirectTo} from "../utils/redirect";
-import {NavigateFunction} from "react-router-dom";
-import React, {createContext, ReactNode, useContext, useState} from "react";
+import {RedirectTo} from "../utils/redirect" 
+import {NavigateFunction} from "react-router-dom" 
+import React, {createContext, ReactNode, useContext, useState} from "react"
+
+interface IAuthContext {
+    isLoggedIn: boolean
+    setLoggedIn: (value: boolean) => void
+}
+
+const AuthContext = createContext<IAuthContext>({
+    isLoggedIn: false,
+    setLoggedIn: () => {},
+})
+
+export const useAuthContext = () => useContext(AuthContext)
+
+export const AuthProvider = (props: { children: ReactNode }) => {
+    const { children } = props
+    const [isLoggedIn, setLoggedIn] = useState<boolean>(false)
+
+    return (
+        <AuthContext.Provider value={{ isLoggedIn, setLoggedIn }}>
+            {children}
+        </AuthContext.Provider>
+    )
+}
 
 export const CreateUserAuth = (data: any, navigate: NavigateFunction, withRedirect: boolean, setLoggedIn: (value: boolean) => void) => {
     localStorage.setItem('token', data.token)
@@ -11,15 +34,14 @@ export const CreateUserAuth = (data: any, navigate: NavigateFunction, withRedire
     localStorage.setItem('registration-method', data.registration_method)
     localStorage.setItem('avatar-url', data.avatar_url)
 
-    setLoggedIn(true);
+    setLoggedIn(true) 
 
     withRedirect && RedirectTo('/', navigate, 100)
 }
 
 export const CheckUserAuth = (setLoggedIn: (value: boolean) => void) => {
     setLoggedIn(localStorage.getItem('token') !== null)
-};
-
+} 
 
 export const DeleteUserAuth = (navigate: NavigateFunction, withRedirect: boolean, setLoggedIn: (value: boolean) => void) => {
     localStorage.removeItem('token')
@@ -34,29 +56,3 @@ export const DeleteUserAuth = (navigate: NavigateFunction, withRedirect: boolean
 
     withRedirect && RedirectTo('/', navigate, 100)
 }
-
-interface IAuthContext {
-    isLoggedIn: boolean;
-    setLoggedIn: (value: boolean) => void;
-}
-
-const AuthContext = createContext<IAuthContext>({
-    isLoggedIn: false,
-    setLoggedIn: () => {},
-});
-
-export const useAuthContext = () => useContext(AuthContext);
-
-interface AuthProviderProps {
-    children: ReactNode;
-}
-
-export const AuthProvider = ({ children }: AuthProviderProps) => {
-    const [isLoggedIn, setLoggedIn] = useState<boolean>(false);
-
-    return (
-        <AuthContext.Provider value={{ isLoggedIn, setLoggedIn }}>
-            {children}
-        </AuthContext.Provider>
-    );
-};

@@ -1,12 +1,12 @@
-import React, {ReactNode, RefObject, useCallback, useEffect, useRef} from "react";
+import React, {ReactNode, RefObject, useCallback, useEffect, useRef} from "react" 
 
 interface ModalProps {
-    onShow: boolean;
-    setShow: (value: boolean) => void;
-    onClick?: () => void;
-    children: ReactNode;
-    canLeave?: boolean;
-    title: string;
+    onShow: boolean 
+    setShow: (value: boolean) => void 
+    onClick?: () => void 
+    children: ReactNode 
+    canLeave?: boolean 
+    title: string 
 }
 
 const Modals: React.FC<ModalProps> = ({ setShow, children, onShow, canLeave, title } : ModalProps) => {
@@ -52,10 +52,10 @@ const Modals: React.FC<ModalProps> = ({ setShow, children, onShow, canLeave, tit
                 </div>
             )}
         </>
-    );
-};
+    ) 
+} 
 
-export default Modals;
+export default Modals 
 
 type Event = MouseEvent | TouchEvent
 

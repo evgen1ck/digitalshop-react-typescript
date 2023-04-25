@@ -1,54 +1,51 @@
-import React, {useRef, useState} from "react";
-import { RowBlock, RowBlockUpper } from "../components/PageBlocks";
-import {Link, useNavigate} from "react-router-dom";
-import InputWithValidation, {EMAIL, PASSWORD, TEXT} from "../components/InputWithValidation";
-import {isContainsSpace, isMinMaxLen, isNotBlank, isPassword} from "../utils/dataValidators";
-import {toast} from "react-hot-toast";
-import {CreateUserAuth, useAuthContext} from "../storage/auth";
-import {AuthLoginQuery} from "../queries/auth";
+import React, {useRef, useState} from "react" 
+import { RowBlock, RowBlockUpper } from "../components/PageBlocks" 
+import {Link, useNavigate} from "react-router-dom" 
+import InputWithValidation, {PASSWORD, TEXT} from "../components/InputWithValidation"
+import {isContainsSpace, isMinMaxLen, isNotBlank, isPassword} from "../utils/dataValidators" 
+import {CreateUserAuth, useAuthContext} from "../storage/auth"
+import {AuthLoginQuery} from "../queries/auth" 
 
 export default function Login() {
     const navigate = useNavigate()
     const { setLoggedIn } = useAuthContext()
 
-    const [loginValue, setLoginValue] = useState("");
-    const [loginError, setLoginError] = useState("");
-    const inputEmailRef = useRef<HTMLInputElement>(null);
+    const [loginValue, setLoginValue] = useState("") 
+    const [loginError, setLoginError] = useState("") 
+    const inputEmailRef = useRef<HTMLInputElement>(null) 
     const handleEmailChange = (value: string, error: string) => {
-        setLoginValue(value);
-        setLoginError(error);
-    };
+        setLoginValue(value) 
+        setLoginError(error) 
+    } 
 
-    const [passwordValue, setPasswordValue] = useState("");
-    const [passwordError, setPasswordError] = useState("");
-    const inputPasswordRef = useRef<HTMLInputElement>(null);
+    const [passwordValue, setPasswordValue] = useState("") 
+    const [passwordError, setPasswordError] = useState("") 
+    const inputPasswordRef = useRef<HTMLInputElement>(null) 
     const handlePasswordChange = (value: string, error: string) => {
-        setPasswordValue(value);
-        setPasswordError(error);
-    };
+        setPasswordValue(value) 
+        setPasswordError(error) 
+    } 
 
-    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(false) 
 
     function handleSignupClick() {
-        setIsSubmitting(true);
-        setLoginError("");
-        setPasswordError("");
+        setIsSubmitting(true) 
+        setLoginError("") 
+        setPasswordError("") 
 
-        inputEmailRef.current?.focus();
-        inputEmailRef.current?.blur();
-        inputPasswordRef.current?.focus();
-        inputPasswordRef.current?.blur();
+        inputEmailRef.current?.focus() 
+        inputEmailRef.current?.blur() 
+        inputPasswordRef.current?.focus() 
+        inputPasswordRef.current?.blur() 
 
-        if (loginValue === "" || loginValue === "" || passwordValue === "") {
-            toast.error("Заполните все поля ввода данных")
-            setIsSubmitting(false);
-            return;
+        if (loginValue === "" || passwordValue === "") {
+            setIsSubmitting(false)
+            return 
         }
 
-        if (loginError != "" || loginError != "" || passwordError != "") {
-            toast.error("Введите корректные данные")
-            setIsSubmitting(false);
-            return;
+        if (loginError != "" || passwordError != "") {
+            setIsSubmitting(false)
+            return 
         }
 
         AuthLoginQuery({
@@ -60,7 +57,7 @@ export default function Login() {
         }).then(data => {
             data && CreateUserAuth(data, navigate, true, setLoggedIn)
             setIsSubmitting(false)
-        }).catch(_ => {
+        }).catch(() => {
             setIsSubmitting(false)
         })
     }

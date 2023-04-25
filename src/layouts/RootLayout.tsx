@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
-import {Outlet, Link, useNavigate} from "react-router-dom";
-import SwitchTheme from "../storage/switchTheme";
-import {Toaster} from "react-hot-toast";
-import {CheckUserAuth, CreateUserAuth, DeleteUserAuth, useAuthContext} from "../storage/auth";
-import {AuthLogoutQuery, AuthSignupQuery, AuthSignupWithTokenQuery} from "../queries/auth";
+import React, { useState } from 'react' 
+import {Outlet, Link, useNavigate} from "react-router-dom" 
+import SwitchTheme from "../storage/switchTheme" 
+import {Toaster} from "react-hot-toast" 
+import {CheckUserAuth, DeleteUserAuth, useAuthContext} from "../storage/auth"
+import {AuthLogoutQuery} from "../queries/auth"
 
 interface ILink {
     name: string
@@ -36,7 +36,7 @@ export default function RootLayout() {
     const { isLoggedIn, setLoggedIn } = useAuthContext()
     CheckUserAuth(setLoggedIn)
 
-    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(false) 
 
     function handleLogoutClick() {
         AuthLogoutQuery({
@@ -49,6 +49,7 @@ export default function RootLayout() {
             setIsSubmitting(false)
         })
     }
+
     return (
         <>
             <header className="bg-light-additional dark:bg-dark-additional top-0 z-40 flex-none w-full mx-auto shadow-md select-none">
@@ -140,6 +141,6 @@ export default function RootLayout() {
                 reverseOrder={true}
             />
         </>
-    );
+    ) 
 }
 

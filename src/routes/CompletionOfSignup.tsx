@@ -1,10 +1,10 @@
-import React from 'react';
-import {useLocation} from 'react-router-dom';
+import React from 'react' 
+import {useLocation} from 'react-router-dom' 
 
 
 const CompletionOfSignup = () => {
-    const location = useLocation();
-    const email = location.state?.email || '';
+    const location = useLocation() 
+    const email = location.state?.email || '' 
 
     return (
         <div className="justify-between select-none">
@@ -18,7 +18,7 @@ const CompletionOfSignup = () => {
                 </h3>
             </div>
         </div>
-    );
-};
+    ) 
+} 
 
-export default CompletionOfSignup;
+export default CompletionOfSignup 

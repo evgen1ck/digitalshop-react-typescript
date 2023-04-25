@@ -1,9 +1,9 @@
-import React from 'react';
-import UseHttpErrorsHandler from "../utils/httpResponds";
-import {NavigateFunction} from "react-router-dom";
-import {AppUrl} from "./auth";
+import React from 'react'
+import UseHttpErrorsHandler from "../utils/httpResponds"
+import {NavigateFunction} from "react-router-dom"
+import {AppUrl} from "../storage/defs";
 
-const productsUrl = AppUrl+"api/v1/products?mainpage=yes"
+const productsUrl = AppUrl+"products?mainpage=yes"
 
 interface AuthSignupWithToken {
     signal: AbortSignal

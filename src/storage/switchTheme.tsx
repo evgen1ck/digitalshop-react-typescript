@@ -1,23 +1,23 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState } from "react" 
 
 const SwitchTheme = () => {
-    const storedTheme = localStorage.getItem('color-theme');
-    const [isDarkMode, setIsDarkMode] = useState(storedTheme === 'dark');
+    const storedTheme = localStorage.getItem('color-theme') 
+    const [isDarkMode, setIsDarkMode] = useState(storedTheme === 'dark') 
 
     useEffect(() => {
         if (isDarkMode) {
-            document.documentElement.classList.add('dark');
+            document.documentElement.classList.add('dark') 
         } else {
-            document.documentElement.classList.remove('dark');
+            document.documentElement.classList.remove('dark') 
         }
-        localStorage.setItem('color-theme', isDarkMode ? 'dark' : 'light');
-    }, [isDarkMode]);
+        localStorage.setItem('color-theme', isDarkMode ? 'dark' : 'light') 
+    }, [isDarkMode]) 
 
     const toggleDarkMode = () => {
-        setIsDarkMode(!isDarkMode);
-    };
+        setIsDarkMode(!isDarkMode) 
+    } 
 
-    return { isDarkMode, toggleDarkMode };
-};
+    return { isDarkMode, toggleDarkMode } 
+} 
 
-export default SwitchTheme;
+export default SwitchTheme 

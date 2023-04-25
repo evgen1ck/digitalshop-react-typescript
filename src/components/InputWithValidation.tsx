@@ -1,11 +1,11 @@
-import React, {KeyboardEventHandler, useState} from "react";
-import { RowBlockLower } from "./PageBlocks";
+import React, {KeyboardEventHandler, useState} from "react" 
+import { RowBlockLower } from "./PageBlocks" 
 
 interface InputWithValidationProps {
     addToClassName?: string
     nameField: string
     placeholder: string
-    id: string;
+    id: string 
     type: string
     hasWarnLabel: boolean
     spellCheck: boolean
@@ -20,22 +20,22 @@ interface InputWithValidationProps {
     onKeyPress?: KeyboardEventHandler<HTMLInputElement>
 }
 
-export const TEXT = "text";
-export const EMAIL = "email";
-export const PASSWORD = "password";
-export const NUMBER = "number";
+export const TEXT = "text" 
+export const EMAIL = "email" 
+export const PASSWORD = "password" 
+export const NUMBER = "number" 
 
 // type IconManifest = {
-//     [key: string]: React.ComponentType<any>;
-// };
+//     [key: string]: React.ComponentType<any> 
+// } 
 //
 // const icons: IconManifest = {
 //     BsFillKeyFill
-// };
+// } 
 //
 // function getIconComponent(iconName: string, icons: IconManifest) {
-//     const Icon = icons[iconName];
-//     return Icon ? <Icon /> : null;
+//     const Icon = icons[iconName] 
+//     return Icon ? <Icon /> : null 
 // }
 
 export default function InputWithValidation ({
@@ -57,28 +57,28 @@ export default function InputWithValidation ({
 
     function handleKeyDown(event: React.KeyboardEvent<HTMLInputElement>) {
         if (!insertSpace && event.key === ' ') {
-            event.preventDefault();
+            event.preventDefault() 
         }
         if (event.key === 'Escape') {
-            event.currentTarget.blur();
+            event.currentTarget.blur() 
         }
 
-        onKeyPress && onKeyPress(event);
+        onKeyPress && onKeyPress(event) 
     }
 
-    const [isFocused, setIsFocused] = useState(false);
+    const [isFocused, setIsFocused] = useState(false) 
     const handleFocus = () => {
-        setIsFocused(true);
-    };
+        setIsFocused(true)
+    }
 
-    let errorMessage = "";
+    let errorMessage = "" 
     const handleBlur = () => {
         for (const validator of requiredValidators) {
-            errorMessage = validator(value.trim());
-            if (errorMessage) break;
+            errorMessage = validator(value.trim()) 
+            if (errorMessage) break 
         }
-        onChange(value, errorMessage);
-    };
+        onChange(value, errorMessage) 
+    } 
 
 
     return (
@@ -92,6 +92,7 @@ export default function InputWithValidation ({
                 placeholder={placeholder}
                 maxLength={maxLength ? maxLength : 64}
                 type={type}
+                onFocus={handleFocus}
                 onKeyDown={handleKeyDown}
                 onBlur={handleBlur}
                 spellCheck={spellCheck}
@@ -105,5 +106,5 @@ export default function InputWithValidation ({
                 ${error || isFocused ? "" : "invisible"}`}>{error ? error : "⠀"}</p>
             )}
         </RowBlockLower>
-    );
-};
+    ) 
+} 

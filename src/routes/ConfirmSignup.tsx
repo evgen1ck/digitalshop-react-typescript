@@ -1,19 +1,19 @@
-import React, {useEffect, useState} from 'react';
-import {Link, useNavigate} from 'react-router-dom';
-import {CreateUserAuth, useAuthContext} from "../storage/auth";
-import {AuthSignupWithTokenQuery} from "../queries/auth";
+import React, {useEffect, useState} from 'react' 
+import {Link, useNavigate} from 'react-router-dom' 
+import {CreateUserAuth, useAuthContext} from "../storage/auth" 
+import {AuthSignupWithTokenQuery} from "../queries/auth" 
 
 
 const CompletionOfSignup = () => {
     const navigate = useNavigate()
     const { setLoggedIn } = useAuthContext()
-    const [data, setData] = useState(null);
-    const [loading, setLoading] = useState(true);
+    const [data, setData] = useState(null) 
+    const [loading, setLoading] = useState(true) 
 
     useEffect(() => {
-        const abortController = new AbortController;
+        const abortController = new AbortController 
 
-        let token: string = new URLSearchParams(window.location.search).get('token') || '';
+        let token: string = new URLSearchParams(window.location.search).get('token') || '' 
         AuthSignupWithTokenQuery({
             token: token,
             signal: abortController.signal,
@@ -24,12 +24,12 @@ const CompletionOfSignup = () => {
             setLoading(false)
         }).catch(() => {
             setLoading(false)
-        });
+        }) 
 
         return () => {
-            abortController.abort();
-        };
-    }, []);
+            abortController.abort() 
+        } 
+    }, []) 
 
     if (loading) {
         return (
@@ -60,7 +60,7 @@ const CompletionOfSignup = () => {
                 </Link>
             </div>
         </div>
-    );
-};
+    ) 
+} 
 
-export default CompletionOfSignup;
+export default CompletionOfSignup 

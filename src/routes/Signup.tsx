@@ -1,6 +1,6 @@
-import React, { useRef, useState } from 'react';
-import { RowBlock, RowBlockUpper } from "../components/PageBlocks";
-import InputWithValidation, {TEXT, EMAIL, PASSWORD} from "../components/InputWithValidation";
+import React, { useRef, useState } from 'react' 
+import { RowBlock, RowBlockUpper } from "../components/PageBlocks" 
+import InputWithValidation, {TEXT, EMAIL, PASSWORD} from "../components/InputWithValidation" 
 import {
     isContainsSpace,
     isEmail,
@@ -8,66 +8,74 @@ import {
     isNickname,
     isNotBlank,
     isPassword,
-} from "../utils/dataValidators";
-import {Link, useNavigate} from "react-router-dom";
-import {toast} from "react-hot-toast";
-import {AuthSignupQuery} from "../queries/auth";
+} from "../utils/dataValidators" 
+import {Link, useNavigate} from "react-router-dom" 
+import {AuthSignupQuery} from "../queries/auth"
 
 export default function Signup() {
     const navigate = useNavigate()
 
-    const [nicknameValue, setNicknameValue] = useState("");
-    const [nicknameError, setNicknameError] = useState("");
-    const inputNicknameRef = useRef<HTMLInputElement>(null);
+    const [nicknameValue, setNicknameValue] = useState("") 
+    const [nicknameError, setNicknameError] = useState("") 
+    const inputNicknameRef = useRef<HTMLInputElement>(null) 
     const handleNicknameChange = (value: string, error: string) => {
-        setNicknameValue(value);
-        setNicknameError(error);
-    };
+        setNicknameValue(value) 
+        setNicknameError(error) 
+    } 
 
-    const [emailValue, setEmailValue] = useState("");
-    const [emailError, setEmailError] = useState("");
-    const inputEmailRef = useRef<HTMLInputElement>(null);
+    const [emailValue, setEmailValue] = useState("") 
+    const [emailError, setEmailError] = useState("") 
+    const inputEmailRef = useRef<HTMLInputElement>(null) 
     const handleEmailChange = (value: string, error: string) => {
-        setEmailValue(value);
-        setEmailError(error);
-    };
+        setEmailValue(value) 
+        setEmailError(error) 
+    } 
 
-    const [passwordValue, setPasswordValue] = useState("");
-    const [passwordError, setPasswordError] = useState("");
-    const inputPasswordRef = useRef<HTMLInputElement>(null);
+    const [passwordValue, setPasswordValue] = useState("") 
+    const [passwordError, setPasswordError] = useState("") 
+    const inputPasswordRef = useRef<HTMLInputElement>(null) 
     const handlePasswordChange = (value: string, error: string) => {
-        setPasswordValue(value);
-        setPasswordError(error);
-    };
+        setPasswordValue(value) 
+        setPasswordError(error) 
+    } 
 
-    const [repeatPasswordValue, setRepeatPasswordValue] = useState("");
-    const [repeatPasswordError, setRepeatPasswordError] = useState("");
-    const inputRepeatPasswordRef = useRef<HTMLInputElement>(null);
+    const [repeatPasswordValue, setRepeatPasswordValue] = useState("") 
+    const [repeatPasswordError, setRepeatPasswordError] = useState("") 
+    const inputRepeatPasswordRef = useRef<HTMLInputElement>(null) 
     const handleRepeatPasswordChange = (value: string, error: string) => {
-        setRepeatPasswordValue(value);
-        setRepeatPasswordError(error);
-    };
+        setRepeatPasswordValue(value) 
+        setRepeatPasswordError(error) 
+    } 
 
-    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(false) 
 
     function handleSignup() {
-        setIsSubmitting(true);
-        setNicknameError("");
-        setEmailError("");
-        setPasswordError("");
-        setRepeatPasswordError("");
+        setIsSubmitting(true) 
+        setNicknameError("") 
+        setEmailError("") 
+        setPasswordError("") 
+        setRepeatPasswordError("") 
 
-        inputNicknameRef.current?.focus();
-        inputNicknameRef.current?.blur();
-        inputEmailRef.current?.focus();
-        inputEmailRef.current?.blur();
-        inputPasswordRef.current?.focus();
-        inputPasswordRef.current?.blur();
-        inputRepeatPasswordRef.current?.focus();
-        inputRepeatPasswordRef.current?.blur();
+        inputNicknameRef.current?.focus() 
+        inputNicknameRef.current?.blur() 
+        inputEmailRef.current?.focus() 
+        inputEmailRef.current?.blur() 
+        inputPasswordRef.current?.focus() 
+        inputPasswordRef.current?.blur() 
+        inputRepeatPasswordRef.current?.focus() 
+        inputRepeatPasswordRef.current?.blur()
+
+        if (nicknameValue === "" || emailValue === "" || passwordValue === "" || repeatPasswordValue === "") {
+            setIsSubmitting(false)
+            return
+        }
+
+        if (nicknameError != "" || emailError != "" || passwordError != "" || repeatPasswordError != "") {
+            setIsSubmitting(false)
+            return
+        }
 
         if (passwordValue !== repeatPasswordValue) {
-            toast.error("Пароли не совпадают")
             setPasswordError("Пароли не совпадают")
             setRepeatPasswordError("Пароли не совпадают")
             setIsSubmitting(false)
