@@ -5,10 +5,6 @@ interface RowBlockUpperLowerProps {
     children: ReactNode 
 }
 
-interface RowBlockProps {
-    children: ReactNode 
-}
-
 export const RowBlockUpper: FC<RowBlockUpperLowerProps> = ({ addToClassName, children }) => {
     return (
         <div className={`flex flex-wrap mb-2 lg:mb-4 m-auto ${addToClassName && addToClassName}`}>
@@ -23,14 +19,17 @@ export const RowBlockLower: FC<RowBlockUpperLowerProps> = ({ addToClassName, chi
             {children}
         </div>
     ) 
-} 
+}
 
-export const RowBlock: FC<RowBlockProps> = ({ children }) => (
-    <>
-        <RowBlockUpper>
-            <RowBlockLower>
-                {children}
-            </RowBlockLower>
-        </RowBlockUpper>
-    </>
-) 
+export const RowBlock = (props: { children: ReactNode }) => {
+    const { children } = props
+    return (
+        <>
+            <RowBlockUpper>
+                <RowBlockLower>
+                    {children}
+                </RowBlockLower>
+            </RowBlockUpper>
+        </>
+    )
+}

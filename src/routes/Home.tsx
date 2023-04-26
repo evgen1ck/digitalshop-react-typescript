@@ -13,17 +13,34 @@ export default function Games() {
 
     const [searchValue, setSearchValue] = useState("") 
     const [searchError, setSearchError] = useState("") 
-    const inputSearchRef = useRef<HTMLInputElement>(null) 
+    const inputSearchRef = useRef<HTMLInputElement>(null)
+
+    const [isSubmitting, setIsSubmitting] = useState(false)
+
     const handleSearchChange = (value: string, error: string) => {
-        setSearchValue(value) 
-        setSearchError(error) 
-    } 
+        setSearchValue(value)
+        setSearchError(error)
+    }
 
     const handleEnterPress = (event: any) => {
         if (event.key === 'Enter') {
-            console.log('Enter pressed') 
+            goSearch()
         }
-    } 
+    }
+
+    const goSearch = () => {
+        setIsSubmitting(true)
+        inputSearchRef.current?.focus()
+        inputSearchRef.current?.blur()
+
+        if (searchValue === "" ||
+            searchError != "") {
+            setIsSubmitting(false)
+            return
+        }
+
+        navigate(`?query=${encodeURIComponent(searchValue)}`)
+    }
 
     useEffect(() => {
         const abortController = new AbortController 
@@ -77,7 +94,10 @@ export default function Games() {
                     inputRef={inputSearchRef}
                     insertSpace={true}
                     onKeyPress={handleEnterPress} />
-                <button className="btn-classic-frame select-none px-6 py-2.5 mb-4 text-xl uppercase " type="submit">
+                <button className="btn-classic-frame select-none px-6 py-2.5 mb-4 text-xl uppercase"
+                        type="submit"
+                        onClick={goSearch}
+                        disabled={isSubmitting}>
                     Искать
                 </button>
             </RowBlockUpper>

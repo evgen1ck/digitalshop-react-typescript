@@ -29,8 +29,8 @@ export default function Login() {
     const [isSubmitting, setIsSubmitting] = useState(false) 
 
     function handleSignupClick() {
-        setIsSubmitting(true) 
-        setLoginError("") 
+        setIsSubmitting(true)
+        setLoginError("")
         setPasswordError("") 
 
         inputEmailRef.current?.focus() 
@@ -38,12 +38,8 @@ export default function Login() {
         inputPasswordRef.current?.focus() 
         inputPasswordRef.current?.blur() 
 
-        if (loginValue === "" || passwordValue === "") {
-            setIsSubmitting(false)
-            return 
-        }
-
-        if (loginError != "" || passwordError != "") {
+        if (loginValue === "" || passwordValue === "" ||
+            loginError != "" || passwordError != "") {
             setIsSubmitting(false)
             return 
         }

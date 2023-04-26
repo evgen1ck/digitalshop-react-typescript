@@ -17,15 +17,8 @@ import ConfirmSignup from "./routes/ConfirmSignup"
 import {AuthProvider, useAuthContext} from "./storage/auth"
 import Profile from "./routes/Profile";
 
-interface ProtectedRouteProps {
-    children: ReactNode 
-}
-
-interface NoAgainAuthProps {
-    children: ReactNode
-}
-
-function ProtectedRoute({ children }: ProtectedRouteProps) {
+const ProtectedRoute = (props: { children: ReactNode }) => {
+    const { children } = props
     const location = useLocation()
     const { isLoggedIn } = useAuthContext()
 
@@ -33,7 +26,8 @@ function ProtectedRoute({ children }: ProtectedRouteProps) {
     return <>{children}</>
 }
 
-function NoAgainAuth ({ children }: NoAgainAuthProps) {
+const NoAgainAuth = (props: { children: ReactNode }) => {
+    const { children } = props
     const location = useLocation()
     const { isLoggedIn } = useAuthContext()
 

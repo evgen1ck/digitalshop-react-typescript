@@ -3,7 +3,7 @@ import UseHttpErrorsHandler from "../utils/httpResponds"
 import {NavigateFunction} from "react-router-dom"
 import {AppUrl} from "../storage/defs";
 
-const productsUrl = AppUrl+"products?mainpage=yes"
+const productsUrl = AppUrl+"products/mainpage"
 
 interface AuthSignupWithToken {
     signal: AbortSignal

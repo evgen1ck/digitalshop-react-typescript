@@ -65,12 +65,8 @@ export default function Signup() {
         inputRepeatPasswordRef.current?.focus() 
         inputRepeatPasswordRef.current?.blur()
 
-        if (nicknameValue === "" || emailValue === "" || passwordValue === "" || repeatPasswordValue === "") {
-            setIsSubmitting(false)
-            return
-        }
-
-        if (nicknameError != "" || emailError != "" || passwordError != "" || repeatPasswordError != "") {
+        if (nicknameValue === "" || emailValue === "" || passwordValue === "" || repeatPasswordValue === "" ||
+            nicknameError != "" || emailError != "" || passwordError != "" || repeatPasswordError != "") {
             setIsSubmitting(false)
             return
         }

@@ -161,7 +161,7 @@ const SvgIcon = (props: {product: Product}) => {
 }
 
 function getModifiedTextQuantity(s: string) {
-    switch (s) {
+    switch (s.toLowerCase()) {
         case "out of stock":
             return "распродано" 
         case "last in stock":
@@ -178,18 +178,20 @@ function getModifiedTextQuantity(s: string) {
 }
 
 function getModifiedSubtype(s: string) {
-    switch (s) {
+    switch (s.toLowerCase()) {
         case "console games":
-            return "Консольные игры" 
+            return "Консольная версия"
         case "computer games":
-            return "Декстопные игры" 
+            return "Декстопная версия"
+        case "mobile games":
+            return "Мобильная версия"
         default:
             return s 
     }
 }
 
 function getModifiedType(s: string) {
-    switch (s) {
+    switch (s.toLowerCase()) {
         case "replenishment of in-game currency":
             return "Пополнение внутриигрового счета" 
         case "games":
