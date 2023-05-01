@@ -42,7 +42,8 @@ button[disabled]:hover {
 .input-classic {
     @apply
     appearance-none leading-tight border-2 rounded
-    system-shadow system-animation system-field;
+    system-shadow system-animation system-field
+    focus:border-light-focusing dark:focus:border-dark-focusing;
 }
 
 .select-classic {

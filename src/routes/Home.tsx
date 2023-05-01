@@ -79,7 +79,7 @@ export default function Games() {
                     <h3 className="text-3xl font-bold mb-6 uppercase select-none">Поиск по товарам</h3>
                 </div>
             </RowBlock>
-            <RowBlockUpper addToClassName="w-3/5 pb-10 flex items-center justify-center">
+            <RowBlockUpper addToClassName="sm:w-3/5 pb-10 flex items-center justify-center">
                 <InputWithValidation
                     nameField={""}
                     placeholder={"Поиск по товарам, например, GTA 5"}
