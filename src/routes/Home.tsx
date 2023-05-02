@@ -1,10 +1,13 @@
 import {useNavigate} from "react-router-dom" 
 import React, {useEffect, useRef, useState} from "react" 
 import {ProductsQuery} from "../queries/products" 
-import {RowBlock, RowBlockUpper} from "../components/PageBlocks" 
+import {RowBlock, RowBlockLower, RowBlockUpper} from "../components/PageBlocks"
 import InputWithValidation, {TEXT} from "../components/InputWithValidation" 
 import {isMinMaxLen, isNotBlank} from "../utils/dataValidators" 
-import {Product, ProductCardForMainpage} from "../components/ProductCards" 
+import {Product, ProductCardForMainpage} from "../components/ProductCards"
+import {CustomSelectProps } from "../components/DropDowns";
+import Select from "react-select";
+
 
 export default function Games() {
     const navigate = useNavigate()
@@ -74,6 +77,28 @@ export default function Games() {
 
     return (
         <>
+
+            <Select placeholder={<div>Хуйня ебаная, выеби меня</div>}
+
+            />
+
+
+
+            <RowBlockUpper addToClassName="sm:w-3/5 pb-10 ">
+                <RowBlockLower addToClassName="inline-flex items-center content-center space-x-2">
+                    <CustomSelectProps />
+                    <button className="btn-classic-frame select-none px-6 py-2.5 mb-4 text-xl uppercase"
+                            type="submit"
+                            onClick={goSearch}
+                            disabled={isSubmitting}>
+                        Искать
+                    </button>
+                </RowBlockLower>
+            </RowBlockUpper>
+
+
+
+
             <RowBlock>
                 <div className="text-center w-full">
                     <h3 className="text-3xl font-bold mb-6 uppercase select-none">Поиск по товарам</h3>
