@@ -1,4 +1,4 @@
-import React, {ReactNode, RefObject, useCallback, useEffect, useRef} from "react"
+import React, {ReactNode, useCallback, useEffect, useRef} from "react"
 
 interface ModalProps {
     onShow: boolean
@@ -10,23 +10,23 @@ interface ModalProps {
 }
 
 const Modals: React.FC<ModalProps> = ({ setShow, children, onShow, canLeave, title } : ModalProps) => {
-    const modalRef = useRef<HTMLDivElement>(null);
+    const modalRef = useRef<HTMLDivElement>(null)
 
     // handle what happens on key press
     const handleKeyPress = useCallback((event: KeyboardEvent) => {
-        if (canLeave && event.key === "Escape") setShow(false);
-    }, []);
+        if (canLeave && event.key === "Escape") setShow(false)
+    }, [])
 
     useEffect(() => {
         if (onShow) {
             // attach the event listener if the modal is shown
-            document.addEventListener("keydown", handleKeyPress);
+            document.addEventListener("keydown", handleKeyPress)
             // remove the event listener
             return () => {
-                document.removeEventListener("keydown", handleKeyPress);
-            };
+                document.removeEventListener("keydown", handleKeyPress)
+            }
         }
-    }, [handleKeyPress, onShow]);
+    }, [handleKeyPress, onShow])
 
     return (
         <>

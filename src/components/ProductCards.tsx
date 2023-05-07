@@ -1,6 +1,6 @@
 import React, {useState} from "react"
 import SVGIcon from "../utils/svgIconColor"
-import ModalPayment from "../modals/ModalPayment";
+import ModalPayment from "../modals/ModalPayment"
 
 export interface Variant {
     variant_name: string
@@ -40,11 +40,11 @@ export const ProductCardForMainpage = (props: { products: Product[] }) => {
     const { products } = props
     let variantId = ""
 
-    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isModalOpen, setIsModalOpen] = useState(false)
     const handleModalOpen = (id: string) => {
-        setIsModalOpen(true);
-        variantId = id;
-    };
+        setIsModalOpen(true)
+        variantId = id
+    }
 
     return (
         <div className="space-y-8 select-none">
@@ -88,7 +88,7 @@ export const ProductCardForMainpage = (props: { products: Product[] }) => {
                                              key={variant.variant_id}
                                              onClick={() => {
                                                  if (!(variant.text_quantity.includes('out of stock') || variant.state.includes('unavailable'))) {
-                                                     handleModalOpen(variant.variant_id);
+                                                     handleModalOpen(variant.variant_id)
                                                  }
                                              }}>
                                                 <span className="pb-1">

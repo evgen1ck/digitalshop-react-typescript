@@ -41,7 +41,7 @@ export const AuthSignupQuery = async ({nickname, email, password, setEmailError,
                     setNicknameError('Псевдоним уже используется')
                     return
                 case data.description.toLowerCase().includes("the email domain is not exist".toLowerCase()):
-                    setEmailError('Домен электронной почты не существует')
+                    setEmailError('Домена электронной почты не существует')
                     return
                 case data.description.toLowerCase().includes("this email is already in use".toLowerCase()):
                     setEmailError('Электронная почта уже используется')
@@ -125,7 +125,7 @@ export const AuthLoginQuery = async ({login, password, setLoginError, setPasswor
         if (!response.ok) {
             switch (true) {
                 case data.description.toLowerCase().includes("the email domain is not exist".toLowerCase()):
-                    setLoginError('Домен электронной почты не существует')
+                    setLoginError('Домена электронной почты не существует')
                     return
                 case data.description.toLowerCase().includes("no user with this nickname and email address".toLowerCase()):
                     setLoginError('Аккаунта с этой электронной почтой или псевдонимом не существует')
@@ -135,6 +135,9 @@ export const AuthLoginQuery = async ({login, password, setLoginError, setPasswor
                     return
                 case data.description.toLowerCase().includes("account has been deleted".toLowerCase()):
                     setPasswordError('Аккаунт был удалён')
+                    return
+                case data.description.toLowerCase().includes("invalid password".toLowerCase()):
+                    setPasswordError('Неверный пароль')
                     return
             }
             await UseHttpErrorsHandler(response, navigate)

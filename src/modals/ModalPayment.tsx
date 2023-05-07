@@ -1,6 +1,6 @@
 import React from 'react'
 import Modals from './Modals'
-import {RowBlock} from "../components/PageBlocks";
+import {RowBlock} from "../components/PageBlocks"
 
 interface ModalPaymentProps {
     onShow: boolean

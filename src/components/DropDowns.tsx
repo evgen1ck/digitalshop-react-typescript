@@ -24,49 +24,76 @@
 
 
 
-import React from 'react';
+import React from 'react'
 import Select, {
     components,
     ControlProps,
     OptionProps,
-    Props,
+    Props, SingleValueProps,
     StylesConfig,
-} from 'react-select';
+} from 'react-select'
+import SVGIcon from "../utils/svgIconColor"
 
 export interface Services {
-    id: string;
-    name: string;
-    url: string;
+    id: string
+    name: string
+    url: string
 }
 
 export const services: Services[] = [
-    { id: '1', name: 'abcc', url: 'http://localhost:9990/api/v1/resources/product_image/573b8cea-bbfa-4415-8f16-1b793a97c85f' },
-];
+    { id: '1', name: 'abcc', url: "https://api.digitalshop.evgenick.com/api/v1/resources/svg_file/steam" },
+    { id: '2', name: 'abcc', url: "https://api.digitalshop.evgenick.com/api/v1/resources/svg_file/steam" },
+    { id: '3', name: 'abcc', url: "https://api.digitalshop.evgenick.com/api/v1/resources/svg_file/steam" },
+    { id: '4', name: 'abcc', url: "https://api.digitalshop.evgenick.com/api/v1/resources/svg_file/steam" },
+]
 
 const Control = ({ children, ...props }: ControlProps<Services, false>) => {
-    return <components.Control {...props}>{children}</components.Control>;
-};
+    return <components.Control {...props}>{children}</components.Control>
+}
 
 const Option = (props: OptionProps<Services, false>) => {
-    const { data } = props;
+    const { data } = props
     return (
         <components.Option {...props}>
-            <img src={data.url} alt={data.name} width="50" />
-            <span>{data.name}</span>
+            <div className="flex items-center space-x-2 cursor-pointer">
+                <SVGIcon
+                    url={data.url}
+                    alt={data.name}
+                    className="w-6 h-6"
+                    fillColor={localStorage.getItem('color-theme') === 'dark' ? 'white' : 'black'} />
+                <span>{data.name}</span>
+            </div>
         </components.Option>
-    );
-};
+    )
+}
+
+const SingleValue = (props: SingleValueProps<Services>) => {
+    const { data } = props
+    return (
+        <components.SingleValue {...props}>
+            <div className="flex items-center space-x-2 cursor-pointer">
+                <SVGIcon
+                    url={data.url}
+                    alt={data.name}
+                    className="w-6 h-6"
+                    fillColor={localStorage.getItem('color-theme') === 'dark' ? 'white' : 'black'} />
+                <span>{data.name}</span>
+            </div>
+        </components.SingleValue>
+
+    )
+}
 
 export const CustomSelectProps = (props: Props<Services>) => {
     const styles: StylesConfig<Services, false> = {
         control: (css) => ({ ...css, paddingLeft: '1rem' }),
-    };
+    }
 
     return (
         <Select
             {...props}
-            className=""
-            components={{ Control, Option }}
+            className="cursor-pointer w-1/3"
+            components={{ Control, Option, SingleValue }}
             isSearchable
             isMulti={false}
             options={services}
@@ -74,5 +101,5 @@ export const CustomSelectProps = (props: Props<Services>) => {
             getOptionLabel={(option) => option.name}
             getOptionValue={(option) => option.id}
         />
-    );
-};
+    )
+}

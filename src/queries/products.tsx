@@ -1,7 +1,7 @@
 import React from 'react'
 import UseHttpErrorsHandler from "../utils/httpResponds"
 import {NavigateFunction} from "react-router-dom"
-import {AppUrl} from "../storage/defs";
+import {AppUrl} from "../storage/defs"
 
 const productsUrl = AppUrl+"products/mainpage"
 

@@ -15,7 +15,7 @@ import Login from './routes/Login'
 import CompletionOfSignup from "./routes/CompletionOfSignup" 
 import ConfirmSignup from "./routes/ConfirmSignup" 
 import {AuthProvider, useAuthContext} from "./storage/auth"
-import Profile from "./routes/Profile";
+import Profile from "./routes/Profile"
 
 const UserProtectedRoute = (props: { children: ReactNode, accountRole: string }) => {
     const { children, accountRole } = props

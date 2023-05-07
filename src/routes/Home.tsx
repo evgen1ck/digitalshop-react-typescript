@@ -5,8 +5,8 @@ import {RowBlock, RowBlockLower, RowBlockUpper} from "../components/PageBlocks"
 import InputWithValidation, {TEXT} from "../components/InputWithValidation" 
 import {isMinMaxLen, isNotBlank} from "../utils/dataValidators" 
 import {Product, ProductCardForMainpage} from "../components/ProductCards"
-import {CustomSelectProps } from "../components/DropDowns";
-import Select from "react-select";
+import {CustomSelectProps } from "../components/DropDowns"
+import Select from "react-select"
 
 
 export default function Games() {

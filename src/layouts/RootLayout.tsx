@@ -39,6 +39,7 @@ export default function RootLayout() {
     const [isSubmitting, setIsSubmitting] = useState(false) 
 
     function handleLogoutClick() {
+        setIsSubmitting(true)
         AuthLogoutQuery({
             token: localStorage.getItem('token') || '',
             navigate: navigate

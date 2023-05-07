@@ -50,8 +50,11 @@ export default function Signup() {
     const [isSubmitting, setIsSubmitting] = useState(false) 
 
     function handleSignup() {
-        setIsSubmitting(true) 
-        setNicknameError("") 
+        if (nicknameError != "" || emailError != "" || passwordError != "" || repeatPasswordError != "")
+            return
+
+        setIsSubmitting(true)
+        setNicknameError("")
         setEmailError("") 
         setPasswordError("") 
         setRepeatPasswordError("") 
@@ -65,8 +68,7 @@ export default function Signup() {
         inputRepeatPasswordRef.current?.focus() 
         inputRepeatPasswordRef.current?.blur()
 
-        if (nicknameValue === "" || emailValue === "" || passwordValue === "" || repeatPasswordValue === "" ||
-            nicknameError != "" || emailError != "" || passwordError != "" || repeatPasswordError != "") {
+        if (nicknameValue === "" || emailValue === "" || passwordValue === "" || repeatPasswordValue === "") {
             setIsSubmitting(false)
             return
         }

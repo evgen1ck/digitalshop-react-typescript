@@ -54,7 +54,7 @@ export default async function UseHttpErrorsHandler(response: Response, navigate:
             }
 
             toast.error(UnknownError)
-            console.error(`Unknown error: ${response.status} (${response.statusText}) - ${JSON.stringify(responseData)}`)
+            console.log(`Unknown error: ${response.status} (${response.statusText}): ${responseData.description} - ${JSON.stringify(responseData)}`)
     }
     return null 
 }
