@@ -29,19 +29,19 @@ export default async function UseHttpErrorsHandler(response: Response, navigate:
             switch (true) {
                 case data.description.toLowerCase().includes("Token expired".toLowerCase()):
                     toast.error("Время сессии подошло к концу") 
-                    RedirectTo('/login', navigate, 2000) 
+                    RedirectTo('/login', navigate, 1000)
                     break 
                 case data.description.toLowerCase().includes("token in stop-list".toLowerCase()):
                     toast.error("Сессия уже недействительна") 
-                    RedirectTo('/login', navigate, 2000) 
+                    RedirectTo('/login', navigate, 1000)
                     break 
                 case data.description.toLowerCase().includes("account has been deleted".toLowerCase()):
                     toast.error("Аккаунт был удалён") 
-                    RedirectTo('/login', navigate, 2000) 
+                    RedirectTo('/login', navigate, 1000)
                     break 
                 case data.description.toLowerCase().includes("account has been blocked".toLowerCase()):
                     toast.error("Аккаунт был заблокирован") 
-                    RedirectTo('/login', navigate, 2000) 
+                    RedirectTo('/login', navigate, 1000)
                     break 
             }
             break 

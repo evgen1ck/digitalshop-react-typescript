@@ -33,8 +33,8 @@ export default function RootLayout() {
     const navigate = useNavigate()
     const [links] = useState(initialLinks)
     const { isDarkMode, toggleDarkMode } = SwitchTheme()
-    const { isLoggedIn, setLoggedIn } = useAuthContext()
-    CheckUserAuth(setLoggedIn)
+    const { isLoggedIn, role, setAuthState } = useAuthContext()
+    CheckUserAuth(setAuthState)
 
     const [isSubmitting, setIsSubmitting] = useState(false) 
 
@@ -43,7 +43,7 @@ export default function RootLayout() {
             token: localStorage.getItem('token') || '',
             navigate: navigate
         }).then(_ => {
-            DeleteUserAuth(navigate, true, setLoggedIn)
+            DeleteUserAuth(navigate, true, setAuthState)
             setIsSubmitting(false)
         }).catch(_ => {
             setIsSubmitting(false)
@@ -52,7 +52,7 @@ export default function RootLayout() {
 
     return (
         <>
-            <header className="bg-light-additional dark:bg-dark-additional top-0 z-40 flex-none w-full mx-auto shadow-md select-none">
+            <header className="bg-light-additional dark:bg-dark-additional top-0 flex-none w-full mx-auto shadow-md select-none">
                 <nav className="flex items-center justify-between flex-wrap p-6 max-w-6xl m-auto">
                     <div className="flex items-center flex-shrink-0 mr-6">
                         <Link to="/" className="hover:text-light-focusing dark:hover:text-dark-focusing">

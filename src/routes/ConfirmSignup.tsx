@@ -6,7 +6,7 @@ import {AuthSignupWithTokenQuery} from "../queries/auth"
 
 const CompletionOfSignup = () => {
     const navigate = useNavigate()
-    const { setLoggedIn } = useAuthContext()
+    const { setAuthState } = useAuthContext()
     const [data, setData] = useState(null) 
     const [loading, setLoading] = useState(true) 
 
@@ -20,7 +20,7 @@ const CompletionOfSignup = () => {
             navigate: navigate
         }).then(data => {
             setData(data)
-            data && CreateUserAuth(data, navigate, true, setLoggedIn)
+            data && CreateUserAuth(data, navigate, true, setAuthState)
             setLoading(false)
         }).catch(() => {
             setLoading(false)

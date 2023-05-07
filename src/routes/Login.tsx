@@ -8,7 +8,7 @@ import {AuthLoginQuery} from "../queries/auth"
 
 export default function Login() {
     const navigate = useNavigate()
-    const { setLoggedIn } = useAuthContext()
+    const { setAuthState } = useAuthContext()
 
     const [loginValue, setLoginValue] = useState("") 
     const [loginError, setLoginError] = useState("") 
@@ -51,7 +51,7 @@ export default function Login() {
             setPasswordError: setPasswordError,
             navigate: navigate
         }).then(data => {
-            data && CreateUserAuth(data, navigate, true, setLoggedIn)
+            data && CreateUserAuth(data, navigate, true, setAuthState)
             setIsSubmitting(false)
         }).catch(() => {
             setIsSubmitting(false)

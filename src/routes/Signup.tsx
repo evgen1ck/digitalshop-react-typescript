@@ -178,31 +178,6 @@ export default function Signup() {
                     <Link to="/login" className="btn-usual-link">Войдите!</Link>
                 </div>
             </RowBlock>
-
-            {/*<Modals onShow={show} setShow={setShow} canLeave={true} title="Регистрация">*/}
-            {/*    <RowBlockUpper>*/}
-            {/*        <InputWithValidation*/}
-            {/*            nameField={"Код подтверждения почты"}*/}
-            {/*            placeholder={"123456"}*/}
-            {/*            id={"field-confirmation-code"}*/}
-            {/*            type={NUMBER}*/}
-            {/*            maxLength={6}*/}
-            {/*            hasWarnLabel={true}*/}
-            {/*            spellCheck={false}*/}
-            {/*            requiredValidators={[isNotBlank, isLen(6), isContainsSpace, isUint64]}*/}
-            {/*            value={codeValue}*/}
-            {/*            error={codeError}*/}
-            {/*            onChange={handleCodeChange}*/}
-            {/*            inputRef={inputCodeRef}*/}
-            {/*            insertSpace={false} />*/}
-            {/*    </RowBlockUpper>*/}
-
-            {/*    <RowBlockUpper>*/}
-            {/*        <button className="btn-classic block lg:inline-block lg:mt-0 ml-4 mr-6" onClick={handleSignupWithCodeClick}>*/}
-            {/*            Подтвердить*/}
-            {/*        </button>*/}
-            {/*    </RowBlockUpper>*/}
-            {/*</Modals>*/}
         </div>
     )
 }

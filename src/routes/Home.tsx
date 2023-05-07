@@ -77,27 +77,19 @@ export default function Games() {
 
     return (
         <>
-
-            <Select placeholder={<div>Хуйня ебаная, выеби меня</div>}
-
-            />
-
-
+            <Select placeholder={<div>Хуйня ебаная, выеби меня</div>} />
 
             <RowBlockUpper addToClassName="sm:w-3/5 pb-10 ">
                 <RowBlockLower addToClassName="inline-flex items-center content-center space-x-2">
                     <CustomSelectProps />
-                    <button className="btn-classic-frame select-none px-6 py-2.5 mb-4 text-xl uppercase"
-                            type="submit"
-                            onClick={goSearch}
-                            disabled={isSubmitting}>
-                        Искать
-                    </button>
+                        <button className="btn-classic-frame select-none px-6 py-2.5 mb-4 text-xl uppercase "
+                                type="submit"
+                                onClick={goSearch}
+                                disabled={isSubmitting}>
+                            Искать
+                        </button>
                 </RowBlockLower>
             </RowBlockUpper>
-
-
-
 
             <RowBlock>
                 <div className="text-center w-full">
@@ -107,12 +99,12 @@ export default function Games() {
             <RowBlockUpper addToClassName="sm:w-3/5 pb-10 flex items-center justify-center">
                 <InputWithValidation
                     nameField={""}
-                    placeholder={"Поиск по товарам, например, GTA 5"}
+                    placeholder={"Поиск по товарам, например, GTA"}
                     id={"field-search"}
                     type={TEXT}
                     hasWarnLabel={true}
                     spellCheck={false}
-                    requiredValidators={[isNotBlank, isMinMaxLen(5, 32)]}
+                    requiredValidators={[isNotBlank, isMinMaxLen(3, 32)]}
                     value={searchValue}
                     error={searchError}
                     onChange={handleSearchChange}

@@ -17,12 +17,12 @@ import ConfirmSignup from "./routes/ConfirmSignup"
 import {AuthProvider, useAuthContext} from "./storage/auth"
 import Profile from "./routes/Profile";
 
-const ProtectedRoute = (props: { children: ReactNode }) => {
-    const { children } = props
+const UserProtectedRoute = (props: { children: ReactNode, accountRole: string }) => {
+    const { children, accountRole } = props
     const location = useLocation()
-    const { isLoggedIn } = useAuthContext()
+    const { isLoggedIn, role } = useAuthContext()
 
-    if (!isLoggedIn) return <Navigate to="/login" state={{ from: location }} />
+    if (!isLoggedIn && role == accountRole) return <Navigate to="/login" state={{ from: location }} />
     return <>{children}</>
 }
 
@@ -43,7 +43,7 @@ const router = createBrowserRouter(
             <Route path="signup" element={<NoAgainAuth> <Signup /> </NoAgainAuth>} />
             <Route path="completion-of-signup" element={<NoAgainAuth> <CompletionOfSignup /> </NoAgainAuth>} />
             <Route path="confirm-signup" element={<NoAgainAuth> <ConfirmSignup /> </NoAgainAuth>} />
-            <Route path="profile" element={<ProtectedRoute> <Profile /> </ProtectedRoute>} />
+            <Route path="profile" element={<UserProtectedRoute accountRole="user"> <Profile /> </UserProtectedRoute>} />
             <Route path="*" element={<NoMatch />} />
         </Route>
     )
@@ -52,7 +52,7 @@ const router = createBrowserRouter(
 ReactDOM.createRoot(document.getElementById('root')!).render(
     <React.StrictMode>
         <AuthProvider>
-            <div className="bg-light-main dark:bg-dark-main text-light-normal dark:text-dark-normal tracking-wide justify-between flex flex-col min-h-screen font-sans text-base font-medium antialiased transition-colors duration-300 ease-linear break-words">
+            <div className="z-100 bg-light-main dark:bg-dark-main text-light-normal dark:text-dark-normal tracking-wide justify-between flex flex-col min-h-screen font-sans text-base font-medium antialiased transition-colors duration-300 ease-linear break-words">
                 <RouterProvider router={router} />
             </div>
         </AuthProvider>

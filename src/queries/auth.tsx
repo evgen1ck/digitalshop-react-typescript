@@ -118,10 +118,11 @@ export const AuthLoginQuery = async ({login, password, setLoginError, setPasswor
                 "Content-Type": "application/json",
             },
             body: JSON.stringify(requestBody),
-        }) 
+        })
+
+        const data = await response.json()
 
         if (!response.ok) {
-            const data = await response.json()
             switch (true) {
                 case data.description.toLowerCase().includes("the email domain is not exist".toLowerCase()):
                     setLoginError('Домен электронной почты не существует')
@@ -140,7 +141,7 @@ export const AuthLoginQuery = async ({login, password, setLoginError, setPasswor
             return
         }
 
-        return await response.json()
+        return data
     } catch (error) {
         toast.error(UnknownError)
         console.error("Error fetching data: ", error)
