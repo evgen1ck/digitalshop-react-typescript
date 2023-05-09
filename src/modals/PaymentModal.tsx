@@ -1,5 +1,5 @@
 import React from 'react'
-import Modals from './Modals'
+import Modal from './Modal'
 import {RowBlock} from "../components/PageBlocks"
 
 interface ModalPaymentProps {
@@ -9,9 +9,9 @@ interface ModalPaymentProps {
     variantId: string
 }
 
-const ModalPayment = ({ onShow, setShow, canLeave }: ModalPaymentProps) => {
+export const PaymentModal = ({ onShow, setShow, canLeave }: ModalPaymentProps) => {
     return (
-        <Modals onShow={onShow} setShow={setShow} canLeave={canLeave} title="Выбор способа оплаты">
+        <Modal onShow={onShow} setShow={setShow} canLeave={canLeave} title="Выбор способа оплаты">
             <RowBlock>
                 <div className="cursor-pointer flex flex-col md:flex-row items-center justify-center p-4 border-solid border-2 border-light-second dark:border-dark-second bg-light-additional dark:bg-dark-additional system-animation rounded-lg">
                     <img className="w-auto h-auto max-w-full sm:max-w-1/3 max-h-32 sm:max-h-40 object-cover rounded-lg mb-4 sm:mb-0 sm:mr-4"
@@ -30,8 +30,7 @@ const ModalPayment = ({ onShow, setShow, canLeave }: ModalPaymentProps) => {
                 </div>
             </RowBlock>
 
-        </Modals>
+        </Modal>
     )
 }
 
-export default ModalPayment

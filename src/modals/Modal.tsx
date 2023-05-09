@@ -9,7 +9,7 @@ interface ModalProps {
     title: string
 }
 
-const Modals: React.FC<ModalProps> = ({ setShow, children, onShow, canLeave, title } : ModalProps) => {
+const Modal: React.FC<ModalProps> = ({ setShow, children, onShow, canLeave, title } : ModalProps) => {
     const modalRef = useRef<HTMLDivElement>(null)
 
     // handle what happens on key press
@@ -63,4 +63,4 @@ const Modals: React.FC<ModalProps> = ({ setShow, children, onShow, canLeave, tit
     )
 }
 
-export default Modals
+export default Modal

@@ -1,7 +1,7 @@
 import React, { useState } from 'react' 
 import {Outlet, Link, useNavigate} from "react-router-dom" 
 import SwitchTheme from "../storage/switchTheme" 
-import {Toaster} from "react-hot-toast" 
+import {toast, Toaster} from "react-hot-toast"
 import {CheckUserAuth, DeleteUserAuth, useAuthContext} from "../storage/auth"
 import {AuthLogoutQuery} from "../queries/auth"
 
@@ -45,6 +45,7 @@ export default function RootLayout() {
             navigate: navigate
         }).then(_ => {
             DeleteUserAuth(navigate, true, setAuthState)
+            toast.success("Успешный выход")
             setIsSubmitting(false)
         }).catch(_ => {
             setIsSubmitting(false)
@@ -57,7 +58,7 @@ export default function RootLayout() {
                 <nav className="flex items-center justify-between flex-wrap p-6 max-w-6xl m-auto">
                     <div className="flex items-center flex-shrink-0 mr-6">
                         <Link to="/" className="hover:text-light-focusing dark:hover:text-dark-focusing">
-                            <span className="font-semibold text-2xl tracking-tight uppercase">Evgenick's digitals</span>
+                            <span className="font-semibold sm:text-2xl text-xl tracking-tight uppercase">Evgenick's digitals</span>
                         </Link>
                     </div>
                     <div className="block lg:hidden">
@@ -120,7 +121,7 @@ export default function RootLayout() {
                 </div>
             </div>
 
-            <footer className="bg-light-additional dark:bg-dark-additional py-6 text-sm drop-shadow-sm select-none">
+            <footer className="bg-light-additional dark:bg-dark-additional py-6 sm:text-sm text-xs drop-shadow-sm select-none">
                 <div className="w-full px-6 mx-auto max-w-6xl lg:justify-between lg:flex flex-wrap grid text-center lg:space-y-0 space-y-2">
                     <span>
                         <Link to="/" className="hover:underline uppercase ">Evgenick's digitals</Link> © Copyright {new Date().getFullYear()}

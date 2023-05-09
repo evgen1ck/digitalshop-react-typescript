@@ -5,13 +5,13 @@ import {RowBlock, RowBlockLower, RowBlockUpper} from "../components/PageBlocks"
 import InputWithValidation, {TEXT} from "../components/InputWithValidation" 
 import {isMinMaxLen, isNotBlank} from "../utils/dataValidators" 
 import {Product, ProductCardForMainpage} from "../components/ProductCards"
-import {CustomSelectProps } from "../components/DropDowns"
+import {CustomSelectProps } from "../components/DropDown"
 import Select from "react-select"
 
 
 export default function Games() {
     const navigate = useNavigate()
-    const [data, setData] = useState<Product[]>([]) 
+    const [data, setData] = useState<Product[]>([])
     const [loading, setLoading] = useState(true) 
 
     const [searchValue, setSearchValue] = useState("") 
@@ -120,7 +120,7 @@ export default function Games() {
             </RowBlockUpper>
 
             <RowBlock>
-                {data && <ProductCardForMainpage products={data} />}
+                {data && data.length > 0 && <ProductCardForMainpage products={data} />}
             </RowBlock>
         </>
     )

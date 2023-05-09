@@ -16,9 +16,12 @@ export default async function UseHttpErrorsHandler(response: Response, navigate:
             break 
         case 504:
             toast.error("Сервер долго не отвечал") 
-            break 
+            break
+        case 422:
+            toast.error("Введите корректные данные")
+            break
         case 409:
-            break 
+            break
         case 403:
             let data 
             try {

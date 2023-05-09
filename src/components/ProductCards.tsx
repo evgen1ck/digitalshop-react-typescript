@@ -1,6 +1,6 @@
 import React, {useState} from "react"
 import SVGIcon from "../utils/svgIconColor"
-import ModalPayment from "../modals/ModalPayment"
+import {PaymentModal} from "../modals/PaymentModal";
 
 export interface Variant {
     variant_name: string
@@ -48,7 +48,7 @@ export const ProductCardForMainpage = (props: { products: Product[] }) => {
 
     return (
         <div className="space-y-8 select-none">
-            <ModalPayment onShow={isModalOpen} setShow={setIsModalOpen} canLeave={true} variantId={variantId} />
+            <PaymentModal onShow={isModalOpen} setShow={setIsModalOpen} canLeave={true} variantId={variantId} />
             {products && products.map((product) => (
                 <div className="px-6 py-4 bg-light-additional2 dark:bg-dark-additional2 rounded-lg border-solid border-2 border-light-second dark:border-dark-second"
                      key={product.product_id}>
@@ -162,7 +162,7 @@ const ProductSvgIcons = (props: {product: Product}) => {
                             url={serviceItem.svgUrl}
                             alt={serviceItem.serviceName}
                             className="w-6 h-6"
-                            fillColor={localStorage.getItem('color-theme') === 'dark' ? 'white' : 'black'} />
+                        />
                     )}
                     <span className="pl-1 pr-4">{serviceItem.serviceName}</span>
                 </span>

@@ -4,7 +4,7 @@ import {useLocation} from 'react-router-dom'
 
 const CompletionOfSignup = () => {
     const location = useLocation() 
-    const email = location.state?.email || '' 
+    const email = location.state?.email.toLowerCase() || ''
 
     return (
         <div className="justify-between select-none">

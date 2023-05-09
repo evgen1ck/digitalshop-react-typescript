@@ -4,7 +4,8 @@ import {Link, useNavigate} from "react-router-dom"
 import InputWithValidation, {PASSWORD, TEXT} from "../components/InputWithValidation"
 import {isContainsSpace, isMinMaxLen, isNotBlank, isPassword} from "../utils/dataValidators" 
 import {CreateUserAuth, useAuthContext} from "../storage/auth"
-import {AuthLoginQuery} from "../queries/auth" 
+import {AuthLoginQuery} from "../queries/auth"
+import {toast} from "react-hot-toast"
 
 export default function Login() {
     const navigate = useNavigate()
@@ -28,10 +29,7 @@ export default function Login() {
 
     const [isSubmitting, setIsSubmitting] = useState(false) 
 
-    function handleSignupClick() {
-        if (loginError != "" || passwordError != "")
-            return
-
+    function handleLoginClick() {
         setIsSubmitting(true)
         setLoginError("")
         setPasswordError("") 
@@ -54,6 +52,7 @@ export default function Login() {
             navigate: navigate
         }).then(data => {
             data && CreateUserAuth(data, navigate, true, setAuthState)
+            toast.success("Успешная авторизация")
             setIsSubmitting(false)
         }).catch(() => {
             setIsSubmitting(false)
@@ -104,8 +103,9 @@ export default function Login() {
                 <div className="text-center w-full mt-4">
                     <button className="btn-classic-frame select-none px-6 py-2.5 text-xl uppercase"
                             type="submit"
-                            onClick={handleSignupClick}
-                            disabled={isSubmitting}>Авторизоваться
+                            onClick={handleLoginClick}
+                            disabled={isSubmitting || loginError != "" || passwordError != ""}>
+                        Войти
                     </button>
                 </div>
             </RowBlock>

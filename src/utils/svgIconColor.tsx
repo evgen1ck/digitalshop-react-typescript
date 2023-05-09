@@ -3,12 +3,12 @@ import React, { useEffect, useState } from "react"
 interface ISVGIcon {
     url: string 
     alt: string 
-    className: string 
-    fillColor: string 
+    className: string
 }
 
-const SVGIcon = ({ url, alt, className, fillColor }: ISVGIcon) => {
-    const [svgContent, setSvgContent] = useState<string | null>(null) 
+const SVGIcon = ({ url, alt, className }: ISVGIcon) => {
+    const [svgContent, setSvgContent] = useState<string | null>(null)
+    let fillColor = localStorage.getItem('color-theme') === 'dark' ? 'white' : 'black'
 
     useEffect(() => {
         const fetchSvg = async () => {

@@ -23,20 +23,7 @@ interface InputWithValidationProps {
 export const TEXT = "text" 
 export const EMAIL = "email" 
 export const PASSWORD = "password" 
-export const NUMBER = "number" 
-
-// type IconManifest = {
-//     [key: string]: React.ComponentType<any> 
-// } 
-//
-// const icons: IconManifest = {
-//     BsFillKeyFill
-// } 
-//
-// function getIconComponent(iconName: string, icons: IconManifest) {
-//     const Icon = icons[iconName] 
-//     return Icon ? <Icon /> : null 
-// }
+export const NUMBER = "number"
 
 export default function InputWithValidation ({
                                                  nameField,
@@ -101,9 +88,8 @@ export default function InputWithValidation ({
                 ref={inputRef}
             />
             {hasWarnLabel && (
-                <p className={`text-light-second dark:text-dark-second text-sm italic select-none 
-                ${type === PASSWORD ? "select-none" : false}
-                ${error || isFocused ? "" : "invisible"}`}>{error ? error : "⠀"}</p>
+                <p className={`text-light-second dark:text-dark-second text-sm italic select-none p-1
+                ${!error || !isFocused && "invisible"}`}>{error ? error : "⠀"}</p>
             )}
         </RowBlockLower>
     ) 

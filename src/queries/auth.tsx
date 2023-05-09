@@ -124,20 +124,23 @@ export const AuthLoginQuery = async ({login, password, setLoginError, setPasswor
 
         if (!response.ok) {
             switch (true) {
+                case data.description.toLowerCase().includes("invalid password".toLowerCase()):
+                    setPasswordError('Неверный пароль')
+                    return
+                case data.description.toLowerCase().includes("user with this email was not found".toLowerCase()):
+                    setLoginError('Аккаунта с этой электронной почтой не существует')
+                    return
+                case data.description.toLowerCase().includes("user with this nickname was not found".toLowerCase()):
+                    setLoginError('Аккаунта с этим псевдонимом не существует')
+                    return
                 case data.description.toLowerCase().includes("the email domain is not exist".toLowerCase()):
                     setLoginError('Домена электронной почты не существует')
-                    return
-                case data.description.toLowerCase().includes("no user with this nickname and email address".toLowerCase()):
-                    setLoginError('Аккаунта с этой электронной почтой или псевдонимом не существует')
                     return
                 case data.description.toLowerCase().includes("account has been blocked".toLowerCase()):
                     setPasswordError('Аккаунт заблокирован')
                     return
                 case data.description.toLowerCase().includes("account has been deleted".toLowerCase()):
                     setPasswordError('Аккаунт был удалён')
-                    return
-                case data.description.toLowerCase().includes("invalid password".toLowerCase()):
-                    setPasswordError('Неверный пароль')
                     return
             }
             await UseHttpErrorsHandler(response, navigate)
