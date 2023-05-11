@@ -1,7 +1,7 @@
 import React, { useState } from 'react' 
 import {Outlet, Link, useNavigate} from "react-router-dom" 
 import SwitchTheme from "../storage/switchTheme" 
-import {toast, Toaster} from "react-hot-toast"
+import {Toaster} from "react-hot-toast"
 import {CheckUserAuth, DeleteUserAuth, useAuthContext} from "../storage/auth"
 import {AuthLogoutQuery} from "../queries/auth"
 
@@ -18,22 +18,22 @@ export default function RootLayout() {
             link: '/'
         },
         {
-            name: 'Новости',
-            link: 'news'
+            name: 'Ничего',
+            link: 'nothing'
         },
         {
-            name: 'Поддержка',
-            link: 'support'
+            name: 'Тоже ничего',
+            link: 'nothing'
         },
         {
-            name: 'О нас',
-            link: 'about'
+            name: 'Тут тоже',
+            link: 'nothing'
         }
     ]
     const navigate = useNavigate()
     const [links] = useState(initialLinks)
     const { isDarkMode, toggleDarkMode } = SwitchTheme()
-    const { isLoggedIn, role, setAuthState } = useAuthContext()
+    const { isLoggedIn, setAuthState } = useAuthContext()
     CheckUserAuth(setAuthState)
 
     const [isSubmitting, setIsSubmitting] = useState(false) 
@@ -45,7 +45,6 @@ export default function RootLayout() {
             navigate: navigate
         }).then(_ => {
             DeleteUserAuth(navigate, true, setAuthState)
-            toast.success("Успешный выход")
             setIsSubmitting(false)
         }).catch(_ => {
             setIsSubmitting(false)

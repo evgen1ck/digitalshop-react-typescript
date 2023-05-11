@@ -16,19 +16,25 @@ import CompletionOfSignup from "./routes/CompletionOfSignup"
 import ConfirmSignup from "./routes/ConfirmSignup" 
 import {AuthProvider, useAuthContext} from "./storage/auth"
 import Profile from "./routes/Profile"
-import AdminProducts from "./routes/AdminProducts"
+import ProductVariants from "./routes/admin/ProductVariants"
+import Forbidden from "./routes/Forbidden";
+import CompletingOrder from "./routes/CompletingOrder";
 
-const AuthProtectedRoute = (props: { children: ReactNode, accountRole: string }) => {
-    const { children, accountRole } = props
-    const location = useLocation()
-    const { isLoggedIn, role } = useAuthContext()
-
-    console.log(accountRole + " 11 " + role)
-    let redirectTo = accountRole === "user" ? "/login" : "/alogin"
-
-    if (!isLoggedIn || role != accountRole) return <Navigate to={redirectTo} state={{ from: location }} />
-    return <>{children}</>
-}
+// const AuthProtectedRoute = (props: { children: ReactNode, accountRole: string }) => {
+//     const { children, accountRole } = props
+//     const location = useLocation()
+//     const { isLoggedIn, role } = useAuthContext()
+//
+//     if (!isLoggedIn && accountRole == "user") {
+//         return <Navigate to="/login" state={{ from: location }} />
+//     } else if (!isLoggedIn && accountRole == "admin") {
+//         return <Navigate to="/alogin" state={{ from: location }} />
+//     } else if (isLoggedIn && accountRole != role) {
+//         return <Navigate to="/forbidden" state={{ from: location }} />
+//     }
+//
+//     return <>{children}</>
+// }
 
 const NoAgainAuth = (props: { children: ReactNode }) => {
     const { children } = props
@@ -48,7 +54,9 @@ const router = createBrowserRouter(
             <Route path="completion-of-signup" element={<NoAgainAuth> <CompletionOfSignup /> </NoAgainAuth>} />
             <Route path="confirm-signup" element={<NoAgainAuth> <ConfirmSignup /> </NoAgainAuth>} />
             <Route path="profile" element={<Profile />} />
-            <Route path="admin/product" element={<AdminProducts />} />
+            <Route path="admin/variant" element={<ProductVariants />} />
+            <Route path="forbidden" element={<Forbidden />} />
+            <Route path="finish" element={<CompletingOrder />} />
             <Route path="*" element={<NoMatch />} />
         </Route>
     )

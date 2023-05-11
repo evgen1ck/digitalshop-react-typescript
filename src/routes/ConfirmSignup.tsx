@@ -64,7 +64,7 @@ const CompletionOfSignup = () => {
                         : ""}
                 </h3>
                 <Link to="/"
-                      className="transition ease-in-out delay-50 hover:-translate-y-1 duration-300 inline-block outline hover:text-light-focusing dark:hover:text-dark-focusing px-6 py-2.5 text-xl font-medium uppercase rounded shadow-md">
+                      className="transition ease-in-out delay-50 hover:-translate-y-1 duration-300 inline-block outline hover:text-light-focusing dark:hover:text-dark-focusing px-6 py-2.5 sm:text-xl text-base font-medium uppercase rounded shadow-md">
                     На главную
                 </Link>
             </div>

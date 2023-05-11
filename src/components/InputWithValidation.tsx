@@ -10,14 +10,16 @@ interface InputWithValidationProps {
     hasWarnLabel: boolean
     spellCheck: boolean
     requiredValidators: ((value: string) => string)[]
+    setValue: React.Dispatch<React.SetStateAction<string>>
     value: string
+    setError: React.Dispatch<React.SetStateAction<string>>
     error: string
-    onChange: (value: string, errorMessage: string) => void
     inputRef: React.RefObject<HTMLInputElement>
     insertSpace: boolean
     iconName?: string
     maxLength?: number
     onKeyPress?: KeyboardEventHandler<HTMLInputElement>
+    requiredField: boolean
 }
 
 export const TEXT = "text" 
@@ -34,12 +36,14 @@ export default function InputWithValidation ({
                                                  addToClassName,
                                                  spellCheck,
                                                  requiredValidators,
+                                                 setValue,
                                                  value,
+                                                 setError,
                                                  error,
-                                                 onChange,
                                                  inputRef,
                                                  maxLength,
                                                  insertSpace,
+                                                 requiredField,
                                                  onKeyPress} : InputWithValidationProps) {
 
     function handleKeyDown(event: React.KeyboardEvent<HTMLInputElement>) {
@@ -58,15 +62,22 @@ export default function InputWithValidation ({
         setIsFocused(true)
     }
 
-    let errorMessage = "" 
+    let errorMessage = ""
     const handleBlur = () => {
-        for (const validator of requiredValidators) {
-            errorMessage = validator(value.trim()) 
-            if (errorMessage) break 
+        if ((!requiredField && value != "") || requiredField) {
+            value = value.trim()
+            for (const validator of requiredValidators) {
+                errorMessage = validator(value)
+                if (errorMessage) break
+            }
+            handleChange(value, errorMessage)
         }
-        onChange(value, errorMessage) 
-    } 
+    }
 
+    const handleChange = (value: string, error: string) => {
+        setValue(value)
+        setError(error)
+    }
 
     return (
         <RowBlockLower addToClassName={addToClassName}>
@@ -84,7 +95,7 @@ export default function InputWithValidation ({
                 onBlur={handleBlur}
                 spellCheck={spellCheck}
                 value={value}
-                onChange={(e) => onChange(e.target.value, "")}
+                onChange={(e) => handleChange(e.target.value, "")}
                 ref={inputRef}
             />
             {hasWarnLabel && (

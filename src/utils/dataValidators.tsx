@@ -21,12 +21,20 @@ export const isPassword = (value: string) => {
     return "" 
 } 
 
-export const isContainsSpace = (value: string) => {
+export const isNotContainsSpace = (value: string) => {
     if (value.includes(" ")) {
         return `Текст содержит пробел` 
     }
     return "" 
-} 
+}
+
+export const isNotContainsConsecutiveSpaces = (value: string) => {
+    const regex = /  +/g
+    if (regex.test(value)) {
+        return `Текст содержит два или более пробелов подряд`
+    }
+    return ""
+}
 
 export const isMinMaxLen = (min: number, max: number) => (value: string) => {
     const len = value.length 
@@ -77,4 +85,25 @@ export const isNickname = (value: string) => {
         return "Псевдоним может содержать только английские буквы, цифры, символы - и _" 
     }
     return "" 
-} 
+}
+
+export const isMoney = (value: string) => {
+    const regex = /^\d+([.,]\d{1,2})?$/
+    if (!regex.test(value))
+        return "Текст не является денежным эквивалентом"
+    if (parseFloat(value.replace(',', '.')) <= 0)
+        return "Значение должно быть больше нуля"
+    return ""
+}
+
+export const isPercentage = (value: string) => {
+    const regex = /^\d+([.,]\d{1,2})?%?$/
+    if (!regex.test(value))
+        return "Текст не является процентным значением"
+    const numberValue = parseFloat(value.replace(',', '.').slice(0, -1))
+    if (numberValue <= 0)
+        return "Значение должно быть больше 0"
+    if (numberValue >= 100)
+        return "Значение должно быть меньше 100"
+    return ""
+}

@@ -147,6 +147,7 @@ export const AuthLoginQuery = async ({login, password, setLoginError, setPasswor
             return
         }
 
+        toast.success("Успешная авторизация")
         return data
     } catch (error) {
         toast.error(UnknownError)
@@ -173,6 +174,8 @@ export const AuthLogoutQuery = async ({token, navigate}: AuthLogout) => {
             await UseHttpErrorsHandler(response, navigate)
             return
         }
+
+        toast.success("Успешный выход")
     } catch (error) {
         toast.error(UnknownError)
         console.error("Error fetching data: ", error)

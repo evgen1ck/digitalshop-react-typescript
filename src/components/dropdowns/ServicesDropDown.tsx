@@ -1,37 +1,23 @@
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import Select, {components, OptionProps, SingleValueProps} from "react-select"
-import SVGIcon from "../utils/svgIconColor"
-import {RowBlockLower} from "./PageBlocks"
+import SVGIcon from "../../utils/svgIconColor"
+import {RowBlockLower} from "../PageBlocks"
+import {customStyles, DropDownProps, formatGroupLabel} from "./DropDownData";
+import {AdminGetServicesQuery} from "../../queries/admin";
 
-interface ServicesDropDownProps {
-    nameField: string
-    id: string
-    header: string
-    dataOption: ServicesDataOption[]
-    onChange: (selectedOption: ServicesDataOption | null) => void
-    isLoading: boolean
-    isDisabled: boolean
-    isClearable: boolean
-    isSearchable: boolean
-    placeholder: string
-    error: string
-    hasWarnLabel: boolean
-    addToClassName?: string
-}
-export interface ServicesDataOption {
+interface DataOption {
     service_no: number
     service_name: string
     service_url: string
-    created_at: number
-    modified_at: number
+    created_at: string
+    modified_at: string
     commentary: string | null
 }
 
 interface GroupedOption {
     readonly header: string
-    readonly options: ServicesDataOption[]
+    readonly options: DataOption[]
 }
-
 
 const filterOptions = (inputValue: string, options: GroupedOption[]): GroupedOption[] => {
     return options.map(group => {
@@ -43,7 +29,7 @@ const filterOptions = (inputValue: string, options: GroupedOption[]): GroupedOpt
     })
 }
 
-const Option = (props: OptionProps<ServicesDataOption, false>) => {
+const Option = (props: OptionProps<DataOption, false, GroupedOption>) => {
     const { data } = props
     return (
         <components.Option {...props}
@@ -62,7 +48,7 @@ const Option = (props: OptionProps<ServicesDataOption, false>) => {
     )
 }
 
-const SingleValue = (props: SingleValueProps<ServicesDataOption>) => {
+const SingleValue = (props: SingleValueProps<DataOption, false, GroupedOption>) => {
     const { data } = props
     return (
         <components.SingleValue {...props}
@@ -81,72 +67,82 @@ const SingleValue = (props: SingleValueProps<ServicesDataOption>) => {
     )
 }
 
-export const ServicesDropDown = ({header, nameField, placeholder, id, dataOption, onChange, isLoading, isDisabled, isClearable, isSearchable, error, hasWarnLabel, addToClassName}: ServicesDropDownProps) => {
+export const ServicesDropDown = ({value, header, nameField, placeholder, id, isLoading, setLoading, isClearable, isSearchable, setError, error, setValue, disabled, setDisabled, hasWarnLabel, addToClassName, navigate, checkOnEmpty}: DropDownProps) => {
+    const [data, setData] = useState([])
     const [inputValue, setInputValue] = useState('')
-    const [isFocused, setIsFocused] = useState(false)
-    const handleFocus = () => {
-        setIsFocused(true)
-    }
+    const [selectedOption, setSelectedOption] = useState<DataOption | null>(null)
+
+    useEffect(() => {
+        const abortController = new AbortController
+
+        AdminGetServicesQuery({
+            signal: abortController.signal,
+            navigate: navigate
+        }).then(data => {
+            setData(data)
+            setLoading(false)
+        }).catch(() => {
+            setDisabled(true)
+            setLoading(false)
+        })
+
+        return () => {
+            abortController.abort()
+        }
+    }, [])
 
     const filteredOptions = filterOptions(inputValue, [
         {
             header: header,
-            options: dataOption.map(option => ({...option, label: option.service_name, value: option.service_name})),
+            options: data ? data.map((option: DataOption) => ({...option, label: option.service_name, value: option.service_no})) : [],
         }
     ])
 
-    const formatGroupLabel = (data: GroupedOption) => (
-        <div className="flex items-center justify-between"
-             key={data.header}>
-            <span>{data.header}</span>
-            <span className="inline-block text-center leading-3">{data.options.length}</span>
-        </div>
-    )
+    // const handleCreate = (inputValue: string) => {
+    //     setServicesLoading(true);
+    //     setTimeout(() => {
+    //         const newOption = createOption(inputValue);
+    //         setServicesLoading(false);
+    //         setOptions((prev) => [...prev, newOption]);
+    //         setValue(newOption);
+    //     }, 1000);
+    // };
 
-    const customStyles = {
-        control: (provided: any, state: any) => ({
-            ...provided,
-            cursor: isDisabled ? 'not-allowed' : 'pointer',
-            backgroundColor: 'white',
-            height: 45,
-            borderColor: state.isFocused ? '#CCCAC3' : '#CCCAC3',
-            boxShadow: state.isFocused ? 0 : 0,
-            "&:hover": {
-                borderColor: state.isFocused ? '#CCCAC3' : '#CCCAC3',  // цвет границы при наведении
-            }
-        }),
-        option: (provided: any, state: any) => ({
-            ...provided,
-            color: state.isDisabled ? 'gray' : state.isSelected ? 'white' : 'black',
-            backgroundColor: state.isDisabled ? null : state.isSelected ? '#CCCAC3' : null,
-        }),
+    const handleProductChange = (selectedOption: DataOption | null) => {
+        setSelectedOption(selectedOption)
+        setValue(selectedOption ? selectedOption.service_name : '')
+        if (checkOnEmpty) {
+            if (selectedOption == null) setError("Поле обязательно к заполнению!")
+            else setError('')
+        }
     }
-
 
     return (
         <RowBlockLower addToClassName={addToClassName && addToClassName}>
             <label className="block uppercase font-bold mb-2 select-none"
                    htmlFor={id}>{nameField}
             </label>
-            <Select<ServicesDataOption, false, GroupedOption>
+            <Select<DataOption, false, GroupedOption>
                 isSearchable={isSearchable}
                 isClearable={isClearable}
                 isLoading={isLoading}
-                isDisabled={isDisabled}
+                isDisabled={disabled}
                 options={filteredOptions}
+                value={selectedOption}
                 formatGroupLabel={formatGroupLabel}
                 components={{ Option, SingleValue }}
                 onInputChange={(value) => setInputValue(value)}
-                onChange={onChange}
+                onChange={handleProductChange}
                 placeholder={placeholder}
                 noOptionsMessage={() => "Пусто"}
+                loadingMessage={() => "Загрузка данных..."}
                 id={id}
-                onFocus={handleFocus}
-                styles={customStyles}
+                styles={customStyles(disabled)}
+                //onCreateOption={handleCreate}
             />
             {hasWarnLabel && (
                 <p className={`text-light-second dark:text-dark-second text-sm italic select-none p-1 
-                ${!error || !isFocused && "invisible"}`}>{error ? error : "⠀"}</p>
+                ${!error || value && "invisible"}`}>{error ? error : "⠀"}</p>
             )}
         </RowBlockLower>
     )

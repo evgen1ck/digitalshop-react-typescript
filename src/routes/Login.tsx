@@ -2,32 +2,22 @@ import React, {useRef, useState} from "react"
 import { RowBlock, RowBlockUpper } from "../components/PageBlocks" 
 import {Link, useNavigate} from "react-router-dom" 
 import InputWithValidation, {PASSWORD, TEXT} from "../components/InputWithValidation"
-import {isContainsSpace, isMinMaxLen, isNotBlank, isPassword} from "../utils/dataValidators" 
+import {isNotContainsSpace, isMinMaxLen, isNotBlank, isPassword} from "../utils/dataValidators"
 import {CreateUserAuth, useAuthContext} from "../storage/auth"
 import {AuthLoginQuery} from "../queries/auth"
-import {toast} from "react-hot-toast"
 
 export default function Login() {
     const navigate = useNavigate()
     const { setAuthState } = useAuthContext()
+    const [isSubmitting, setIsSubmitting] = useState(false)
 
     const [loginValue, setLoginValue] = useState("") 
     const [loginError, setLoginError] = useState("") 
-    const inputEmailRef = useRef<HTMLInputElement>(null) 
-    const handleEmailChange = (value: string, error: string) => {
-        setLoginValue(value) 
-        setLoginError(error) 
-    } 
+    const inputEmailRef = useRef<HTMLInputElement>(null)
 
     const [passwordValue, setPasswordValue] = useState("") 
     const [passwordError, setPasswordError] = useState("") 
-    const inputPasswordRef = useRef<HTMLInputElement>(null) 
-    const handlePasswordChange = (value: string, error: string) => {
-        setPasswordValue(value) 
-        setPasswordError(error) 
-    } 
-
-    const [isSubmitting, setIsSubmitting] = useState(false) 
+    const inputPasswordRef = useRef<HTMLInputElement>(null)
 
     function handleLoginClick() {
         setIsSubmitting(true)
@@ -52,7 +42,6 @@ export default function Login() {
             navigate: navigate
         }).then(data => {
             data && CreateUserAuth(data, navigate, true, setAuthState)
-            toast.success("Успешная авторизация")
             setIsSubmitting(false)
         }).catch(() => {
             setIsSubmitting(false)
@@ -63,7 +52,7 @@ export default function Login() {
         <div className="mx-auto max-w-4xl">
             <RowBlock>
                 <div className="text-center w-full">
-                    <h3 className="text-3xl font-bold mb-6 uppercase select-none">Авторизация</h3>
+                    <h3 className="sm:text-3xl text-2xl font-bold mb-6 uppercase select-none">Авторизация</h3>
                 </div>
             </RowBlock>
 
@@ -75,11 +64,13 @@ export default function Login() {
                     type={TEXT}
                     hasWarnLabel={true}
                     spellCheck={false}
-                    requiredValidators={[isNotBlank, isMinMaxLen(5, 64), isContainsSpace]}
+                    requiredValidators={[isNotBlank, isMinMaxLen(5, 64), isNotContainsSpace]}
+                    setValue={setLoginValue}
                     value={loginValue}
+                    setError={setLoginError}
                     error={loginError}
-                    onChange={handleEmailChange}
                     inputRef={inputEmailRef}
+                    requiredField={true}
                     insertSpace={false} />
             </RowBlockUpper>
 
@@ -91,17 +82,19 @@ export default function Login() {
                     type={PASSWORD}
                     hasWarnLabel={true}
                     spellCheck={false}
-                    requiredValidators={[isNotBlank, isMinMaxLen(6, 64), isContainsSpace, isPassword]}
+                    requiredValidators={[isNotBlank, isMinMaxLen(6, 64), isNotContainsSpace, isPassword]}
+                    setValue={setPasswordValue}
                     value={passwordValue}
+                    setError={setPasswordError}
                     error={passwordError}
-                    onChange={handlePasswordChange}
                     inputRef={inputPasswordRef}
+                    requiredField={true}
                     insertSpace={false} />
             </RowBlockUpper>
 
             <RowBlock>
                 <div className="text-center w-full mt-4">
-                    <button className="btn-classic-frame select-none px-6 py-2.5 text-xl uppercase"
+                    <button className="btn-classic-frame select-none px-6 py-2.5 sm:text-xl text-lg uppercase"
                             type="submit"
                             onClick={handleLoginClick}
                             disabled={isSubmitting || loginError != "" || passwordError != ""}>

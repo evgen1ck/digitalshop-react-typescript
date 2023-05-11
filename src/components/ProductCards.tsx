@@ -58,13 +58,13 @@ export const ProductCardForMainpage = (props: { products: Product[] }) => {
                                  src={product.product_image_url}
                                  alt={product.product_name} />
                             <div className="flex flex-col justify-start px-6 py-4">
-                                <h1 className="mb-2 text-3xl font-bold uppercase">
+                                <h1 className="mb-2 sm:text-3xl text-xl font-bold uppercase">
                                     {product.product_name}
                                 </h1>
-                                <p className="mb-4 text-base text-justify leading-tight xl:line-clamp-6 lg:line-clamp-6 md:line-clamp-5 sm:line-clamp-4 max-sm:line-clamp-3">
+                                <p className="mb-4 sm:text-base text-sm text-justify leading-tight xl:line-clamp-6 lg:line-clamp-6 md:line-clamp-5 sm:line-clamp-4 max-sm:line-clamp-3">
                                     {product.description}
                                 </p>
-                                <p className="mb-4 text-base text-justify leading-tight xl:line-clamp-6 lg:line-clamp-6 md:line-clamp-5 sm:line-clamp-4 max-sm:line-clamp-3">
+                                <p className="mb-4 sm:text-base text-sm text-justify leading-tight xl:line-clamp-6 lg:line-clamp-6 md:line-clamp-5 sm:line-clamp-4 max-sm:line-clamp-3">
                                     <ProductSvgIcons product={product} />
                                 </p>
                             </div>
@@ -74,10 +74,10 @@ export const ProductCardForMainpage = (props: { products: Product[] }) => {
                     {product.subtypes.map((subtype) => (
                         <div key={subtype.subtype_name.replaceAll(" ", "-")}>
                             <div className="flex flex-wrap space-x-4 pt-6 pb-3 items-center">
-                                <h2 className="mb-2 text-2xl font-bold">
+                                <h2 className="mb-2 sm:text-2xl text-xl font-bold">
                                     {GetModifiedType(subtype.type)}
                                 </h2>
-                                <h2 className="mb-1 text-xl font-bold">
+                                <h2 className="mb-1 sm:text-xl text-lg font-bold">
                                     {GetModifiedSubtype(subtype.subtype_name)}
                                 </h2>
                             </div>
@@ -92,7 +92,7 @@ export const ProductCardForMainpage = (props: { products: Product[] }) => {
                                                  }
                                              }}>
                                                 <span className="pb-1">
-                                                    <h3 className="text-xl font-bold uppercase inline-block">
+                                                    <h3 className="sm:text-xl text-lg font-bold uppercase inline-block">
                                                         {variant.variant_name}
                                                     </h3>
                                                 </span>
@@ -107,23 +107,23 @@ export const ProductCardForMainpage = (props: { products: Product[] }) => {
                                                             </b>
                                                         )}
                                                         {variant.discount_percent > 0 && (
-                                                            <span className="ml-2 text-sm text-gray-500">
+                                                            <span className="ml-2 sm:text-sm text-xs text-gray-500">
                                                                 Скидка {variant.discount_percent}%
                                                             </span>
                                                         )}
                                                         {variant.discount_money > 0 && (
-                                                            <span className="ml-2 text-sm text-gray-500">
+                                                            <span className="ml-2 sm:text-sm text-xs text-gray-500">
                                                                 Скидка: {variant.discount_money}₽
                                                             </span>
                                                         )}
                                                 </p>
                                             </span>
                                             <div className="flex justify-between items-center space-x-3">
-                                                <p className="text-base">
+                                                <p className="sm:text-base text-sm">
                                                     {GetModifiedTextQuantity(variant.text_quantity)}
                                                 </p>
                                                 <div className="flex items-center">
-                                                    <p className="text-base">
+                                                    <p className="sm:text-base text-sm">
                                                         {variant.service.toUpperCase()}
                                                     </p>
                                                 </div>

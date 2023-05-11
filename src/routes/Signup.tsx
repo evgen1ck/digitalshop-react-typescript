@@ -2,7 +2,7 @@ import React, { useRef, useState } from 'react'
 import { RowBlock, RowBlockUpper } from "../components/PageBlocks" 
 import InputWithValidation, {TEXT, EMAIL, PASSWORD} from "../components/InputWithValidation" 
 import {
-    isContainsSpace,
+    isNotContainsSpace,
     isEmail,
     isMinMaxLen,
     isNickname,
@@ -14,40 +14,23 @@ import {AuthSignupQuery} from "../queries/auth"
 
 export default function Signup() {
     const navigate = useNavigate()
+    const [isSubmitting, setIsSubmitting] = useState(false)
 
     const [nicknameValue, setNicknameValue] = useState("")
     const [nicknameError, setNicknameError] = useState("")
     const inputNicknameRef = useRef<HTMLInputElement>(null)
-    const handleNicknameChange = (value: string, error: string) => {
-        setNicknameValue(value)
-        setNicknameError(error)
-    }
 
     const [emailValue, setEmailValue] = useState("")
     const [emailError, setEmailError] = useState("")
     const inputEmailRef = useRef<HTMLInputElement>(null)
-    const handleEmailChange = (value: string, error: string) => {
-        setEmailValue(value)
-        setEmailError(error)
-    }
 
     const [passwordValue, setPasswordValue] = useState("")
     const [passwordError, setPasswordError] = useState("")
     const inputPasswordRef = useRef<HTMLInputElement>(null)
-    const handlePasswordChange = (value: string, error: string) => {
-        setPasswordValue(value)
-        setPasswordError(error)
-    }
 
     const [repeatPasswordValue, setRepeatPasswordValue] = useState("")
     const [repeatPasswordError, setRepeatPasswordError] = useState("")
     const inputRepeatPasswordRef = useRef<HTMLInputElement>(null)
-    const handleRepeatPasswordChange = (value: string, error: string) => {
-        setRepeatPasswordValue(value)
-        setRepeatPasswordError(error)
-    }
-
-    const [isSubmitting, setIsSubmitting] = useState(false)
 
     function handleSignup() {
         setIsSubmitting(true)
@@ -93,7 +76,7 @@ export default function Signup() {
         <div className="mx-auto max-w-4xl">
             <RowBlock>
                 <div className="text-center w-full">
-                    <h3 className="text-3xl font-bold mb-6 uppercase select-none">Регистрация</h3>
+                    <h3 className="sm:text-3xl text-2xl font-bold mb-6 uppercase select-none">Регистрация</h3>
                 </div>
             </RowBlock>
 
@@ -105,11 +88,13 @@ export default function Signup() {
                     type={TEXT}
                     hasWarnLabel={true}
                     spellCheck={false}
-                    requiredValidators={[isNotBlank, isMinMaxLen(5, 32), isContainsSpace, isNickname]}
+                    requiredValidators={[isNotBlank, isMinMaxLen(5, 32), isNotContainsSpace, isNickname]}
+                    setValue={setNicknameValue}
                     value={nicknameValue}
+                    setError={setNicknameError}
                     error={nicknameError}
-                    onChange={handleNicknameChange}
                     inputRef={inputNicknameRef}
+                    requiredField={true}
                     insertSpace={false}/>
             </RowBlockUpper>
 
@@ -121,11 +106,13 @@ export default function Signup() {
                     type={EMAIL}
                     hasWarnLabel={true}
                     spellCheck={false}
-                    requiredValidators={[isNotBlank, isMinMaxLen(6, 64), isContainsSpace, isEmail]}
+                    requiredValidators={[isNotBlank, isMinMaxLen(6, 64), isNotContainsSpace, isEmail]}
+                    setValue={setEmailValue}
                     value={emailValue}
+                    setError={setEmailError}
                     error={emailError}
-                    onChange={handleEmailChange}
                     inputRef={inputEmailRef}
+                    requiredField={true}
                     insertSpace={false}/>
             </RowBlockUpper>
 
@@ -138,11 +125,13 @@ export default function Signup() {
                     type={PASSWORD}
                     hasWarnLabel={true}
                     spellCheck={false}
-                    requiredValidators={[isNotBlank, isMinMaxLen(6, 64), isContainsSpace, isPassword]}
+                    requiredValidators={[isNotBlank, isMinMaxLen(6, 64), isNotContainsSpace, isPassword]}
+                    setValue={setPasswordValue}
                     value={passwordValue}
+                    setError={setPasswordError}
                     error={passwordError}
-                    onChange={handlePasswordChange}
                     inputRef={inputPasswordRef}
+                    requiredField={true}
                     insertSpace={false}/>
 
                 <InputWithValidation
@@ -153,17 +142,19 @@ export default function Signup() {
                     type={PASSWORD}
                     hasWarnLabel={true}
                     spellCheck={false}
-                    requiredValidators={[isNotBlank, isMinMaxLen(6, 64), isContainsSpace, isPassword]}
+                    requiredValidators={[isNotBlank, isMinMaxLen(6, 64), isNotContainsSpace, isPassword]}
+                    setValue={setRepeatPasswordValue}
                     value={repeatPasswordValue}
+                    setError={setRepeatPasswordError}
                     error={repeatPasswordError}
-                    onChange={handleRepeatPasswordChange}
                     inputRef={inputRepeatPasswordRef}
+                    requiredField={true}
                     insertSpace={false}/>
             </RowBlockUpper>
 
             <RowBlock>
                 <div className="text-center w-full mt-4">
-                    <button className="btn-classic-frame select-none px-6 py-2.5 text-xl uppercase"
+                    <button className="btn-classic-frame select-none px-6 py-2.5 sm:text-xl text-lg uppercase"
                             type="submit"
                             onClick={handleSignup}
                             disabled={isSubmitting || nicknameError != "" || emailError != "" || passwordError != "" || repeatPasswordError != ""}>
