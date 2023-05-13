@@ -33,11 +33,10 @@ const SVGIcon = ({ url, alt, className }: ISVGIcon) => {
 
     if (svgContent) {
         return (
-            <div
-                dangerouslySetInnerHTML={{
-                    __html: svgContent.replace("<svg", `<svg class="${className}"`),
-                }}
-                aria-label={alt}
+            <div aria-label={alt}
+                 dangerouslySetInnerHTML={{
+                     __html: svgContent.replace("<svg", `<svg class="${className}"`),
+                 }}
             />
         ) 
     } else {

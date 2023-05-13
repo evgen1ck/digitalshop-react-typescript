@@ -48,7 +48,8 @@ export const CreateUserAuth = (
 
     setAuthState(true, data.role)
 
-    withRedirect && RedirectTo("/", navigate, 5000)
+    withRedirect && data.role == "user" && RedirectTo("/", navigate, 100)
+    withRedirect && data.role == "admin" && RedirectTo("/admin/products", navigate, 100)
 }
 
 export const CheckUserAuth = (setAuthState: (isLoggedIn: boolean, role: string) => void) => {

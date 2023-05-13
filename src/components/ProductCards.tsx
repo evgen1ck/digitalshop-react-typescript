@@ -1,6 +1,11 @@
 import React, {useState} from "react"
-import SVGIcon from "../utils/svgIconColor"
-import {PaymentModal} from "../modals/PaymentModal";
+import {PaymentModal} from "./modals/PaymentModal";
+import {CreateUserAuth, useAuthContext} from "../storage/auth";
+import SVGIcon from "./SvgIconColor";
+import {TranslateProductSubtype, TranslateProductType, TranslateTextQuantity} from "../utils/translate";
+import {Link, useNavigate} from "react-router-dom";
+import {AuthAloginQuery} from "../queries/auth";
+import {AdminDeleteVariantQuery} from "../queries/admin";
 
 export interface Variant {
     variant_name: string
@@ -38,12 +43,14 @@ interface UniqueService {
 
 export const ProductCardForMainpage = (props: { products: Product[] }) => {
     const { products } = props
-    let variantId = ""
+    const { role } = useAuthContext()
+
+    const [variantId, setVariantId] = useState<string>('')
 
     const [isModalOpen, setIsModalOpen] = useState(false)
     const handleModalOpen = (id: string) => {
+        setVariantId(id)
         setIsModalOpen(true)
-        variantId = id
     }
 
     return (
@@ -75,19 +82,19 @@ export const ProductCardForMainpage = (props: { products: Product[] }) => {
                         <div key={subtype.subtype_name.replaceAll(" ", "-")}>
                             <div className="flex flex-wrap space-x-4 pt-6 pb-3 items-center">
                                 <h2 className="mb-2 sm:text-2xl text-xl font-bold">
-                                    {GetModifiedType(subtype.type)}
+                                    {TranslateProductType(subtype.type)}
                                 </h2>
                                 <h2 className="mb-1 sm:text-xl text-lg font-bold">
-                                    {GetModifiedSubtype(subtype.subtype_name)}
+                                    {TranslateProductSubtype(subtype.subtype_name)}
                                 </h2>
                             </div>
                             <div className="flex flex-wrap gap-4">
                                 {subtype.variants.map((variant) => (
-                                    <div className={`flex flex-col rounded-lg bg-white shadow-lg md:flex-row h-max bg-light-additional dark:bg-dark-additional ${variant.text_quantity.includes("out of stock") || variant.state.includes("unavailable") ? "cursor-not-allowed" : "hover:hover:-translate-y-1.5 system-animation btn-classic-frame cursor-pointer"}`}>
-                                        <div className={`flex flex-col justify-start px-6 py-4 ${variant.text_quantity.includes("out of stock") || variant.state.includes("unavailable") ? "cursor-not-allowed" : "cursor-pointer"}`}
+                                    <div className={`flex flex-col rounded-lg bg-white shadow-lg md:flex-row h-max bg-light-additional dark:bg-dark-additional ${variant.text_quantity.includes("out of stock") || variant.state.includes("unavailable")  ? "cursor-not-allowed" : "hover:hover:-translate-y-1.5 system-animation btn-classic-frame cursor-pointer"}`}>
+                                        <div className={`flex flex-col justify-start px-6 py-4 ${variant.text_quantity.includes("out of stock") || variant.state.includes("unavailable") || !role.includes("user") ? "cursor-not-allowed" : "cursor-pointer"}`}
                                              key={variant.variant_id}
                                              onClick={() => {
-                                                 if (!(variant.text_quantity.includes('out of stock') || variant.state.includes('unavailable'))) {
+                                                 if (!(variant.text_quantity.includes('out of stock') || variant.state.includes('unavailable') || !role.includes("user"))) {
                                                      handleModalOpen(variant.variant_id)
                                                  }
                                              }}>
@@ -120,7 +127,7 @@ export const ProductCardForMainpage = (props: { products: Product[] }) => {
                                             </span>
                                             <div className="flex justify-between items-center space-x-3">
                                                 <p className="sm:text-base text-sm">
-                                                    {GetModifiedTextQuantity(variant.text_quantity)}
+                                                    {TranslateTextQuantity(variant.text_quantity)}
                                                 </p>
                                                 <div className="flex items-center">
                                                     <p className="sm:text-base text-sm">
@@ -155,13 +162,13 @@ const ProductSvgIcons = (props: {product: Product}) => {
     return (
         <>
             {uniqueServices.map((serviceItem) => (
-                <span className="text-xl flex items-center inline-flex"
+                <span className="sm:text-xl sm:text-lg flex items-center inline-flex"
                       key={serviceItem.serviceName.replaceAll(" ", "-")}>
                     {!serviceItem.serviceName.toLowerCase().includes("universal") && (
                         <SVGIcon
                             url={serviceItem.svgUrl}
                             alt={serviceItem.serviceName}
-                            className="w-6 h-6"
+                            className="sm:w-6 w-5 sm:h-6 h-5"
                         />
                     )}
                     <span className="pl-1 pr-4">{serviceItem.serviceName}</span>
@@ -171,49 +178,130 @@ const ProductSvgIcons = (props: {product: Product}) => {
     )
 }
 
-function GetModifiedTextQuantity(s: string) {
-    switch (s.toLowerCase()) {
-        case "out of stock":
-            return "распродано" 
-        case "last in stock":
-            return "последний" 
-        case "limited stock":
-            return "последние" 
-        case "adequate stock":
-            return "достаточно" 
-        case "large stock":
-            return "много" 
-        default:
-            return s 
+export const AdminProductsCards = (props: { products: any[]}) => {
+    const navigate = useNavigate()
+    const [hoveredCard, setHoveredCard] = useState(null);
+    const [isSubmitting, setIsSubmitting] = useState(false)
+    const [products, setProducts] = useState(props.products);
+
+    function handleDeleteClick(variantId1: string) {
+        setIsSubmitting(true)
+
+        AdminDeleteVariantQuery({
+            navigate: navigate,
+            variantId: variantId1
+        }).then(() => {
+            setProducts(products.filter(product => product.variant_id !== variantId1));
+        })
+
+        setIsSubmitting(false)
     }
+
+    return (
+        <div className="space-y-8 select-none">
+            {products && products.map((value) => (
+                <div className={`flex flex-col rounded-lg bg-white shadow-lg h-max bg-light-additional dark:bg-dark-additional hover:hover:-translate-y-1.5 system-animation btn-classic-frame`}
+                     key={value.variant_id}>
+                    <div className={`flex flex-col justify-start px-6 py-4`}
+                         key={value.variant_id}
+                         onMouseEnter={() => setHoveredCard(value.variant_id)}
+                         onMouseLeave={() => setHoveredCard(null)}>
+                        <div className="flex justify-between items-center">
+                            <span className="pb-1 lg:space-x-5 sm:space-x-1 flex-grow inline-block">
+                                <h3 className="sm:text-lg text-base font-bold uppercase inline-block">
+                                    {value.product_name}
+                                </h3>
+                                <h3 className="sm:text-lg text-base font-bold uppercase inline-block text-light-second dark:text-dark-second">
+                                    {value.type_name}
+                                </h3>
+                                <h3 className="sm:text-lg text-base font-bold uppercase inline-block text-light-second dark:text-dark-second">
+                                    {value.subtype_name}
+                                </h3>
+                            </span>
+                            <span>
+                                <button key={value.variant_id}
+                                        className={`btn-classic block lg:inline-block lg:mt-0 ml-4 ${hoveredCard === value.variant_id ? 'visible' : 'invisible'}` }
+                                        onClick={() => {}}>
+                                    Пополнить
+                                </button>
+                                <Link key={value.variant_id}
+                                      className={`btn-classic block lg:inline-block lg:mt-0 ml-4 ${hoveredCard === value.variant_id ? 'visible' : 'invisible'}` }
+                                      to={"edit?variant_id="+value.variant_id}>
+                                    Изменить
+                                </Link>
+                                <button key={value.variant_id}
+                                        className={`btn-classic block lg:inline-block text-error lg:mt-0 ml-4 ${hoveredCard === value.variant_id ? 'visible' : 'invisible'}` }
+                                        onClick={() => {
+                                            handleDeleteClick(value.variant_id)
+                                        }}
+                                        disabled={isSubmitting}>
+                                    Удалить
+                                </button>
+                            </span>
+                        </div>
+                        <span className="pb-1 space-x-3">
+                            <h3 className="sm:text-2xl text-xl font-bold uppercase inline-block">
+                                {value.variant_name}
+                            </h3>
+                        </span>
+                        <span className="pb-1">
+                            <p className={`text-base`}>
+                                <b className={`border-solid ${value.discount_percent > 0 || value.discount_money > 0 ? "line-through pr-1 text-light-second dark:text-dark-second" : value.text_quantity.includes("out of stock") ? "text-light-second dark:text-dark-second" : "text-error"}`}>
+                                    {value.price}₽
+                                </b>
+                                {(value.discount_percent > 0 || value.discount_money > 0) && (
+                                    <b className={value.text_quantity.includes("out of stock") ? "text-light-second dark:text-dark-second" : "border-solid text-error"}>
+                                        {value.final_price}₽
+                                    </b>
+                                )}
+                                {value.discount_percent > 0 && (
+                                    <span className="ml-2 sm:text-sm text-xs text-gray-500">
+                                        Скидка {value.discount_percent}%
+                                    </span>
+                                )}
+                                {value.discount_money > 0 && (
+                                    <span className="ml-2 sm:text-sm text-xs text-gray-500">
+                                        Скидка: {value.discount_money}₽
+                                    </span>
+                                )}
+                            </p>
+                        </span>
+                        <div className="flex justify-between items-center space-x-3">
+                            <div className="flex items-center space-x-3">
+                                <p>
+                                    {value.state_name.toUpperCase()}
+                                </p>
+                                <p className="sm:text-base text-sm">
+                                    {TranslateTextQuantity(value.text_quantity)}
+                                </p>
+                                {value.quantity_current != "0" &&
+                                    <p className="sm:text-base text-sm">
+                                        в наличии {value.quantity_current} шт.
+                                    </p>
+                                }
+                            </div>
+                            <div className="flex items-center justify-end space-x-3">
+                                <span>
+                                    {value.item_name.toUpperCase()}
+                                </span>
+                                <span className="sm:text-xl sm:text-lg flex items-center inline-flex space-x-2"
+                                      key={value.service_name.replaceAll(" ", "-")}>
+                                    <span className="pl-1">{value.service_name.toUpperCase()}</span>
+                                    {!value.service_name.toLowerCase().includes("universal") && (
+                                        <SVGIcon
+                                            url={value.service_svg_url}
+                                            alt={value.service_name}
+                                            className="sm:w-6 w-5 sm:h-6 h-5"
+                                        />
+                                    )}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            ))}
+        </div>
+    )
 }
 
-function GetModifiedSubtype(s: string) {
-    switch (s.toLowerCase()) {
-        case "console version":
-            return "Консольная версия"
-        case "computer version":
-            return "Декстопная версия"
-        case "mobile version":
-            return "Мобильная версия"
-        default:
-            return s 
-    }
-}
 
-function GetModifiedType(s: string) {
-    switch (s.toLowerCase()) {
-        case "replenishment of in-game currency":
-            return "Пополнение внутриигрового счета" 
-        case "games":
-            return "Игры"
-        case "software":
-            return "Программное обеспечение"
-        case "e-tickets":
-            return "Электронные билеты"
-        case "virtual gifts":
-            return "Виртуальные подарки"
-        default:
-            return s 
-    }
-}

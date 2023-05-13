@@ -18,7 +18,8 @@ export default async function UseHttpErrorsHandler(response: Response, navigate:
             toast.error("Сервер долго не отвечал") 
             break
         case 422:
-            toast.error("Введите корректные данные")
+            let data322 = await response.json()
+            toast.error("Введите корректные данные: "+ data322.description)
             break
         case 409:
             break
@@ -45,7 +46,10 @@ export default async function UseHttpErrorsHandler(response: Response, navigate:
                 case data.description.toLowerCase().includes("account has been blocked".toLowerCase()):
                     toast.error("Аккаунт был заблокирован") 
                     RedirectTo('/login', navigate, 1000)
-                    break 
+                    break
+                case data.description.toLowerCase().includes("this account has a different role".toLowerCase()):
+                    toast.error("Аккаунт имеет другие права")
+                    break
             }
             break 
         default:

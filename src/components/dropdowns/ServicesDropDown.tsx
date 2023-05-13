@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react'
 import Select, {components, OptionProps, SingleValueProps} from "react-select"
-import SVGIcon from "../../utils/svgIconColor"
+import SVGIcon from "../SvgIconColor"
 import {RowBlockLower} from "../PageBlocks"
 import {customStyles, DropDownProps, formatGroupLabel} from "./DropDownData";
 import {AdminGetServicesQuery} from "../../queries/admin";

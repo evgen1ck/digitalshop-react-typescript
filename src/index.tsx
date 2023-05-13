@@ -16,9 +16,12 @@ import CompletionOfSignup from "./routes/CompletionOfSignup"
 import ConfirmSignup from "./routes/ConfirmSignup" 
 import {AuthProvider, useAuthContext} from "./storage/auth"
 import Profile from "./routes/Profile"
-import ProductVariants from "./routes/admin/ProductVariants"
+import AdminProductsAdd from "./routes/admin/AdminProductsAdd"
 import Forbidden from "./routes/Forbidden";
 import CompletingOrder from "./routes/CompletingOrder";
+import AdminProducts from "./routes/admin/AdminProducts";
+import Alogin from "./routes/Alogin";
+import AdminProductsEdit from "./routes/admin/AdminProductEdit";
 
 // const AuthProtectedRoute = (props: { children: ReactNode, accountRole: string }) => {
 //     const { children, accountRole } = props
@@ -50,11 +53,14 @@ const router = createBrowserRouter(
         <Route path="/" element={<RootLayout />}>
             <Route index element={<Home />} />
             <Route path="login" element={<NoAgainAuth> <Login/> </NoAgainAuth>} />
+            <Route path="alogin" element={<NoAgainAuth> <Alogin/> </NoAgainAuth>} />
             <Route path="signup" element={<NoAgainAuth> <Signup /> </NoAgainAuth>} />
             <Route path="completion-of-signup" element={<NoAgainAuth> <CompletionOfSignup /> </NoAgainAuth>} />
             <Route path="confirm-signup" element={<NoAgainAuth> <ConfirmSignup /> </NoAgainAuth>} />
             <Route path="profile" element={<Profile />} />
-            <Route path="admin/variant" element={<ProductVariants />} />
+            <Route path="admin/products" element={<AdminProducts />} />
+            <Route path="admin/products/edit" element={<AdminProductsEdit />} />
+            <Route path="admin/products/add" element={<AdminProductsAdd />} />
             <Route path="forbidden" element={<Forbidden />} />
             <Route path="finish" element={<CompletingOrder />} />
             <Route path="*" element={<NoMatch />} />

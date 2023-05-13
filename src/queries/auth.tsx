@@ -8,6 +8,7 @@ const authSignupUrl = AppUrl+"auth/signup"
 const authSignupWithTokenUrl = AppUrl+"auth/signup-with-token"
 const authLoginUrl = AppUrl+"auth/login"
 const authLogoutUrl = AppUrl+"user/logout"
+const authAlogin = AppUrl+"auth/alogin"
 
 interface AuthSignup {
     nickname: string
@@ -176,6 +177,61 @@ export const AuthLogoutQuery = async ({token, navigate}: AuthLogout) => {
         }
 
         toast.success("Успешный выход")
+    } catch (error) {
+        toast.error(UnknownError)
+        console.error("Error fetching data: ", error)
+    }
+}
+
+interface AuthLogin {
+    login: string
+    password: string
+    setLoginError: React.Dispatch<React.SetStateAction<string>>
+    setPasswordError: React.Dispatch<React.SetStateAction<string>>
+    navigate: NavigateFunction
+}
+
+export const AuthAloginQuery = async ({login, password, setLoginError, setPasswordError, navigate}: AuthLogin) => {
+    const requestBody = {
+        login: login,
+        password: password,
+    }
+
+    try {
+        const response = await fetch(authAlogin, {
+            method: 'POST',
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(requestBody),
+        })
+
+        const data = await response.json()
+
+        if (!response.ok) {
+            switch (true) {
+                case data.description.toLowerCase().includes("invalid password".toLowerCase()):
+                    setPasswordError('Неверный пароль')
+                    return
+                case data.description.toLowerCase().includes("admin with this login was not found".toLowerCase()):
+                    setLoginError('Аккаунта с этим логином не существует')
+                    return
+                case data.description.toLowerCase().includes("the email domain is not exist".toLowerCase()):
+                    setLoginError('Домена электронной почты не существует')
+                    return
+                case data.description.toLowerCase().includes("account has been blocked".toLowerCase()):
+                    setPasswordError('Аккаунт заблокирован')
+                    return
+                case data.description.toLowerCase().includes("account has been deleted".toLowerCase()):
+                    setPasswordError('Аккаунт был удалён')
+                    return
+            }
+            await UseHttpErrorsHandler(response, navigate)
+            return
+        }
+
+        toast.success("Успешная авторизация")
+        return data
     } catch (error) {
         toast.error(UnknownError)
         console.error("Error fetching data: ", error)

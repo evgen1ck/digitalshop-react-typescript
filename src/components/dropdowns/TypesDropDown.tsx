@@ -84,10 +84,13 @@ export const TypesDropDown = ({value, header, nameField, placeholder, id, isLoad
         }
     ])
 
-
     const handleProductChange = (selectedOption: DataOption | null) => {
+        // setSelectedOption(selectedOption)
+        // setValue(selectedOption ? selectedOption.type_name : '')
         setSelectedOption(selectedOption)
-        setValue(selectedOption ? selectedOption.type_name : '')
+        if (selectedOption) setValue(selectedOption.type_name)
+        else setValue('')
+
         if (checkOnEmpty) {
             if (selectedOption == null) setError("Поле обязательно к заполнению!")
             else setError('')

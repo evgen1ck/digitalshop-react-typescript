@@ -77,6 +77,9 @@ export default function InputWithValidation ({
     const handleChange = (value: string, error: string) => {
         setValue(value)
         setError(error)
+        if (!requiredField) {
+            setError("")
+        }
     }
 
     return (

@@ -1,24 +1,34 @@
-import React, {useRef, useState} from 'react'
-import {useNavigate} from "react-router-dom"
+import React, {useEffect, useRef, useState} from 'react'
+import {Link, useLocation, useNavigate, useParams} from "react-router-dom"
 import {ServicesDropDown} from "../../components/dropdowns/ServicesDropDown"
 import {RowBlock, RowBlockUpper} from "../../components/PageBlocks"
 import {GoPlus} from 'react-icons/go'
-import InputWithValidation, {NUMBER, TEXT} from "../../components/InputWithValidation";
+import InputWithValidation, {NUMBER, TEXT} from "../../components/InputWithValidation"
 import {
     isNotContainsConsecutiveSpaces,
     isNotContainsSpace,
     isMinMaxLen,
     isNotBlank,
     isMoney, isPercentage
-} from "../../utils/dataValidators";
-import {ProductsDropDown} from "../../components/dropdowns/ProductsDropDown";
-import {TypesDropDown} from "../../components/dropdowns/TypesDropDown";
-import {SubtypesDropDown} from "../../components/dropdowns/SubtypesDropDown";
-import {StatesDropDown} from "../../components/dropdowns/StatesDropDown";
-import {ItemsDropDown} from "../../components/dropdowns/ItemsDropDown";
+} from "../../utils/dataValidators"
+import {ProductsDropDown} from "../../components/dropdowns/ProductsDropDown"
+import {TypesDropDown} from "../../components/dropdowns/TypesDropDown"
+import {SubtypesDropDown} from "../../components/dropdowns/SubtypesDropDown"
+import {StatesDropDown} from "../../components/dropdowns/StatesDropDown"
+import {ItemsDropDown} from "../../components/dropdowns/ItemsDropDown"
+import {AuthLogoutQuery} from "../../queries/auth";
+import {DeleteUserAuth} from "../../storage/auth";
+import {AdminGetTypesQuery, AdminNewVariantQuery, AdminVariantQuery, AdminVariantsQuery} from "../../queries/admin";
+import {toast} from "react-hot-toast";
 
+interface IData {
+    product_id: string;
+    product_image_url: string;
+    product_name: string;
+    description: string;
+}
 
-const ProductVariants = () => {
+const AdminProductsEdit = () => {
     const navigate = useNavigate()
     const [isSubmitting, setIsSubmitting] = useState(false)
 
@@ -82,6 +92,30 @@ const ProductVariants = () => {
     const [priceValue, setPriceValue] = useState('')
     const [priceError, setPriceError] = useState('')
     const inputPriceRef = useRef<HTMLInputElement>(null)
+    const location = useLocation();
+
+    const [data, setData] = useState<IData[]>([]);
+
+    useEffect(() => {
+        const abortController = new AbortController
+        const queryParams = new URLSearchParams(location.search);
+        const variant_id = queryParams.get('variant_id');
+
+        console.log(variant_id)
+        AdminVariantQuery({
+            signal: abortController.signal,
+            navigate: navigate,
+            variantId: variant_id || ""
+        }).then(data => {
+            setData(data)
+        })
+
+        return () => {
+            abortController.abort()
+        }
+    }, [])
+
+
 
     function handleAddClick() {
         setIsSubmitting(true)
@@ -110,6 +144,52 @@ const ProductVariants = () => {
         if (serviceValue == "") setServiceError("Поле обязательно к заполнению!")
         if (stateValue == "") setStateError("Поле обязательно к заполнению!")
         if (itemValue == "") setItemError("Поле обязательно к заполнению!")
+        if (typeValue == "" || subtypeValue == "" || productValue == "" || serviceValue == "" || stateValue == "" ||  itemValue == ""|| itemValue == "" || nameValue == "" || maskValue == "" || priceValue == "") {
+            setIsSubmitting(false)
+            return
+        }
+
+        if (discountPercentValue != "" && discountMoneyValue != "") {
+            toast.error("Только одно поле скидки может быть заполнено")
+            setIsSubmitting(false)
+            return
+        }
+
+        const priceValueNum = parseFloat(priceValue)
+        if (priceValueNum < 10) {
+            setPriceError("Цена не может быть меньше 10")
+            setIsSubmitting(false)
+            return
+        }
+
+        const discountMoneyValueNum = parseFloat(discountMoneyValue)
+        const discountPercentValueNum = parseFloat(discountPercentValue)
+
+        if (discountMoneyValue !== "" && priceValueNum - discountMoneyValueNum < 10) {
+            setDiscountMoneyError("Стоимость товара после скидки должна быть не менее 10")
+            setIsSubmitting(false)
+            return
+        }
+
+        if (discountPercentValue !== "" && priceValueNum - (priceValueNum * discountPercentValueNum / 100) < 10) {
+            setDiscountPercentError("Стоимость товара после скидки должна быть не менее 10")
+            setIsSubmitting(false)
+            return
+        }
+
+        AdminNewVariantQuery({
+            navigate: navigate,
+            subtype: subtypeValue,
+            product: productValue,
+            name: nameValue,
+            service: serviceValue,
+            state: stateValue,
+            mask: maskValue,
+            discountMoney: discountMoneyValue,
+            discountPercent: discountPercentValue,
+            price: priceValue,
+            item: itemValue
+        })
 
         setIsSubmitting(false)
     }
@@ -142,11 +222,6 @@ const ProductVariants = () => {
                                    setDisabled={setTypesDisabled}
                                    checkOnEmpty={true}
                                    hasWarnLabel={true} />
-                    <button className="btn-classic-frame select-none flex text-center p-2 pt-3 sm:mt-8 mt-7 h-11 cursor-pointer"
-                            type="submit"
-                            disabled={typesDisabled}>
-                        <GoPlus />
-                    </button>
                 </div>
                 <div className="flex inline-flex lg:w-1/2 w-full">
                     <SubtypesDropDown addToClassName=""
@@ -168,11 +243,6 @@ const ProductVariants = () => {
                                       checkOnEmpty={true}
                                       typeName={typeValue}
                                       hasWarnLabel={true} />
-                    <button className="btn-classic-frame select-none flex text-center p-2 pt-3 sm:mt-8 mt-7 h-11 cursor-pointer"
-                            type="submit"
-                            disabled={subtypesDisabled}>
-                        <GoPlus />
-                    </button>
                 </div>
             </RowBlockUpper>
 
@@ -272,9 +342,9 @@ const ProductVariants = () => {
             <RowBlockUpper>
                 <div className="flex inline-flex lg:w-1/2 w-full">
                     <ItemsDropDown addToClassName=""
-                                   header="Способы активации"
-                                   nameField="Способ активации"
-                                   placeholder="Поле способа активации"
+                                   header="Форматы"
+                                   nameField="Формат"
+                                   placeholder="Поле формата"
                                    id="field-item"
                                    isLoading={itemsLoading}
                                    setLoading={setItemsLoading}
@@ -292,7 +362,7 @@ const ProductVariants = () => {
                 </div>
                 <div className="flex inline-flex lg:w-1/2 w-full">
                     <InputWithValidation
-                        nameField={"Маска способа активации"}
+                        nameField={"Маска формата"}
                         placeholder={"AAAAA-BBBBB-CCCCC"}
                         id={"field-mask"}
                         type={TEXT}
@@ -374,9 +444,15 @@ const ProductVariants = () => {
                         Добавить вариант
                     </button>
                 </div>
+
+            </RowBlock>
+            <RowBlock>
+                <div className="text-center w-full lg:flex lg:justify-center select-none">
+                    <Link to="/admin/products" className="btn-usual-link">Вернуться назад</Link>
+                </div>
             </RowBlock>
         </>
     )
 }
 
-export default ProductVariants
+export default AdminProductsEdit
