@@ -1,4 +1,4 @@
-import { RedirectTo } from "../utils/redirect"
+import { RedirectTo } from "../lib/redirect"
 import { NavigateFunction } from "react-router-dom"
 import React, { createContext, ReactNode, useContext, useState } from "react"
 

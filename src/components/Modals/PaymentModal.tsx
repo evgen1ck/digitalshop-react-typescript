@@ -1,6 +1,6 @@
 import React, {useState} from 'react'
 import Modal from './Modal'
-import {RowBlock} from "../PageBlocks"
+import {RowBlock} from "../Blocks/PageBlocks"
 import FreekassaImage from "../../data/images/freekassa.png"
 import QiwiImage from "../../data/images/qiwi.jpg"
 import {UserGetPaymentQuery} from "../../queries/user";

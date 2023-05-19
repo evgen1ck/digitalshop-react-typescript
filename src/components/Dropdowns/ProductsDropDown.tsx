@@ -1,18 +1,20 @@
 import React, {useEffect, useState} from 'react'
 import Select, {components, OptionProps, SingleValueProps} from "react-select"
-import {RowBlockLower} from "../PageBlocks"
+import {RowBlockLower} from "../Blocks/PageBlocks"
 import {customStyles, DropDownProps, formatGroupLabel} from "./DropDownData";
-import {AdminGetItemsQuery} from "../../queries/admin";
+import {AdminGetProductsQuery} from "../../queries/admin";
 
-export interface DataOption {
-    item_no: number
-    item_name: string
+interface DataOption {
+    product_id: string
+    product_name: string
+    description: string
+    tags: string | null
     created_at: string
     modified_at: string
     commentary: string | null
 }
 
-export interface GroupedOption {
+interface GroupedOption {
     readonly header: string
     readonly options: DataOption[]
 }
@@ -20,7 +22,7 @@ export interface GroupedOption {
 const filterOptions = (inputValue: string, options: GroupedOption[]): GroupedOption[] => {
     return options.map(group => {
         const filteredOptions = group.options.filter(option =>
-            option.item_name.toLowerCase().includes(inputValue.toLowerCase())
+            option.product_name.toLowerCase().includes(inputValue.toLowerCase())
         )
 
         return { ...group, options: filteredOptions }
@@ -31,9 +33,9 @@ const Option = (props: OptionProps<DataOption, false, GroupedOption>) => {
     const { data } = props
     return (
         <components.Option {...props}
-                           key={data.item_name}>
+                           key={data.product_name}>
             <div className={`flex items-center space-x-2 ${!props.isDisabled && "cursor-pointer"}`}>
-                <span>{data.item_name.toUpperCase()}</span>
+                <span>{data.product_name.toUpperCase()}</span>
             </div>
         </components.Option>
     )
@@ -43,17 +45,17 @@ const SingleValue = (props: SingleValueProps<DataOption, false, GroupedOption>) 
     const { data } = props
     return (
         <components.SingleValue {...props}
-                                key={data.item_name}>
+                                key={data.product_name}>
             <div className={`flex items-center space-x-2 ${!props.isDisabled && "cursor-pointer"}`}>
                 <div className={`flex items-center space-x-2 ${!props.isDisabled && "cursor-pointer"}`}>
-                    <span>{data.item_name.toUpperCase()}</span>
+                    <span>{data.product_name.toUpperCase()}</span>
                 </div>
             </div>
         </components.SingleValue>
     )
 }
 
-export const ItemsDropDown = ({value, header, nameField, placeholder, id, isLoading, setLoading, isClearable, isSearchable, setError, error, setValue, setDisabled, disabled, hasWarnLabel, addToClassName, navigate, checkOnEmpty}: DropDownProps) => {
+export const ProductsDropDown = ({value, header, nameField, placeholder, id, isLoading, setLoading, isClearable, isSearchable, setError, error, setValue, setDisabled, disabled, hasWarnLabel, addToClassName, navigate, checkOnEmpty}: DropDownProps) => {
     const [data, setData] = useState([])
     const [inputValue, setInputValue] = useState('')
     const [selectedOption, setSelectedOption] = useState<DataOption | null>(null)
@@ -61,7 +63,7 @@ export const ItemsDropDown = ({value, header, nameField, placeholder, id, isLoad
     useEffect(() => {
         const abortController = new AbortController
 
-        AdminGetItemsQuery({
+        AdminGetProductsQuery({
             signal: abortController.signal,
             navigate: navigate
         }).then(data => {
@@ -80,13 +82,13 @@ export const ItemsDropDown = ({value, header, nameField, placeholder, id, isLoad
     const filteredOptions = filterOptions(inputValue, [
         {
             header: header,
-            options: data ? data.map((option: DataOption) => ({...option, label: option.item_name, value: option.item_no})) : [],
+            options: data ? data.map((option: DataOption) => ({...option, label: option.product_name, value: option.product_id})) : [],
         }
     ])
 
     const handleProductChange = (selectedOption: DataOption | null) => {
         setSelectedOption(selectedOption)
-        setValue(selectedOption ? selectedOption.item_name : '')
+        setValue(selectedOption ? selectedOption.product_name : '')
         if (checkOnEmpty) {
             if (selectedOption == null) setError("Поле обязательно к заполнению!")
             else setError('')

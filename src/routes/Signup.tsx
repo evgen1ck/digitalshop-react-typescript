@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react' 
-import { RowBlock, RowBlockUpper } from "../components/PageBlocks" 
-import InputWithValidation, {TEXT, EMAIL, PASSWORD} from "../components/InputWithValidation" 
+import { RowBlock, RowBlockUpper } from "../components/Blocks/PageBlocks"
+import InputWithValidation, {TEXT, EMAIL, PASSWORD} from "../components/Inputs/InputWithValidation"
 import {
     isNotContainsSpace,
     isEmail,
@@ -8,7 +8,7 @@ import {
     isNickname,
     isNotBlank,
     isPassword,
-} from "../utils/dataValidators" 
+} from "../lib/validators"
 import {Link, useNavigate} from "react-router-dom" 
 import {AuthSignupQuery} from "../queries/auth"
 

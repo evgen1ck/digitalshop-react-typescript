@@ -1,9 +1,9 @@
 import React, { useState } from 'react' 
 import {Outlet, Link, useNavigate} from "react-router-dom" 
-import SwitchTheme from "../storage/switchTheme" 
+import SwitchTheme from "../../storage/switchTheme"
 import {Toaster} from "react-hot-toast"
-import {CheckUserAuth, DeleteUserAuth, useAuthContext} from "../storage/auth"
-import {AuthLogoutQuery} from "../queries/auth"
+import {CheckUserAuth, DeleteUserAuth, useAuthContext} from "../../storage/auth"
+import {AuthLogoutQuery} from "../../queries/auth"
 
 interface ILink {
     name: string

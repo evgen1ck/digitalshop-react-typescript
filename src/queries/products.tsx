@@ -1,8 +1,8 @@
 import React from 'react'
-import UseHttpErrorsHandler from "../utils/httpResponds"
+import UseHttpErrorsHandler from "../lib/responds"
 import {NavigateFunction} from "react-router-dom"
-import {AppUrl} from "../storage/defs"
 
+const AppUrl = 'http://localhost:9990/api/v1/'
 const productsUrl = AppUrl+"product/mainpage"
 
 interface AuthSignupWithToken {
@@ -21,7 +21,7 @@ export const ProductsQuery = async ({signal, navigate}: AuthSignupWithToken) => 
         })
 
         if (!response.ok) {
-            await UseHttpErrorsHandler(response, navigate)
+            //await UseHttpErrorsHandler(response, navigate)
             return
         }
 

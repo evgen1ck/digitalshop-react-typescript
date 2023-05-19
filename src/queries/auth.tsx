@@ -1,9 +1,9 @@
-import UseHttpErrorsHandler from "../utils/httpResponds" 
-import {toast} from "react-hot-toast" 
-import {AppUrl, UnknownError} from "../storage/defs"
+import UseHttpErrorsHandler from "../lib/responds"
+import {toast} from "react-hot-toast"
 import React from "react" 
 import {NavigateFunction} from "react-router-dom"
 
+const AppUrl = 'http://localhost:9990/api/v1/'
 const authSignupUrl = AppUrl+"auth/signup"
 const authSignupWithTokenUrl = AppUrl+"auth/signup-with-token"
 const authLoginUrl = AppUrl+"auth/login"
@@ -48,13 +48,13 @@ export const AuthSignupQuery = async ({nickname, email, password, setEmailError,
                     setEmailError('Электронная почта уже используется')
                     return
             }
-            await UseHttpErrorsHandler(response, navigate)
+            //await UseHttpErrorsHandler(response, navigate)
             return
         }
 
         navigate('/completion-of-signup', { state: { email: email } })
     } catch (error) {
-        toast.error(UnknownError)
+        //toast.error(UnknownError)
         console.error("Error fetching data: ", error)
     }
 }
@@ -81,7 +81,7 @@ export const AuthSignupWithTokenQuery = async ({token, signal, navigate}: AuthSi
         })
 
         if (!response.ok) {
-            await UseHttpErrorsHandler(response, navigate)
+            //await UseHttpErrorsHandler(response, navigate)
             return
         }
 
@@ -144,14 +144,14 @@ export const AuthLoginQuery = async ({login, password, setLoginError, setPasswor
                     setPasswordError('Аккаунт был удалён')
                     return
             }
-            await UseHttpErrorsHandler(response, navigate)
+            //await UseHttpErrorsHandler(response, navigate)
             return
         }
 
         toast.success("Успешная авторизация")
         return data
     } catch (error) {
-        toast.error(UnknownError)
+        //toast.error(UnknownError)
         console.error("Error fetching data: ", error)
     }
 }
@@ -172,13 +172,13 @@ export const AuthLogoutQuery = async ({token, navigate}: AuthLogout) => {
         }) 
 
         if (!response.ok) {
-            await UseHttpErrorsHandler(response, navigate)
+            //await UseHttpErrorsHandler(response, navigate)
             return
         }
 
         toast.success("Успешный выход")
     } catch (error) {
-        toast.error(UnknownError)
+        //toast.error(UnknownError)
         console.error("Error fetching data: ", error)
     }
 }
@@ -226,14 +226,14 @@ export const AuthAloginQuery = async ({login, password, setLoginError, setPasswo
                     setPasswordError('Аккаунт был удалён')
                     return
             }
-            await UseHttpErrorsHandler(response, navigate)
+            //await UseHttpErrorsHandler(response, navigate)
             return
         }
 
         toast.success("Успешная авторизация")
         return data
     } catch (error) {
-        toast.error(UnknownError)
+        //toast.error(UnknownError)
         console.error("Error fetching data: ", error)
     }
 }

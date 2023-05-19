@@ -1,8 +1,8 @@
 import React from 'react'
 import {NavigateFunction} from "react-router-dom";
-import UseHttpErrorsHandler from "../utils/httpResponds";
-import {AppUrl} from "../storage/defs";
+import UseHttpErrorsHandler from "../lib/responds";
 
+const AppUrl = 'http://localhost:9990/api/v1/'
 const userGetPayment = AppUrl+"user/payment"
 
 interface UserGetPayment {
@@ -24,7 +24,7 @@ export const UserGetPaymentQuery = async ({ navigate, variant_id}: UserGetPaymen
         })
 
         if (!response.ok) {
-            await UseHttpErrorsHandler(response, navigate)
+            //await UseHttpErrorsHandler(response, navigate)
             return
         }
 

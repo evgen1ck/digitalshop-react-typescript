@@ -1,5 +1,5 @@
 import React, {KeyboardEventHandler, useState} from "react" 
-import { RowBlockLower } from "./PageBlocks" 
+import { RowBlockLower } from "../Blocks/PageBlocks"
 
 interface InputWithValidationProps {
     addToClassName?: string

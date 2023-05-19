@@ -1,18 +1,18 @@
 import React, {useEffect, useState} from 'react'
 import Select, {components, OptionProps, SingleValueProps} from "react-select"
-import {RowBlockLower} from "../PageBlocks"
-import {customStyles, DropDownProps} from "./DropDownData"
-import {AdminGetSubtypesQuery} from "../../queries/admin"
+import {RowBlockLower} from "../Blocks/PageBlocks"
+import {customStyles, DropDownProps, formatGroupLabel} from "./DropDownData";
+import {AdminGetItemsQuery} from "../../queries/admin";
 
-interface DataOption {
-    subtype_no: number
-    subtype_name: string
+export interface DataOption {
+    item_no: number
+    item_name: string
     created_at: string
     modified_at: string
     commentary: string | null
 }
 
-interface GroupedOption {
+export interface GroupedOption {
     readonly header: string
     readonly options: DataOption[]
 }
@@ -20,7 +20,7 @@ interface GroupedOption {
 const filterOptions = (inputValue: string, options: GroupedOption[]): GroupedOption[] => {
     return options.map(group => {
         const filteredOptions = group.options.filter(option =>
-            option.subtype_name.toLowerCase().includes(inputValue.toLowerCase())
+            option.item_name.toLowerCase().includes(inputValue.toLowerCase())
         )
 
         return { ...group, options: filteredOptions }
@@ -31,9 +31,9 @@ const Option = (props: OptionProps<DataOption, false, GroupedOption>) => {
     const { data } = props
     return (
         <components.Option {...props}
-                           key={data.subtype_name}>
+                           key={data.item_name}>
             <div className={`flex items-center space-x-2 ${!props.isDisabled && "cursor-pointer"}`}>
-                <span>{data.subtype_name.toUpperCase()}</span>
+                <span>{data.item_name.toUpperCase()}</span>
             </div>
         </components.Option>
     )
@@ -43,74 +43,50 @@ const SingleValue = (props: SingleValueProps<DataOption, false, GroupedOption>) 
     const { data } = props
     return (
         <components.SingleValue {...props}
-                                key={data.subtype_name}>
+                                key={data.item_name}>
             <div className={`flex items-center space-x-2 ${!props.isDisabled && "cursor-pointer"}`}>
                 <div className={`flex items-center space-x-2 ${!props.isDisabled && "cursor-pointer"}`}>
-                    <span>{data.subtype_name.toUpperCase()}</span>
+                    <span>{data.item_name.toUpperCase()}</span>
                 </div>
             </div>
         </components.SingleValue>
     )
 }
 
-export const SubtypesDropDown = ({value, header, nameField, placeholder, id, isLoading, setLoading, isClearable, isSearchable, setError, error, setValue, setDisabled, disabled, hasWarnLabel, addToClassName, navigate, checkOnEmpty, typeName}: DropDownProps) => {
+export const ItemsDropDown = ({value, header, nameField, placeholder, id, isLoading, setLoading, isClearable, isSearchable, setError, error, setValue, setDisabled, disabled, hasWarnLabel, addToClassName, navigate, checkOnEmpty}: DropDownProps) => {
     const [data, setData] = useState([])
     const [inputValue, setInputValue] = useState('')
     const [selectedOption, setSelectedOption] = useState<DataOption | null>(null)
 
     useEffect(() => {
-        console.log(typeName)
-        if (!typeName) {
+        const abortController = new AbortController
+
+        AdminGetItemsQuery({
+            signal: abortController.signal,
+            navigate: navigate
+        }).then(data => {
+            setData(data)
             setLoading(false)
+        }).catch(() => {
             setDisabled(true)
-        } else {
-            setLoading(true)
-            setDisabled(false)
+            setLoading(false)
+        })
+
+        return () => {
+            abortController.abort()
         }
-        setSelectedOption(null)
-        setValue('')
-    }, [typeName])
-
-    useEffect(() => {
-        if (typeName) {
-            const abortController = new AbortController
-
-            AdminGetSubtypesQuery({
-                signal: abortController.signal,
-                navigate: navigate,
-                type_name: typeName
-            }).then(data => {
-                setData(data)
-                setLoading(false)
-            }).catch(() => {
-                setDisabled(true)
-                setLoading(false)
-            })
-
-            return () => {
-                abortController.abort()
-            }
-        }
-    }, [typeName])
+    }, [])
 
     const filteredOptions = filterOptions(inputValue, [
         {
             header: header,
-            options: data ? data.map((option: DataOption) => ({...option, label: option.subtype_name, value: option.subtype_no})) : [],
+            options: data ? data.map((option: DataOption) => ({...option, label: option.item_name, value: option.item_no})) : [],
         }
     ])
 
-    const formatGroupLabel = (data: GroupedOption) => (
-        <div className="flex items-center justify-between"
-             key={data.header}>
-            <span>{data.header}</span>
-            <span className="inline-block text-center leading-3 pr-2">{data.options.length}</span>
-        </div>
-    )
-
     const handleProductChange = (selectedOption: DataOption | null) => {
-        setSelectedOption(selectedOption);
-        setValue(selectedOption ? selectedOption.subtype_name : '')
+        setSelectedOption(selectedOption)
+        setValue(selectedOption ? selectedOption.item_name : '')
         if (checkOnEmpty) {
             if (selectedOption == null) setError("Поле обязательно к заполнению!")
             else setError('')

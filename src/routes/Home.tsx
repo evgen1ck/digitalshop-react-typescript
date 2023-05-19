@@ -1,21 +1,33 @@
 import {useNavigate} from "react-router-dom" 
 import React, {useEffect, useRef, useState} from "react" 
-import {ProductsQuery} from "../queries/products" 
-import {RowBlock, RowBlockUpper} from "../components/PageBlocks"
-import InputWithValidation, {TEXT} from "../components/InputWithValidation" 
-import {isMinMaxLen, isNotBlank} from "../utils/dataValidators" 
-import {Product, ProductCardForMainpage} from "../components/ProductCards"
+import {RowBlock, RowBlockUpper} from "../components/Blocks/PageBlocks"
+import InputWithValidation, {TEXT} from "../components/Inputs/InputWithValidation"
+import {isMinMaxLen, isNotBlank} from "../lib/validators"
+import {Product, ProductCardForMainpage} from "../components/Cards/ProductCards"
 import {useAuthContext} from "../storage/auth";
+import {PaymentModal} from "../components/Modals/PaymentModal";
+import {ApiProductMainpageUrl, getAxioser} from "../lib/queries";
+import {CentralTextBlock} from "../components/Blocks/CentralTextBlock";
+import httpErrorsHandler from "../lib/responds";
 
-export default function Games() {
+export default function Home() {
     const navigate = useNavigate()
-    const [isSubmitting, setIsSubmitting] = useState(false)
-    const [data, setData] = useState<Product[]>([])
-    const [loading, setLoading] = useState(true) 
+    const { role } = useAuthContext()
 
-    const [searchValue, setSearchValue] = useState("") 
+    const [mainData, setMainData] = useState<Product[]>([])
+    const [mainDataLoading, setMainDataLoading] = useState(true)
+
+    const [searchSubmitting, setSearchSubmitting] = useState(false)
+    const [searchValue, setSearchValue] = useState("")
     const [searchError, setSearchError] = useState("") 
-    const inputSearchRef = useRef<HTMLInputElement>(null)
+    const searchRef = useRef<HTMLInputElement>(null)
+
+    const [variantId, setVariantId] = useState<string>('')
+    const [isModalOpen, setIsModalOpen] = useState(false)
+    const handleModalOpen = (id: string) => {
+        setVariantId(id)
+        setIsModalOpen(true)
+    }
 
     const handleEnterPress = (event: any) => {
         if (event.key === 'Enter') {
@@ -24,48 +36,33 @@ export default function Games() {
     }
 
     const goSearch = () => {
-        setIsSubmitting(true)
-        inputSearchRef.current?.focus()
-        inputSearchRef.current?.blur()
+        setSearchSubmitting(true)
+        searchRef.current?.focus()
+        searchRef.current?.blur()
 
         if (searchValue === "" ||
             searchError != "") {
-            setIsSubmitting(false)
+            setSearchSubmitting(false)
             return
         }
 
-        navigate(`?query=${encodeURIComponent(searchValue)}`)
+        navigate(`?search=${encodeURIComponent(searchValue)}`)
     }
 
     useEffect(() => {
-        const abortController = new AbortController 
-
-        ProductsQuery({
-            signal: abortController.signal,
-            navigate: navigate
-        }).then(data => {
-            setData(data)
-            setLoading(false)
-        }).catch(() => {
-            setLoading(false)
+        setMainDataLoading(true)
+        getAxioser(ApiProductMainpageUrl).then(data => {
+            setMainData(data)
+        }).catch((response) => {
+            httpErrorsHandler(response, navigate)
+            return (
+                <CentralTextBlock text='Серверная ошибка получения данных.' />
+            )
         })
-
-        return () => {
-            abortController.abort() 
-        }
+        setMainDataLoading(false)
     }, [])
 
-    if (loading) {
-        return (
-            <div className="justify-between select-none">
-                <div className="text-center">
-                    <h3 className="text-3xl font-bold mb-12">
-                        Ожидаем ответ от сервера...
-                    </h3>
-                </div>
-            </div>
-        )
-    }
+    if (mainDataLoading) return ( <CentralTextBlock text='Ожидаем ответ...' /> )
 
     return (
         <>
@@ -75,7 +72,7 @@ export default function Games() {
                 </div>
             </RowBlock>
             <RowBlockUpper addToClassName="pb-12 items-center justify-center flex">
-                <div className="flex inline-flex lg:w-2/3 lg:items-center w-full">
+                <div className="inline-flex sm:w-2/3 sm:items-center w-full">
                     <InputWithValidation
                         nameField={""}
                         placeholder={"Поиск по товарам, например, GTA"}
@@ -88,21 +85,29 @@ export default function Games() {
                         value={searchValue}
                         setError={setSearchError}
                         error={searchError}
-                        inputRef={inputSearchRef}
+                        inputRef={searchRef}
                         insertSpace={true}
                         requiredField={true}
                         onKeyPress={handleEnterPress} />
                     <button className="btn-classic-frame select-none flex text-center h-12 px-4 py-2 sm:mb-7 mt-2 sm:text-xl text-lg uppercase"
                             type="submit"
                             onClick={goSearch}
-                            disabled={isSubmitting}>
+                            disabled={searchSubmitting}>
                         Искать
                     </button>
                 </div>
             </RowBlockUpper>
 
             <RowBlock>
-                {data && data.length > 0 && <ProductCardForMainpage products={data} />}
+                <PaymentModal onShow={isModalOpen} setShow={setIsModalOpen} canLeave={true} variantId={variantId} />
+                <div className="space-y-8 select-none">
+                    {mainData && mainData.map((product) => (
+                        <ProductCardForMainpage product={product}
+                                                handleModalOpen={handleModalOpen}
+                                                isPurchasing={role == 'user'}
+                                                key={product.product_id} />
+                    ))}
+                </div>
             </RowBlock>
         </>
     )

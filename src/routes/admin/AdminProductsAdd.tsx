@@ -1,21 +1,21 @@
 import React, {useEffect, useRef, useState} from 'react'
 import {Link, useNavigate} from "react-router-dom"
-import {ServicesDropDown} from "../../components/dropdowns/ServicesDropDown"
-import {RowBlock, RowBlockUpper} from "../../components/PageBlocks"
+import {ServicesDropDown} from "../../components/Dropdowns/ServicesDropDown"
+import {RowBlock, RowBlockUpper} from "../../components/Blocks/PageBlocks"
 import {GoPlus} from 'react-icons/go'
-import InputWithValidation, {NUMBER, TEXT} from "../../components/InputWithValidation"
+import InputWithValidation, {NUMBER, TEXT} from "../../components/Inputs/InputWithValidation"
 import {
     isNotContainsConsecutiveSpaces,
     isNotContainsSpace,
     isMinMaxLen,
     isNotBlank,
     isMoney, isPercentage
-} from "../../utils/dataValidators"
-import {ProductsDropDown} from "../../components/dropdowns/ProductsDropDown"
-import {TypesDropDown} from "../../components/dropdowns/TypesDropDown"
-import {SubtypesDropDown} from "../../components/dropdowns/SubtypesDropDown"
-import {StatesDropDown} from "../../components/dropdowns/StatesDropDown"
-import {ItemsDropDown} from "../../components/dropdowns/ItemsDropDown"
+} from "../../lib/validators"
+import {ProductsDropDown} from "../../components/Dropdowns/ProductsDropDown"
+import {TypesDropDown} from "../../components/Dropdowns/TypesDropDown"
+import {SubtypesDropDown} from "../../components/Dropdowns/SubtypesDropDown"
+import {StatesDropDown} from "../../components/Dropdowns/StatesDropDown"
+import {ItemsDropDown} from "../../components/Dropdowns/ItemsDropDown"
 import {AuthLogoutQuery} from "../../queries/auth";
 import {DeleteUserAuth} from "../../storage/auth";
 import {AdminNewVariantQuery} from "../../queries/admin";

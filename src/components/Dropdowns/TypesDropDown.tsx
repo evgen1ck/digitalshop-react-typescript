@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react'
 import Select, {components, OptionProps, SingleValueProps} from "react-select"
-import {RowBlockLower} from "../PageBlocks"
+import {RowBlockLower} from "../Blocks/PageBlocks"
 import {customStyles, DropDownProps, formatGroupLabel} from "./DropDownData";
 import {AdminGetTypesQuery} from "../../queries/admin";
 

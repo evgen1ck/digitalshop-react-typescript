@@ -1,4 +1,4 @@
-export function TranslateTextQuantity(s: string) {
+export function translateTextQuantity(s: string) {
     switch (s.toLowerCase()) {
         case "out of stock":
             return "распродано"
@@ -15,7 +15,7 @@ export function TranslateTextQuantity(s: string) {
     }
 }
 
-export function TranslateProductSubtype(s: string) {
+export function translateProductSubtype(s: string) {
     switch (s.toLowerCase()) {
         case "console version":
             return "Консольная версия"
@@ -28,7 +28,7 @@ export function TranslateProductSubtype(s: string) {
     }
 }
 
-export function TranslateProductType(s: string) {
+export function translateProductType(s: string) {
     switch (s.toLowerCase()) {
         case "replenishment of in-game currency":
             return "Пополнение внутриигрового счета"

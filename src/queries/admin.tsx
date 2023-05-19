@@ -1,9 +1,10 @@
 import React from "react"
 import {NavigateFunction} from "react-router-dom"
-import UseHttpErrorsHandler from "../utils/httpResponds"
-import {AppUrl, UnknownError} from "../storage/defs"
+import UseHttpErrorsHandler from "../lib/responds"
 import {toast} from "react-hot-toast";
-import {RedirectTo} from "../utils/redirect";
+import {RedirectTo} from "../lib/redirect";
+
+const AppUrl = 'http://localhost:9990/api/v1/'
 
 const adminProduct = AppUrl+"admin/product"
 const adminService = AppUrl+"admin/service"
@@ -32,7 +33,7 @@ export const AdminGetSubtypesQuery = async ({signal, navigate, type_name}: Admin
         })
 
         if (!response.ok) {
-            await UseHttpErrorsHandler(response, navigate)
+            //await UseHttpErrorsHandler(response, navigate)
             return
         }
 
@@ -56,7 +57,7 @@ export const AdminGetServicesQuery = async ({signal, navigate}: AdminCommon) => 
         })
 
         if (!response.ok) {
-            await UseHttpErrorsHandler(response, navigate)
+            //await UseHttpErrorsHandler(response, navigate)
             return
         }
 
@@ -75,7 +76,7 @@ export const AdminGetProductsQuery = async ({signal, navigate}: AdminCommon) => 
         })
 
         if (!response.ok) {
-            await UseHttpErrorsHandler(response, navigate)
+            //await UseHttpErrorsHandler(response, navigate)
             return
         }
 
@@ -94,7 +95,7 @@ export const AdminGetTypesQuery = async ({signal, navigate}: AdminCommon) => {
         })
 
         if (!response.ok) {
-            await UseHttpErrorsHandler(response, navigate)
+            //await UseHttpErrorsHandler(response, navigate)
             return
         }
 
@@ -113,7 +114,7 @@ export const AdminGetStatesQuery = async ({signal, navigate}: AdminCommon) => {
         })
 
         if (!response.ok) {
-            await UseHttpErrorsHandler(response, navigate)
+            //await UseHttpErrorsHandler(response, navigate)
             return
         }
 
@@ -132,7 +133,7 @@ export const AdminGetItemsQuery = async ({signal, navigate}: AdminCommon) => {
         })
 
         if (!response.ok) {
-            await UseHttpErrorsHandler(response, navigate)
+            //await UseHttpErrorsHandler(response, navigate)
             return
         }
 
@@ -157,7 +158,7 @@ export const AdminVariantsQuery = async ({signal, navigate}: AuthSignupWithToken
         })
 
         if (!response.ok) {
-            await UseHttpErrorsHandler(response, navigate)
+            //await UseHttpErrorsHandler(response, navigate)
             return
         }
 
@@ -203,14 +204,14 @@ export const AdminNewVariantQuery = async ({navigate, subtype, product, name, se
         })
 
         if (!response.ok) {
-            await UseHttpErrorsHandler(response, navigate)
+            //await UseHttpErrorsHandler(response, navigate)
             return
         }
 
         toast.success("Успешное добавление")
         RedirectTo('/admin/products', navigate, 100)
     } catch (error) {
-        toast.error(UnknownError)
+        //toast.error(UnknownError)
         console.error("Error fetching data: ", error)
     }
 }
@@ -236,7 +237,7 @@ export const AdminDeleteVariantQuery = async ({ navigate, variantId}: AdminDelet
                     toast.error("Вариант используется в заказах")
                     return
             }
-            await UseHttpErrorsHandler(response, navigate)
+            //await UseHttpErrorsHandler(response, navigate)
         }
 
         toast.success("Успешное удаление")
@@ -262,7 +263,7 @@ export const AdminVariantQuery = async ({ navigate, signal, variantId}: AdminVar
         })
 
         if (!response.ok) {
-            await UseHttpErrorsHandler(response, navigate)
+            //await UseHttpErrorsHandler(response, navigate)
         }
 
         console.log(await response.json())

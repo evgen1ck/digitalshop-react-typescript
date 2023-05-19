@@ -1,7 +1,7 @@
 import React, {useEffect, useRef, useState} from "react"
 import {Link, useNavigate} from "react-router-dom";
-import {RowBlock, RowBlockUpper} from "../../components/PageBlocks";
-import {AdminProductsCards, Product, ProductCardForMainpage} from "../../components/ProductCards";
+import {RowBlock, RowBlockUpper} from "../../components/Blocks/PageBlocks";
+import {AdminProductsCards, Product, ProductCardForMainpage} from "../../components/Cards/ProductCards";
 import {ProductsQuery} from "../../queries/products";
 import {AdminVariantsQuery} from "../../queries/admin";
 

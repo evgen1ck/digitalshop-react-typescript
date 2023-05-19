@@ -7,8 +7,7 @@ import {
     RouterProvider, useLocation
 } from 'react-router-dom' 
 import './index.css' 
-import Home from './routes/Home' 
-import RootLayout from './layouts/RootLayout' 
+import RootLayout from './components/Layouts/RootLayout'
 import NoMatch from './routes/NoMatch' 
 import Signup from './routes/Signup' 
 import Login from './routes/Login' 
@@ -22,6 +21,7 @@ import CompletingOrder from "./routes/CompletingOrder";
 import AdminProducts from "./routes/admin/AdminProducts";
 import Alogin from "./routes/Alogin";
 import AdminProductsEdit from "./routes/admin/AdminProductEdit";
+import Home from "./routes/Home";
 
 // const AuthProtectedRoute = (props: { children: ReactNode, accountRole: string }) => {
 //     const { children, accountRole } = props
