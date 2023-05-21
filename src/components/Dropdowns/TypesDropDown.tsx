@@ -1,8 +1,12 @@
 import React, {useEffect, useState} from 'react'
 import Select, {components, OptionProps, SingleValueProps} from "react-select"
 import {RowBlockLower} from "../Blocks/PageBlocks"
-import {customStyles, DropDownProps, formatGroupLabel} from "./DropDownData";
+import {customStyles, DropDownProps, formatGroupLabel, useUpdateSelectedOption} from "./DropDownData";
 import {AdminGetTypesQuery} from "../../queries/admin";
+import {Hint} from "@skbkontur/react-ui";
+import {AiOutlineEdit} from "react-icons/ai";
+import {toast} from "react-hot-toast";
+import {MdOutlineDelete} from "react-icons/md";
 
 export interface DataOption {
     type_no: number
@@ -28,12 +32,31 @@ const filterOptions = (inputValue: string, options: GroupedOption[]): GroupedOpt
 }
 
 const Option = (props: OptionProps<DataOption, false, GroupedOption>) => {
-    const { data } = props
+    const { data, isFocused, innerProps } = props
+    const [isHovered, setIsHovered] = useState(isFocused);
+
+    useEffect(() => {
+        setIsHovered(isFocused);
+    }, [isFocused]);
+
     return (
         <components.Option {...props}
-                           key={data.type_name}>
-            <div className={`flex items-center space-x-2 ${!props.isDisabled && "cursor-pointer"}`}>
+                           key={data.type_name}
+                           innerProps={{...innerProps, onMouseEnter: () => setIsHovered(true), onMouseLeave: () => setIsHovered(false)}}>
+            <div className={`flex items-center space-x-2 justify-between ${!props.isDisabled && "cursor-pointer"}`}>
                 <span>{data.type_name.toUpperCase()}</span>
+                <span className="pr-2 inline-flex space-x-5">
+                    {isHovered && localStorage.getItem("role") == "admin" &&
+                        <Hint pos={"bottom"} text="Редактировать"> <AiOutlineEdit className="system-animation-2" onClick={() => {
+                            toast.success('abcd')
+                        }} /> </Hint>
+                    }
+                    {isHovered && localStorage.getItem("role") == "admin" &&
+                        <Hint pos={"bottom"} text="Удалить"> <MdOutlineDelete color="red" className="system-animation-2" onClick={() => {
+                            toast.success('ab')
+                        }} /> </Hint>
+                    }
+                </span>
             </div>
         </components.Option>
     )
@@ -84,9 +107,9 @@ export const TypesDropDown = ({value, header, nameField, placeholder, id, isLoad
         }
     ])
 
+    useUpdateSelectedOption(data, value, setSelectedOption, "type_name")
+
     const handleProductChange = (selectedOption: DataOption | null) => {
-        // setSelectedOption(selectedOption)
-        // setValue(selectedOption ? selectedOption.type_name : '')
         setSelectedOption(selectedOption)
         if (selectedOption) setValue(selectedOption.type_name)
         else setValue('')

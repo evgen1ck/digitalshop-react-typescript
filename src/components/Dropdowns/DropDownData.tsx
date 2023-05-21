@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useEffect} from 'react'
 import {NavigateFunction} from "react-router-dom";
 
 export interface DropDownProps {
@@ -38,8 +38,10 @@ export const customStyles = (isDisabled: boolean) => ({
     }),
     option: (provided: any, state: any) => ({
         ...provided,
-        color: state.isDisabled ? 'gray' : state.isSelected ? 'white' : 'black',
-        backgroundColor: state.isDisabled ? null : state.isSelected ? '#CCCAC3' : null,
+        color: state.isDisabled ? 'gray' : 'black',
+        //color: state.isDisabled ? 'gray' : state.isSelected ? 'white' : 'black',
+        backgroundColor: state.isDisabled ? null : state.isFocused ? '#F5F5F5' : null,
+        //backgroundColor: state.isDisabled ? null : state.isSelected ? '#CCCAC3' : state.isFocused ? '#F5F5F5' : null,
     }),
     input: (provided: any) => ({
         ...provided,
@@ -57,3 +59,14 @@ export const formatGroupLabel = (data: any) => (
         <span className="inline-block text-center leading-3 pr-2">{data.options.length}</span>
     </div>
 )
+
+
+export const useUpdateSelectedOption = (data: any, value: any, setSelectedOption: any, field: string) => {
+    useEffect(() => {
+        if (data) {
+            const correspondingOption = data.find((option: any) => option[field] === value);
+            setSelectedOption(correspondingOption ? { ...correspondingOption, label: correspondingOption[field], value: correspondingOption[field] } : null);
+        }
+    }, [value, data]);
+}
+

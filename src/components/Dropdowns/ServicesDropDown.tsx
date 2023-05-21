@@ -2,8 +2,12 @@ import React, {useEffect, useState} from 'react'
 import Select, {components, OptionProps, SingleValueProps} from "react-select"
 import SVGIcon from "../Icons/SvgIconColor"
 import {RowBlockLower} from "../Blocks/PageBlocks"
-import {customStyles, DropDownProps, formatGroupLabel} from "./DropDownData";
+import {customStyles, DropDownProps, formatGroupLabel, useUpdateSelectedOption} from "./DropDownData";
 import {AdminGetServicesQuery} from "../../queries/admin";
+import {Hint} from "@skbkontur/react-ui";
+import {AiOutlineEdit} from "react-icons/ai";
+import {toast} from "react-hot-toast";
+import {MdOutlineDelete} from "react-icons/md";
 
 interface DataOption {
     service_no: number
@@ -30,19 +34,31 @@ const filterOptions = (inputValue: string, options: GroupedOption[]): GroupedOpt
 }
 
 const Option = (props: OptionProps<DataOption, false, GroupedOption>) => {
-    const { data } = props
+    const { data, isFocused, innerProps } = props
+    const [isHovered, setIsHovered] = useState(isFocused);
+
+    useEffect(() => {
+        setIsHovered(isFocused);
+    }, [isFocused]);
+
     return (
         <components.Option {...props}
-                           key={data.service_name}>
-            <div className={`flex items-center space-x-2 ${!props.isDisabled && "cursor-pointer"}`}>
-                {data.service_name.toLowerCase() != "universal" &&
-                    <SVGIcon
-                        url={data.service_url}
-                        alt={data.service_name}
-                        className="w-6 h-6"
-                    />
-                }
+                           key={data.service_name}
+                           innerProps={{...innerProps, onMouseEnter: () => setIsHovered(true), onMouseLeave: () => setIsHovered(false)}}>
+            <div className={`flex items-center space-x-2 justify-between ${!props.isDisabled && "cursor-pointer"}`}>
                 <span>{data.service_name.toUpperCase()}</span>
+                <span className="pr-2 inline-flex space-x-5">
+                    {isHovered && localStorage.getItem("role") == "admin" &&
+                        <Hint pos={"bottom"} text="Редактировать"> <AiOutlineEdit className="system-animation-2" onClick={() => {
+                            toast.success('abcd')
+                        }} /> </Hint>
+                    }
+                    {isHovered && localStorage.getItem("role") == "admin" &&
+                        <Hint pos={"bottom"} text="Удалить"> <MdOutlineDelete color="red" className="system-animation-2" onClick={() => {
+                            toast.success('ab')
+                        }} /> </Hint>
+                    }
+                </span>
             </div>
         </components.Option>
     )
@@ -98,15 +114,7 @@ export const ServicesDropDown = ({value, header, nameField, placeholder, id, isL
         }
     ])
 
-    // const handleCreate = (inputValue: string) => {
-    //     setServicesLoading(true);
-    //     setTimeout(() => {
-    //         const newOption = createOption(inputValue);
-    //         setServicesLoading(false);
-    //         setOptions((prev) => [...prev, newOption]);
-    //         setValue(newOption);
-    //     }, 1000);
-    // };
+    useUpdateSelectedOption(data, value, setSelectedOption, "service_name")
 
     const handleProductChange = (selectedOption: DataOption | null) => {
         setSelectedOption(selectedOption)
@@ -126,7 +134,7 @@ export const ServicesDropDown = ({value, header, nameField, placeholder, id, isL
                 isSearchable={isSearchable}
                 isClearable={isClearable}
                 isLoading={isLoading}
-                isDisabled={disabled}
+                isDisabled={disabled || isLoading}
                 options={filteredOptions}
                 value={selectedOption}
                 formatGroupLabel={formatGroupLabel}
@@ -138,7 +146,6 @@ export const ServicesDropDown = ({value, header, nameField, placeholder, id, isL
                 loadingMessage={() => "Загрузка данных..."}
                 id={id}
                 styles={customStyles(disabled)}
-                //onCreateOption={handleCreate}
             />
             {hasWarnLabel && (
                 <p className={`text-light-second dark:text-dark-second text-sm italic select-none p-1 

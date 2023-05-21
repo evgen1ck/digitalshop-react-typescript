@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react'
 import Select, {components, OptionProps, SingleValueProps} from "react-select"
 import {RowBlockLower} from "../Blocks/PageBlocks"
-import {customStyles, DropDownProps, formatGroupLabel} from "./DropDownData";
+import {customStyles, DropDownProps, formatGroupLabel, useUpdateSelectedOption} from "./DropDownData";
 import {AdminGetStatesQuery} from "../../queries/admin";
 
 export interface DataOption {
@@ -83,6 +83,8 @@ export const StatesDropDown = ({value, header, nameField, placeholder, id, isLoa
             options: data ? data.map((option: DataOption) => ({...option, label: option.state_name, value: option.state_no})) : [],
         }
     ])
+
+    useUpdateSelectedOption(data, value, setSelectedOption, "state_name")
 
     const handleProductChange = (selectedOption: DataOption | null) => {
         setSelectedOption(selectedOption)

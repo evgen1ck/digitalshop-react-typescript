@@ -26,6 +26,13 @@ button[disabled]:hover {
     transition-delay: 50ms;  /* if using just "delay-50" then will be an error here */
 }
 
+.system-animation-2 {
+    @apply
+    transition ease-in-out duration-300 focus:outline-none
+    scale-125 hover:scale-[1.75] focus:scale-150;
+    transition-delay: 50ms;  /* if using just "delay-50" then will be an error here */
+}
+
 .system-shadow {
     @apply
     shadow-sm focus:shadow-md
@@ -45,6 +52,16 @@ button[disabled]:hover {
     system-shadow system-animation system-field
     focus:border-light-focusing dark:focus:border-dark-focusing;
 }
+
+.input-classic:disabled {
+    @apply
+    appearance-none leading-tight border-[1px] rounded
+    border-light-additional dark:border-dark-additional
+    bg-light-main dark:bg-dark-additional
+    shadow-none scale-100
+    text-light-second dark:text-dark-second;
+}
+
 
 .select-classic {
     @apply

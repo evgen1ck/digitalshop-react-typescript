@@ -2,7 +2,7 @@ import {useNavigate} from "react-router-dom"
 import React, {useEffect, useRef, useState} from "react" 
 import {RowBlock, RowBlockUpper} from "../components/Blocks/PageBlocks"
 import InputWithValidation, {TEXT} from "../components/Inputs/InputWithValidation"
-import {isMinMaxLen, isNotBlank} from "../lib/validators"
+import {isMinMaxLen} from "../lib/validators"
 import {Product, ProductCardForMainpage} from "../components/Cards/ProductCards"
 import {useAuthContext} from "../storage/auth";
 import {PaymentModal} from "../components/Modals/PaymentModal";
@@ -13,9 +13,6 @@ import httpErrorsHandler from "../lib/responds";
 export default function Home() {
     const navigate = useNavigate()
     const { role } = useAuthContext()
-
-    const [mainData, setMainData] = useState<Product[]>([])
-    const [mainDataLoading, setMainDataLoading] = useState(true)
 
     const [searchSubmitting, setSearchSubmitting] = useState(false)
     const [searchValue, setSearchValue] = useState("")
@@ -49,20 +46,20 @@ export default function Home() {
         navigate(`?search=${encodeURIComponent(searchValue)}`)
     }
 
+    const [mainData, setMainData] = useState<Product[]>([])
+    const [mainDataLoading, setMainDataLoading] = useState(true)
+    const [mainDataError, setMainDataError] = useState("")
     useEffect(() => {
         setMainDataLoading(true)
         getAxioser(ApiProductMainpageUrl).then(data => {
             setMainData(data)
         }).catch((response) => {
             httpErrorsHandler(response, navigate)
-            return (
-                <CentralTextBlock text='Серверная ошибка получения данных.' />
-            )
-        })
-        setMainDataLoading(false)
+            setMainDataError("Серверная ошибка получения данных")
+        }).finally(() => setMainDataLoading(false))
     }, [])
-
-    if (mainDataLoading) return ( <CentralTextBlock text='Ожидаем ответ...' /> )
+    if (mainDataLoading) return <CentralTextBlock text='Ожидаем ответ...' />
+    if (mainDataError) return <CentralTextBlock text={mainDataError} />
 
     return (
         <>
@@ -80,14 +77,14 @@ export default function Home() {
                         type={TEXT}
                         hasWarnLabel={true}
                         spellCheck={false}
-                        requiredValidators={[isNotBlank, isMinMaxLen(3, 32)]}
+                        requiredValidators={[isMinMaxLen(3, 32)]}
                         setValue={setSearchValue}
                         value={searchValue}
                         setError={setSearchError}
                         error={searchError}
                         inputRef={searchRef}
                         insertSpace={true}
-                        requiredField={true}
+                        requiredField={false}
                         onKeyPress={handleEnterPress} />
                     <button className="btn-classic-frame select-none flex text-center h-12 px-4 py-2 sm:mb-7 mt-2 sm:text-xl text-lg uppercase"
                             type="submit"

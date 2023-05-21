@@ -3,7 +3,7 @@ import {RedirectTo} from "./redirect"
 import {NavigateFunction} from "react-router-dom"
 import {AxiosResponse} from "axios";
 
-export default async function httpErrorsHandler(response: AxiosResponse<any>, navigate: NavigateFunction): Promise<null> {
+export default async function httpErrorsHandler(response: AxiosResponse<any, any>, navigate: NavigateFunction): Promise<null> {
     switch (response.status) {
         case 503:
             toast.error("Сервис недоступен")
@@ -47,7 +47,7 @@ export default async function httpErrorsHandler(response: AxiosResponse<any>, na
             break
         default:
             toast.error('Неизвестная ошибка')
-            console.log(`Unknown error: ${response.status} (${response.statusText}): ${response.data.description && response.data.description} - ${JSON.stringify(response.data)}`)
+            console.log(`Unknown error: ${response.status} (${response.statusText}): ${response.data?.description} - ${JSON.stringify(response.data)}`)
     }
     return null
 }

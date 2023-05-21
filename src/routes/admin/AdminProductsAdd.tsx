@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react'
+import React, {useRef, useState} from 'react'
 import {Link, useNavigate} from "react-router-dom"
 import {ServicesDropDown} from "../../components/Dropdowns/ServicesDropDown"
 import {RowBlock, RowBlockUpper} from "../../components/Blocks/PageBlocks"
@@ -16,8 +16,6 @@ import {TypesDropDown} from "../../components/Dropdowns/TypesDropDown"
 import {SubtypesDropDown} from "../../components/Dropdowns/SubtypesDropDown"
 import {StatesDropDown} from "../../components/Dropdowns/StatesDropDown"
 import {ItemsDropDown} from "../../components/Dropdowns/ItemsDropDown"
-import {AuthLogoutQuery} from "../../queries/auth";
-import {DeleteUserAuth} from "../../storage/auth";
 import {AdminNewVariantQuery} from "../../queries/admin";
 import {toast} from "react-hot-toast";
 
@@ -86,19 +84,6 @@ const AdminProductsAdd = () => {
     const [priceValue, setPriceValue] = useState('')
     const [priceError, setPriceError] = useState('')
     const inputPriceRef = useRef<HTMLInputElement>(null)
-
-    // const unsavedChanges = typeValue.length > 0 || subtypeValue.length > 0 || productValue.length > 0 || nameValue.length > 0 || serviceValue.length > 0 || stateValue.length > 0 || itemValue.length > 0 || maskValue.length > 0 || priceValue.length > 0 || discountMoneyValue.length > 0 || discountPercentValue.length > 0
-    // useEffect(() => {
-    //     console.log("+" +nameValue +"+")
-    //     window.addEventListener("beforeunload", alertUser)
-    //     return () => {
-    //         window.removeEventListener("beforeunload", alertUser)
-    //     }
-    // }, [])
-    // const alertUser = (e: BeforeUnloadEvent) => {
-    //     e.preventDefault()
-    //     e.returnValue = ""
-    // }
 
     function handleAddClick() {
         setIsSubmitting(true)
@@ -186,7 +171,7 @@ const AdminProductsAdd = () => {
             </RowBlock>
 
             <RowBlockUpper>
-                <div className="flex inline-flex lg:w-1/2 w-full">
+                <div className="inline-flex lg:w-1/2 w-full">
                     <TypesDropDown addToClassName=""
                                    header="Типы"
                                    nameField="Тип"

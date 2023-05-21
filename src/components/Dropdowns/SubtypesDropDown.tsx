@@ -1,8 +1,13 @@
 import React, {useEffect, useState} from 'react'
 import Select, {components, OptionProps, SingleValueProps} from "react-select"
 import {RowBlockLower} from "../Blocks/PageBlocks"
-import {customStyles, DropDownProps} from "./DropDownData"
+import {customStyles, DropDownProps, useUpdateSelectedOption} from "./DropDownData"
 import {AdminGetSubtypesQuery} from "../../queries/admin"
+import {toast} from "react-hot-toast";
+import { MdOutlineDelete} from 'react-icons/md';
+import {Hint} from "@skbkontur/react-ui";
+import {AiOutlineEdit} from "react-icons/ai";
+
 
 interface DataOption {
     subtype_no: number
@@ -28,12 +33,31 @@ const filterOptions = (inputValue: string, options: GroupedOption[]): GroupedOpt
 }
 
 const Option = (props: OptionProps<DataOption, false, GroupedOption>) => {
-    const { data } = props
+    const { data, isFocused, innerProps } = props
+    const [isHovered, setIsHovered] = useState(isFocused);
+
+    useEffect(() => {
+        setIsHovered(isFocused);
+    }, [isFocused]);
+
     return (
         <components.Option {...props}
-                           key={data.subtype_name}>
-            <div className={`flex items-center space-x-2 ${!props.isDisabled && "cursor-pointer"}`}>
+                           key={data.subtype_name}
+                           innerProps={{...innerProps, onMouseEnter: () => setIsHovered(true), onMouseLeave: () => setIsHovered(false)}}>
+            <div className={`flex items-center space-x-2 justify-between ${!props.isDisabled && "cursor-pointer"}`}>
                 <span>{data.subtype_name.toUpperCase()}</span>
+                <span className="pr-2 inline-flex space-x-5">
+                    {isHovered && localStorage.getItem("role") == "admin" &&
+                        <Hint pos={"bottom"} text="Редактировать"> <AiOutlineEdit className="system-animation-2" onClick={() => {
+                            toast.success('abcd')
+                        }} /> </Hint>
+                    }
+                    {isHovered && localStorage.getItem("role") == "admin" &&
+                        <Hint pos={"bottom"} text="Удалить"> <MdOutlineDelete color="red" className="system-animation-2" onClick={() => {
+                            toast.success('ab')
+                        }} /> </Hint>
+                    }
+                </span>
             </div>
         </components.Option>
     )
@@ -59,7 +83,6 @@ export const SubtypesDropDown = ({value, header, nameField, placeholder, id, isL
     const [selectedOption, setSelectedOption] = useState<DataOption | null>(null)
 
     useEffect(() => {
-        console.log(typeName)
         if (!typeName) {
             setLoading(false)
             setDisabled(true)
@@ -108,14 +131,17 @@ export const SubtypesDropDown = ({value, header, nameField, placeholder, id, isL
         </div>
     )
 
+
     const handleProductChange = (selectedOption: DataOption | null) => {
-        setSelectedOption(selectedOption);
         setValue(selectedOption ? selectedOption.subtype_name : '')
+        setSelectedOption(selectedOption);
         if (checkOnEmpty) {
             if (selectedOption == null) setError("Поле обязательно к заполнению!")
             else setError('')
         }
     }
+
+    useUpdateSelectedOption(data, value, setSelectedOption, "subtype_name")
 
     return (
         <RowBlockLower addToClassName={addToClassName && addToClassName}>

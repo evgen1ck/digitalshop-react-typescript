@@ -1,5 +1,4 @@
 import axios, { AxiosResponse } from 'axios'
-import { toast } from "react-hot-toast"
 
 //export const ApiUrl = "https://api.digitalshop.evgenick.com/api/v1/"
 export const ApiUrl = "http://localhost:9990/api/v1/"
@@ -38,6 +37,25 @@ export const postAxioser = (url: string, body = {}) => {
         headers['Content-Type'] = 'application/json';
 
     return axios.post(url, body, { headers })
+        .then(checkOnBadHttpCode)
+        .then((res) => res.data)
+}
+
+export const patchAxioser = (url: string, body = {}) => {
+    const headers: { [key: string]: string } = { Authorization: `Bearer ${localStorage.getItem('token')}` }
+
+    if (Object.keys(body).length !== 0)
+        headers['Content-Type'] = 'application/json';
+
+    return axios.patch(url, body, { headers })
+        .then(checkOnBadHttpCode)
+        .then((res) => res.data)
+}
+
+export const deleteAxioser = async (url: string) => {
+    const headers: { [key: string]: string } = { Authorization: `Bearer ${localStorage.getItem('token')}` }
+
+    return await axios.delete(url, { headers })
         .then(checkOnBadHttpCode)
         .then((res) => res.data)
 }

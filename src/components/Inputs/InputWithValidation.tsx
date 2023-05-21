@@ -20,6 +20,7 @@ interface InputWithValidationProps {
     maxLength?: number
     onKeyPress?: KeyboardEventHandler<HTMLInputElement>
     requiredField: boolean
+    disabled?: boolean
 }
 
 export const TEXT = "text" 
@@ -44,7 +45,8 @@ export default function InputWithValidation ({
                                                  maxLength,
                                                  insertSpace,
                                                  requiredField,
-                                                 onKeyPress} : InputWithValidationProps) {
+                                                 onKeyPress,
+                                                 disabled} : InputWithValidationProps) {
 
     function handleKeyDown(event: React.KeyboardEvent<HTMLInputElement>) {
         if (!insertSpace && event.key === ' ') {
@@ -97,6 +99,7 @@ export default function InputWithValidation ({
                 onKeyDown={handleKeyDown}
                 onBlur={handleBlur}
                 spellCheck={spellCheck}
+                disabled={disabled}
                 value={value}
                 onChange={(e) => handleChange(e.target.value, "")}
                 ref={inputRef}

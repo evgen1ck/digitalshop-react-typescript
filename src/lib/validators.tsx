@@ -1,9 +1,9 @@
-export const isNotBlank = (value: string) => {
-    if (value.trim() === "") {
-        return "Поле обязательно к заполнению!" 
+export const isNotBlank = (value: any) => {
+    if (typeof value === 'string' && value.trim() === "") {
+        return "Поле обязательно к заполнению!"
     }
-    return "" 
-} 
+    return ""
+}
 
 export const isEmail = (value: string) => {
     const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i 
@@ -87,23 +87,24 @@ export const isNickname = (value: string) => {
     return "" 
 }
 
-export const isMoney = (value: string) => {
+export const isMoney = (value: any) => {
     const regex = /^\d+([.,]\d{1,2})?$/
     if (!regex.test(value))
         return "Текст не является денежным эквивалентом"
-    if (parseFloat(value.replace(',', '.')) <= 0)
+    // if (parseFloat(value.replace(',', '.')) <= 0)
+    if (value <= 0)
         return "Значение должно быть больше нуля"
     return ""
 }
 
-export const isPercentage = (value: string) => {
+export const isPercentage = (value: any) => {
     const regex = /^\d+([.,]\d{1,2})?%?$/
     if (!regex.test(value))
         return "Текст не является процентным значением"
-    const numberValue = parseFloat(value.replace(',', '.').slice(0, -1))
-    if (numberValue <= 0)
+    //const numberValue = parseFloat(value.replace(',', '.').slice(0, -1))
+    if (value <= 0)
         return "Значение должно быть больше 0"
-    if (numberValue >= 100)
+    if (value >= 100)
         return "Значение должно быть меньше 100"
     return ""
 }

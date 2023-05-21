@@ -1,8 +1,13 @@
 import React, {useState} from "react"
 import SVGIcon from "../Icons/SvgIconColor";
-import {translateProductSubtype, translateProductType, translateTextQuantity} from "../../lib/translate";
-import {Link, useNavigate} from "react-router-dom";
-import {AdminDeleteVariantQuery} from "../../queries/admin";
+import {
+    translateProductState,
+    translateProductSubtype,
+    translateProductType,
+    translateTextQuantity
+} from "../../lib/translate";
+import {Link} from "react-router-dom";
+import { Hint } from '@skbkontur/react-ui';
 
 export interface Variant {
     variant_name: string
@@ -38,13 +43,13 @@ interface UniqueService {
     svgUrl: string
 }
 
-interface IProductCardForMainpage {
+interface ProductCardForMainpageProps {
     product: Product
     handleModalOpen: (id: string) => void
     isPurchasing: boolean
 }
 
-export const ProductCardForMainpage = ({product, handleModalOpen, isPurchasing}: IProductCardForMainpage) => {
+export const ProductCardForMainpage = ({product, handleModalOpen, isPurchasing}: ProductCardForMainpageProps) => {
     return (
         <div className="px-6 py-4 bg-light-additional2 dark:bg-dark-additional2 rounded-lg border-solid border-2 border-light-second dark:border-dark-second">
             <div className="flex justify-center bg-light-additional dark:bg-dark-additional hover:hover:-translate-1.5 system-animation rounded-lg">
@@ -78,7 +83,7 @@ export const ProductCardForMainpage = ({product, handleModalOpen, isPurchasing}:
                     </div>
                     <div className="flex flex-wrap gap-4">
                         {subtype.variants.map((variant) => (
-                            <div className={`flex sm:w-auto w-full flex-col rounded-lg bg-white shadow-lg sm:flex-row h-max bg-light-additional dark:bg-dark-additional ${variant.text_quantity.includes("out of stock") || variant.state.includes("unavailable")  ? "cursor-not-allowed" : "hover:hover:-translate-y-1.5 system-animation btn-classic-frame cursor-pointer"}`}
+                            <div className={`flex sm:w-auto w-full flex-col rounded-lg bg-white shadow-lg sm:flex-row h-max bg-light-additional dark:bg-dark-additional ${variant.text_quantity.includes("out of stock") || variant.state.includes("unavailable")  ? "cursor-not-allowed" : "hover:-translate-y-1.5 system-animation btn-classic-frame cursor-pointer"}`}
                                  key={variant.variant_id}>
                                 <div className={`flex flex-col justify-start px-6 py-4 ${variant.text_quantity.includes("out of stock") || variant.state.includes("unavailable") || !isPurchasing ? "cursor-not-allowed" : "cursor-pointer"}`}
                                      onClick={() => {
@@ -93,11 +98,11 @@ export const ProductCardForMainpage = ({product, handleModalOpen, isPurchasing}:
                                     <span className="pb-1">
                                         <p className={`text-base ${variant.state.includes("unavailable without price") && "invisible"}`}>
                                             <b className={`border-solid ${variant.discount_percent > 0 || variant.discount_money > 0 ? "line-through pr-1 text-light-second dark:text-dark-second" : variant.text_quantity.includes("out of stock") ? "text-light-second dark:text-dark-second" : "text-error"}`}>
-                                                {variant.price}₽
+                                                {Intl.NumberFormat('ru-RU').format(variant.price)}₽
                                             </b>
                                             {(variant.discount_percent > 0 || variant.discount_money > 0) && (
                                                 <b className={variant.text_quantity.includes("out of stock") ? "text-light-second dark:text-dark-second" : "border-solid text-error"}>
-                                                    {variant.final_price}₽
+                                                    {Intl.NumberFormat('ru-RU').format(variant.final_price)}₽
                                                 </b>
                                             )}
                                             {variant.discount_percent > 0 && (
@@ -107,7 +112,7 @@ export const ProductCardForMainpage = ({product, handleModalOpen, isPurchasing}:
                                             )}
                                             {variant.discount_money > 0 && (
                                                 <span className="ml-2 sm:text-sm text-xs text-gray-500">
-                                                    Скидка: {variant.discount_money}₽
+                                                    Скидка: {Intl.NumberFormat('ru-RU').format(variant.discount_money)}₽
                                                 </span>
                                             )}
                                         </p>
@@ -148,7 +153,7 @@ const ProductSvgIcons = (props: {product: Product}) => {
         <>
             {uniqueServices.map((serviceItem) => (
                 <span className="sm:text-xl text-lg items-center inline-flex"
-                      key={serviceItem.serviceName.replaceAll(" ", "-")}>
+                      key={serviceItem.serviceName}>
                     {!serviceItem.serviceName.toLowerCase().includes("universal") && (
                         <SVGIcon
                             url={serviceItem.svgUrl}
@@ -163,128 +168,138 @@ const ProductSvgIcons = (props: {product: Product}) => {
     )
 }
 
-export const AdminProductsCards = (props: { products: any[]}) => {
-    const navigate = useNavigate()
-    const [hoveredCard, setHoveredCard] = useState(null);
-    const [isSubmitting, setIsSubmitting] = useState(false)
-    const [products, setProducts] = useState(props.products);
+export interface ProductWithVariant {
+    product_id: string
+    product_image_url: string
+    product_name: string
+    description: string
+    type_name: string
+    subtype_name: string
+    variant_id: string
+    service_svg_url: string
+    variant_name: string
+    service_name: string
+    state_name: string
+    item_name: string
+    mask: string
+    text_quantity: string
+    quantity_current: number
+    quantity_sold: number
+    price: number
+    discount_money: number
+    discount_percent: number
+    final_price: number
+}
 
-    function handleDeleteClick(variantId1: string) {
-        setIsSubmitting(true)
+interface AdminProductCardProps {
+    variant: ProductWithVariant
+    handleUpload?: (id: string) => void
+    handleEdit?: (id: string) => void
+    handleDelete: (id: string) => void
+    deleteLoading: boolean
+}
 
-        AdminDeleteVariantQuery({
-            navigate: navigate,
-            variantId: variantId1
-        }).then(() => {
-            setProducts(products.filter(product => product.variant_id !== variantId1));
-        })
-
-        setIsSubmitting(false)
-    }
+export const AdminProductCard = ({ variant, handleDelete, deleteLoading }: AdminProductCardProps) => {
+    const [hoveredCard, setHoveredCard] = useState("")
 
     return (
-        <div className="space-y-8 select-none">
-            {products && products.map((value) => (
-                <div className={`flex flex-col rounded-lg bg-white shadow-lg h-max bg-light-additional dark:bg-dark-additional hover:hover:-translate-y-1.5 system-animation btn-classic-frame`}
-                     key={value.variant_id}>
-                    <div className={`flex flex-col justify-start px-6 py-4`}
-                         key={value.variant_id}
-                         onMouseEnter={() => setHoveredCard(value.variant_id)}
-                         onMouseLeave={() => setHoveredCard(null)}>
-                        <div className="flex justify-between items-center">
-                            <span className="pb-1 lg:space-x-5 sm:space-x-1 flex-grow inline-block">
-                                <h3 className="sm:text-lg text-base font-bold uppercase inline-block">
-                                    {value.product_name}
-                                </h3>
-                                <h3 className="sm:text-lg text-base font-bold uppercase inline-block text-light-second dark:text-dark-second">
-                                    {value.type_name}
-                                </h3>
-                                <h3 className="sm:text-lg text-base font-bold uppercase inline-block text-light-second dark:text-dark-second">
-                                    {value.subtype_name}
-                                </h3>
+        <div className={`flex sm:w-auto flex-col rounded-lg bg-white shadow-lg h-max bg-light-additional dark:bg-dark-additional ${variant.state_name != "active" ? "" : "hover:-translate-y-1.5 system-animation btn-classic-frame"}`}>
+            <div className={`flex flex-col justify-start px-6 py-4`}
+                 onMouseEnter={() => setHoveredCard(variant.variant_id)}
+                 onMouseLeave={() => setHoveredCard("")}>
+                <div className="flex justify-between items-center">
+                    <span className="pb-1 lg:space-x-5 sm:space-x-1 flex-grow inline-block">
+                        <h3 className="sm:text-lg text-base font-bold uppercase inline-block">
+                            {variant.product_name}
+                        </h3>
+                        <h3 className="sm:text-lg text-base font-bold uppercase inline-block text-light-second dark:text-dark-second">
+                            {translateProductType(variant.type_name)}
+                        </h3>
+                        <h3 className="sm:text-lg text-base font-bold uppercase inline-block text-light-second dark:text-dark-second">
+                            {translateProductSubtype(variant.subtype_name)}
+                        </h3>
+                    </span>
+                    <span>
+                        <button
+                                className={`btn-classic block lg:inline-block lg:mt-0 ml-4 ${hoveredCard === variant.variant_id ? 'visible' : 'invisible'}` }
+                                onClick={() => {}}>
+                            Пополнить
+                        </button>
+                        <Link
+                              className={`btn-classic block lg:inline-block lg:mt-0 ml-4 ${hoveredCard === variant.variant_id ? 'visible' : 'invisible'}` }
+                              to={"edit?id="+variant.variant_id}>
+                            Изменить
+                        </Link>
+                        <button
+                                className={`btn-classic block lg:inline-block text-error lg:mt-0 ml-4 ${hoveredCard === variant.variant_id ? 'visible' : 'invisible'}` }
+                                onDoubleClick={() => {handleDelete(variant.variant_id)}}
+                                disabled={deleteLoading}>
+                            Удалить
+                        </button>
+                    </span>
+                </div>
+                <span className="pb-1 space-x-3">
+                    <h3 className="sm:text-2xl text-xl font-bold uppercase inline-block">
+                        {variant.variant_name}
+                    </h3>
+                </span>
+                <span className="pb-1">
+                    <p className={`text-base`}>
+                        <b className={`border-solid ${variant.discount_percent > 0 || variant.discount_money > 0 ? "line-through pr-1 text-light-second dark:text-dark-second" : variant.text_quantity.includes("out of stock") ? "text-light-second dark:text-dark-second" : "text-error"}`}>
+                            {Intl.NumberFormat('ru-RU').format(variant.price)}₽
+                        </b>
+                        {(variant.discount_percent > 0 || variant.discount_money > 0) && (
+                            <b className={variant.text_quantity.includes("out of stock") ? "text-light-second dark:text-dark-second" : "border-solid text-error"}>
+                                {Intl.NumberFormat('ru-RU').format(variant.final_price)}₽
+                            </b>
+                        )}
+                        {variant.discount_percent > 0 && (
+                            <span className="ml-2 sm:text-sm text-xs text-gray-500">
+                                Скидка {variant.discount_percent}%
                             </span>
-                            <span>
-                                <button key={value.variant_id}
-                                        className={`btn-classic block lg:inline-block lg:mt-0 ml-4 ${hoveredCard === value.variant_id ? 'visible' : 'invisible'}` }
-                                        onClick={() => {}}>
-                                    Пополнить
-                                </button>
-                                <Link key={value.variant_id}
-                                      className={`btn-classic block lg:inline-block lg:mt-0 ml-4 ${hoveredCard === value.variant_id ? 'visible' : 'invisible'}` }
-                                      to={"edit?variant_id="+value.variant_id}>
-                                    Изменить
-                                </Link>
-                                <button key={value.variant_id}
-                                        className={`btn-classic block lg:inline-block text-error lg:mt-0 ml-4 ${hoveredCard === value.variant_id ? 'visible' : 'invisible'}` }
-                                        onClick={() => {
-                                            handleDeleteClick(value.variant_id)
-                                        }}
-                                        disabled={isSubmitting}>
-                                    Удалить
-                                </button>
+                        )}
+                        {variant.discount_money > 0 && (
+                            <span className="ml-2 sm:text-sm text-xs text-gray-500">
+                                Скидка: {Intl.NumberFormat('ru-RU').format(variant.discount_money)}₽
                             </span>
-                        </div>
-                        <span className="pb-1 space-x-3">
-                            <h3 className="sm:text-2xl text-xl font-bold uppercase inline-block">
-                                {value.variant_name}
-                            </h3>
-                        </span>
-                        <span className="pb-1">
-                            <p className={`text-base`}>
-                                <b className={`border-solid ${value.discount_percent > 0 || value.discount_money > 0 ? "line-through pr-1 text-light-second dark:text-dark-second" : value.text_quantity.includes("out of stock") ? "text-light-second dark:text-dark-second" : "text-error"}`}>
-                                    {value.price}₽
-                                </b>
-                                {(value.discount_percent > 0 || value.discount_money > 0) && (
-                                    <b className={value.text_quantity.includes("out of stock") ? "text-light-second dark:text-dark-second" : "border-solid text-error"}>
-                                        {value.final_price}₽
-                                    </b>
-                                )}
-                                {value.discount_percent > 0 && (
-                                    <span className="ml-2 sm:text-sm text-xs text-gray-500">
-                                        Скидка {value.discount_percent}%
-                                    </span>
-                                )}
-                                {value.discount_money > 0 && (
-                                    <span className="ml-2 sm:text-sm text-xs text-gray-500">
-                                        Скидка: {value.discount_money}₽
-                                    </span>
-                                )}
+                        )}
+                    </p>
+                </span>
+                <div className="flex justify-between items-center space-x-3">
+                    <div className="flex items-center space-x-3 uppercase">
+                        <p className={variant.state_name == "deleted" ? "text-error" : undefined}>
+                            {translateProductState(variant.state_name)}
+                        </p>
+                        {variant.text_quantity != "" &&
+                            <p className="sm:text-base text-sm">
+                                {translateTextQuantity(variant.text_quantity)}
                             </p>
+                        }
+                        {variant.quantity_current != 0 &&
+                            <p className="sm:text-base text-sm">
+                                в наличии {variant.quantity_current} шт.
+                            </p>
+                        }
+                    </div>
+                    <div className="flex items-center justify-end space-x-3">
+                        <span>
+                            <Hint text={variant.mask} pos={"bottom"}>
+                                {variant.item_name.toUpperCase()}
+                            </Hint>
                         </span>
-                        <div className="flex justify-between items-center space-x-3">
-                            <div className="flex items-center space-x-3">
-                                <p>
-                                    {value.state_name.toUpperCase()}
-                                </p>
-                                <p className="sm:text-base text-sm">
-                                    {translateTextQuantity(value.text_quantity)}
-                                </p>
-                                {value.quantity_current != "0" &&
-                                    <p className="sm:text-base text-sm">
-                                        в наличии {value.quantity_current} шт.
-                                    </p>
-                                }
-                            </div>
-                            <div className="flex items-center justify-end space-x-3">
-                                <span>
-                                    {value.item_name.toUpperCase()}
-                                </span>
-                                <span className="sm:text-xl sm:text-lg flex items-center inline-flex space-x-2"
-                                      key={value.service_name.replaceAll(" ", "-")}>
-                                    <span className="pl-1">{value.service_name.toUpperCase()}</span>
-                                    {!value.service_name.toLowerCase().includes("universal") && (
-                                        <SVGIcon
-                                            url={value.service_svg_url}
-                                            alt={value.service_name}
-                                            className="sm:w-6 w-5 sm:h-6 h-5"
-                                        />
-                                    )}
-                                </span>
-                            </div>
-                        </div>
+                        <span className="sm:text-xl text-lg items-center inline-flex space-x-2">
+                            <span className="pl-1">{variant.service_name.toUpperCase()}</span>
+                            {!variant.service_name.toLowerCase().includes("universal") && (
+                                <SVGIcon
+                                    url={variant.service_svg_url}
+                                    alt={variant.service_name}
+                                    className="sm:w-6 w-5 sm:h-6 h-5"
+                                />
+                            )}
+                        </span>
                     </div>
                 </div>
-            ))}
+            </div>
         </div>
     )
 }

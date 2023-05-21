@@ -1,8 +1,7 @@
 import React, {useEffect, useRef, useState} from 'react'
-import {Link, useLocation, useNavigate, useParams} from "react-router-dom"
+import {Link, useLocation, useNavigate} from "react-router-dom"
 import {ServicesDropDown} from "../../components/Dropdowns/ServicesDropDown"
 import {RowBlock, RowBlockUpper} from "../../components/Blocks/PageBlocks"
-import {GoPlus} from 'react-icons/go'
 import InputWithValidation, {NUMBER, TEXT} from "../../components/Inputs/InputWithValidation"
 import {
     isNotContainsConsecutiveSpaces,
@@ -16,17 +15,13 @@ import {TypesDropDown} from "../../components/Dropdowns/TypesDropDown"
 import {SubtypesDropDown} from "../../components/Dropdowns/SubtypesDropDown"
 import {StatesDropDown} from "../../components/Dropdowns/StatesDropDown"
 import {ItemsDropDown} from "../../components/Dropdowns/ItemsDropDown"
-import {AuthLogoutQuery} from "../../queries/auth";
-import {DeleteUserAuth} from "../../storage/auth";
-import {AdminGetTypesQuery, AdminNewVariantQuery, AdminVariantQuery, AdminVariantsQuery} from "../../queries/admin";
 import {toast} from "react-hot-toast";
-
-interface IData {
-    product_id: string;
-    product_image_url: string;
-    product_name: string;
-    description: string;
-}
+import {ApiAdminVariantUrl, getAxioser, patchAxioser} from "../../lib/queries";
+import httpErrorsHandler from "../../lib/responds";
+import {CentralTextBlock} from "../../components/Blocks/CentralTextBlock";
+import {ProductWithVariant} from "../../components/Cards/ProductCards";
+import {AxiosResponse} from "axios";
+import {RedirectTo} from "../../lib/redirect";
 
 const AdminProductsEdit = () => {
     const navigate = useNavigate()
@@ -36,13 +31,13 @@ const AdminProductsEdit = () => {
     const [typeValue, setTypeValue] = useState('')
     const [typeError, setTypeError] = useState('')
     const [typesLoading, setTypesLoading] = useState(true)
-    const [typesDisabled, setTypesDisabled] = useState(false)
+    const [typesDisabled, setTypesDisabled] = useState(true)
 
     // Subtypes data
     const [subtypeValue, setSubtypeValue] = useState('')
     const [subtypeError, setSubtypeError] = useState('')
     const [subtypesLoading, setSubtypesLoading] = useState(true)
-    const [subtypesDisabled, setSubtypesDisabled] = useState(false)
+    const [subtypesDisabled, setSubtypesDisabled] = useState(true)
 
     // Service data
     const [serviceValue, setServiceValue] = useState('')
@@ -94,30 +89,81 @@ const AdminProductsEdit = () => {
     const inputPriceRef = useRef<HTMLInputElement>(null)
     const location = useLocation();
 
-    const [data, setData] = useState<IData[]>([]);
+    const [mainData, setMainData] = useState<ProductWithVariant>()
+    const [mainForComparisonData, setMainForComparisonData] = useState<ProductWithVariant>()
+    const [mainDataLoading, setMainDataLoading] = useState(true)
+    const [mainDataError, setMainDataError] = useState("")
 
     useEffect(() => {
-        const abortController = new AbortController
-        const queryParams = new URLSearchParams(location.search);
-        const variant_id = queryParams.get('variant_id');
-
-        console.log(variant_id)
-        AdminVariantQuery({
-            signal: abortController.signal,
-            navigate: navigate,
-            variantId: variant_id || ""
-        }).then(data => {
-            setData(data)
-        })
-
-        return () => {
-            abortController.abort()
+        setMainDataLoading(true)
+        const id = new URLSearchParams(location.search).get("id")
+        if (id == null) {
+            setMainDataError('Отсутствует параметр id')
+            return
         }
+        getAxioser(ApiAdminVariantUrl + "?id=" + id).then(data => {
+            setMainData(data[0])
+            setMainForComparisonData(data[0])
+        }).catch((response) => {
+            httpErrorsHandler(response, navigate)
+            setMainDataError('Серверная ошибка получения данных.')
+        }).finally(() => setMainDataLoading(false))
     }, [])
 
+    useEffect(() => {
+        if (mainData && !typesLoading && !productsLoading && !servicesLoading && !statesLoading && !itemsLoading && !subtypesLoading) {
+            setMaskValue(mainData.mask)
+            setPriceValue(mainData.price.toString())
+            setDiscountMoneyValue(mainData.discount_money.toString())
+            setDiscountPercentValue(mainData.discount_percent.toString())
+            setTypeValue(mainData.type_name)
+            setProductValue(mainData.product_name)
+            setNameValue(mainData.variant_name)
+            setServiceValue(mainData.service_name)
+            setStateValue(mainData.state_name)
+            setItemValue(mainData.item_name)
+            setSubtypeValue(mainData.subtype_name);
+        }
+    }, [typesLoading, subtypesLoading, productsLoading, servicesLoading, statesLoading, itemsLoading, mainData]);
 
+    useEffect(() => {
+        if (mainData && !subtypesLoading)
+            setSubtypeValue(mainData.subtype_name);
+    }, [subtypesLoading, mainData]);
 
-    function handleAddClick() {
+    if (mainDataError) return <CentralTextBlock text={mainDataError} />
+    if (mainDataLoading) return <CentralTextBlock text='Ожидаем ответ...' />
+
+    type ProductWithVariantIndexable = ProductWithVariant & {
+        [key: string]: any;
+    };
+
+    function getModifiedFields() {
+        const modifiedFields: Partial<ProductWithVariantIndexable> = {};
+        const currentData: Record<string, any> = {
+            mask: maskValue,
+            price: parseFloat(priceValue),
+            discount_money: parseFloat(discountMoneyValue),
+            discount_percent: parseFloat(discountPercentValue),
+            variant_name: nameValue,
+            state_name: stateValue,
+            item_name: itemValue,
+        };
+
+        const mainForComparisonDataIndexable = mainForComparisonData as ProductWithVariantIndexable;
+
+        if (mainForComparisonDataIndexable) {
+            for (const key in mainForComparisonDataIndexable) {
+                if (currentData[key] !== mainForComparisonDataIndexable[key]) {
+                    modifiedFields[key] = currentData[key];
+                }
+            }
+        }
+
+        return JSON.stringify(modifiedFields);
+    }
+
+    function handleEditClick() {
         setIsSubmitting(true)
         setTypeError("")
         setSubtypeError("")
@@ -149,61 +195,70 @@ const AdminProductsEdit = () => {
             return
         }
 
-        if (discountPercentValue != "" && discountMoneyValue != "") {
-            toast.error("Только одно поле скидки может быть заполнено")
-            setIsSubmitting(false)
-            return
-        }
-
-        const priceValueNum = parseFloat(priceValue)
-        if (priceValueNum < 10) {
-            setPriceError("Цена не может быть меньше 10")
+        console.log(getModifiedFields())
+        if (Object.keys(getModifiedFields()).length === 2) {
+            toast.error("Нечего сохранять")
             setIsSubmitting(false)
             return
         }
 
         const discountMoneyValueNum = parseFloat(discountMoneyValue)
         const discountPercentValueNum = parseFloat(discountPercentValue)
+        const priceValueNum = parseFloat(priceValue)
 
-        if (discountMoneyValue !== "" && priceValueNum - discountMoneyValueNum < 10) {
-            setDiscountMoneyError("Стоимость товара после скидки должна быть не менее 10")
+        if (discountMoneyValueNum > 0 && discountPercentValueNum > 0) {
+            toast.error("Только одно поле скидки может быть заполнено")
             setIsSubmitting(false)
             return
         }
 
-        if (discountPercentValue !== "" && priceValueNum - (priceValueNum * discountPercentValueNum / 100) < 10) {
+        if (priceValueNum < 10) {
+            setPriceError("Цена не может быть меньше 10")
+            setIsSubmitting(false)
+            return
+        }
+
+        if (discountMoneyValueNum < 0 || discountMoneyValue == null) {
+            setDiscountMoneyError("Стоимость товара после скидки должна быть не менее 10")
+            setIsSubmitting(false)
+            return
+        } else if (discountPercentValueNum < 0 || discountPercentValue == null) {
             setDiscountPercentError("Стоимость товара после скидки должна быть не менее 10")
             setIsSubmitting(false)
             return
         }
 
-        AdminNewVariantQuery({
-            navigate: navigate,
-            subtype: subtypeValue,
-            product: productValue,
-            name: nameValue,
-            service: serviceValue,
-            state: stateValue,
-            mask: maskValue,
-            discountMoney: discountMoneyValue,
-            discountPercent: discountPercentValue,
-            price: priceValue,
-            item: itemValue
-        })
+        if (discountMoneyValueNum < 1 && priceValueNum - discountMoneyValueNum < 10) {
+            setDiscountMoneyError("Стоимость товара после скидки должна быть не менее 10")
+            setIsSubmitting(false)
+            return
+        }
 
-        setIsSubmitting(false)
+        if (discountPercentValueNum < 1 && priceValueNum - (priceValueNum * discountPercentValueNum / 100) < 10) {
+            setDiscountPercentError("Стоимость товара после скидки должна быть не менее 10")
+            setIsSubmitting(false)
+            return
+        }
+
+        const id = new URLSearchParams(location.search).get("id")
+        patchAxioser(ApiAdminVariantUrl + "?id=" + id, getModifiedFields()).then(() => {
+            toast.success("Изменение прошло успешно")
+            RedirectTo('/admin/products', navigate, 100)
+        }).catch((response: AxiosResponse) => {
+            httpErrorsHandler(response, navigate)
+        }).finally(() => setIsSubmitting(false))
     }
 
     return (
         <>
             <RowBlock>
                 <div className="text-center w-full">
-                    <h3 className="sm:text-3xl text-2xl font-bold mb-6 uppercase select-none">Добавление варианта продукта</h3>
+                    <h3 className="sm:text-3xl text-2xl font-bold mb-6 uppercase select-none">Изменение варианта продукта</h3>
                 </div>
             </RowBlock>
 
             <RowBlockUpper>
-                <div className="flex inline-flex lg:w-1/2 w-full">
+                <div className="inline-flex lg:w-1/2 w-full">
                     <TypesDropDown addToClassName=""
                                    header="Типы"
                                    nameField="Тип"
@@ -212,18 +267,18 @@ const AdminProductsEdit = () => {
                                    isLoading={typesLoading}
                                    setLoading={setTypesLoading}
                                    navigate={navigate}
-                                   isClearable={true}
+                                   isClearable={false}
                                    isSearchable={true}
                                    setError={setTypeError}
                                    error={typeError}
                                    setValue={setTypeValue}
                                    value={typeValue}
-                                   disabled={typesDisabled}
+                                   disabled={true}
                                    setDisabled={setTypesDisabled}
                                    checkOnEmpty={true}
                                    hasWarnLabel={true} />
                 </div>
-                <div className="flex inline-flex lg:w-1/2 w-full">
+                <div className="inline-flex lg:w-1/2 w-full">
                     <SubtypesDropDown addToClassName=""
                                       header="Подтипы"
                                       nameField="Подтип"
@@ -232,13 +287,13 @@ const AdminProductsEdit = () => {
                                       isLoading={subtypesLoading}
                                       setLoading={setSubtypesLoading}
                                       navigate={navigate}
-                                      isClearable={true}
+                                      isClearable={false}
                                       isSearchable={true}
                                       setError={setSubtypeError}
                                       error={subtypeError}
                                       setValue={setSubtypeValue}
                                       value={subtypeValue}
-                                      disabled={subtypesDisabled}
+                                      disabled={true}
                                       setDisabled={setSubtypesDisabled}
                                       checkOnEmpty={true}
                                       typeName={typeValue}
@@ -247,7 +302,7 @@ const AdminProductsEdit = () => {
             </RowBlockUpper>
 
             <RowBlockUpper>
-                <div className="flex inline-flex lg:w-1/2 w-full">
+                <div className="inline-flex lg:w-1/2 w-full">
                     <ProductsDropDown addToClassName=""
                                       header="Продукты"
                                       nameField="Продукт"
@@ -256,23 +311,18 @@ const AdminProductsEdit = () => {
                                       isLoading={productsLoading}
                                       setLoading={setProductsLoading}
                                       navigate={navigate}
-                                      isClearable={true}
+                                      isClearable={false}
                                       isSearchable={true}
                                       setError={setProductError}
                                       error={productError}
                                       setValue={setProductValue}
                                       value={productValue}
-                                      disabled={productsDisabled}
+                                      disabled={true}
                                       setDisabled={setProductsDisabled}
                                       checkOnEmpty={true}
                                       hasWarnLabel={true} />
-                    <button className="btn-classic-frame select-none flex text-center p-2 pt-3 sm:mt-8 mt-7 h-11 cursor-pointer"
-                            type="submit"
-                            disabled={productsDisabled}>
-                        <GoPlus />
-                    </button>
                 </div>
-                <div className="flex inline-flex lg:w-1/2 w-full">
+                <div className="inline-flex lg:w-1/2 w-full">
                     <InputWithValidation
                         nameField={"Название варианта"}
                         placeholder={"Grand Theft Auto: San Andreas"}
@@ -292,7 +342,7 @@ const AdminProductsEdit = () => {
             </RowBlockUpper>
 
             <RowBlockUpper addToClassName="">
-                <div className="flex inline-flex lg:w-1/2 w-full">
+                <div className="inline-flex lg:w-1/2 w-full">
                     <ServicesDropDown addToClassName=""
                                       header="Сервисы"
                                       nameField="Сервис"
@@ -301,23 +351,18 @@ const AdminProductsEdit = () => {
                                       isLoading={servicesLoading}
                                       setLoading={setServicesLoading}
                                       navigate={navigate}
-                                      isClearable={true}
+                                      isClearable={false}
                                       isSearchable={true}
                                       setError={setServiceError}
                                       error={serviceError}
                                       setValue={setServiceValue}
                                       value={serviceValue}
-                                      disabled={servicesDisabled}
+                                      disabled={true}
                                       setDisabled={setServicesDisabled}
                                       checkOnEmpty={true}
                                       hasWarnLabel={true} />
-                    <button className="btn-classic-frame select-none flex text-center p-2 pt-3 sm:mt-8 mt-7 h-11 cursor-pointer"
-                            type="submit"
-                            disabled={servicesDisabled}>
-                        <GoPlus />
-                    </button>
                 </div>
-                <div className="flex inline-flex lg:w-1/2 w-full">
+                <div className="inline-flex lg:w-1/2 w-full">
                     <StatesDropDown addToClassName=""
                                     header="Статусы"
                                     nameField="Статус"
@@ -326,7 +371,7 @@ const AdminProductsEdit = () => {
                                     isLoading={statesLoading}
                                     setLoading={setStatesLoading}
                                     navigate={navigate}
-                                    isClearable={true}
+                                    isClearable={false}
                                     isSearchable={true}
                                     setError={setStateError}
                                     error={stateError}
@@ -340,7 +385,7 @@ const AdminProductsEdit = () => {
             </RowBlockUpper>
 
             <RowBlockUpper>
-                <div className="flex inline-flex lg:w-1/2 w-full">
+                <div className="inline-flex lg:w-1/2 w-full">
                     <ItemsDropDown addToClassName=""
                                    header="Форматы"
                                    nameField="Формат"
@@ -349,7 +394,7 @@ const AdminProductsEdit = () => {
                                    isLoading={itemsLoading}
                                    setLoading={setItemsLoading}
                                    navigate={navigate}
-                                   isClearable={true}
+                                   isClearable={false}
                                    isSearchable={true}
                                    setError={setItemError}
                                    error={itemError}
@@ -360,7 +405,7 @@ const AdminProductsEdit = () => {
                                    checkOnEmpty={true}
                                    hasWarnLabel={true} />
                 </div>
-                <div className="flex inline-flex lg:w-1/2 w-full">
+                <div className="inline-flex lg:w-1/2 w-full">
                     <InputWithValidation
                         nameField={"Маска формата"}
                         placeholder={"AAAAA-BBBBB-CCCCC"}
@@ -381,7 +426,7 @@ const AdminProductsEdit = () => {
             </RowBlockUpper>
 
             <RowBlockUpper>
-                <div className="flex inline-flex lg:w-1/3 w-full">
+                <div className="inline-flex lg:w-1/3 w-full">
                     <InputWithValidation
                         nameField={"Стоимость"}
                         placeholder={"100,2"}
@@ -390,7 +435,7 @@ const AdminProductsEdit = () => {
                         hasWarnLabel={true}
                         spellCheck={false}
                         maxLength={16}
-                        requiredValidators={[isNotBlank, isMinMaxLen(1, 16), isNotContainsSpace, isMoney]}
+                        requiredValidators={[isNotBlank, isMinMaxLen(1, 16), isMoney]}
                         setValue={setPriceValue}
                         value={priceValue}
                         setError={setPriceError}
@@ -399,15 +444,15 @@ const AdminProductsEdit = () => {
                         requiredField={true}
                         insertSpace={false} />
                 </div>
-                <div className="flex inline-flex lg:w-1/3 w-full">
+                <div className="inline-flex lg:w-1/3 w-full">
                     <InputWithValidation
                         nameField={"Скидка в деньгах"}
-                        placeholder={"100,2"}
+                        placeholder={"50,2"}
                         id={"field-discount-money"}
                         type={NUMBER}
                         hasWarnLabel={true}
                         spellCheck={false}
-                        requiredValidators={[isMinMaxLen(1, 16), isNotContainsSpace, isMoney]}
+                        requiredValidators={[isMinMaxLen(1, 16), isMoney]}
                         setValue={setDiscountMoneyValue}
                         value={discountMoneyValue}
                         setError={setDiscountMoneyError}
@@ -416,7 +461,7 @@ const AdminProductsEdit = () => {
                         requiredField={false}
                         insertSpace={false} />
                 </div>
-                <div className="flex inline-flex lg:w-1/3 w-full">
+                <div className="inline-flex lg:w-1/3 w-full">
                     <InputWithValidation
                         nameField={"Скидка в процентах"}
                         placeholder={"22"}
@@ -424,7 +469,7 @@ const AdminProductsEdit = () => {
                         type={NUMBER}
                         hasWarnLabel={true}
                         spellCheck={false}
-                        requiredValidators={[isMinMaxLen(1, 2), isNotContainsSpace, isPercentage]}
+                        requiredValidators={[isMinMaxLen(1, 2), isPercentage]}
                         setValue={setDiscountPercentValue}
                         value={discountPercentValue}
                         setError={setDiscountPercentError}
@@ -439,9 +484,9 @@ const AdminProductsEdit = () => {
                 <div className="text-center w-full mt-4">
                     <button className="btn-classic-frame select-none px-6 py-2.5 sm:text-xl text-lg uppercase"
                             type="submit"
-                            onClick={handleAddClick}
+                            onClick={handleEditClick}
                             disabled={isSubmitting || typeError != "" || subtypeError != "" || productError != "" || nameError != "" || serviceError != "" || stateError != "" || itemError != "" || maskError != "" || priceError != "" || discountMoneyError != "" || discountPercentError != ""}>
-                        Добавить вариант
+                        Изменить вариант
                     </button>
                 </div>
 
