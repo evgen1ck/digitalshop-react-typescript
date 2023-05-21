@@ -1,10 +1,10 @@
 import React, {useRef, useState} from "react"
 import { RowBlock, RowBlockUpper } from "../components/Blocks/PageBlocks"
-import {Link, useNavigate} from "react-router-dom"
+import {useNavigate} from "react-router-dom"
 import InputWithValidation, {PASSWORD, TEXT} from "../components/Inputs/InputWithValidation"
 import {isNotContainsSpace, isMinMaxLen, isNotBlank, isPassword} from "../lib/validators"
 import {CreateUserAuth, useAuthContext} from "../storage/auth"
-import {AuthAloginQuery, AuthLoginQuery} from "../queries/auth"
+import {AuthAloginQuery} from "../queries/auth"
 
 export default function Alogin() {
     const navigate = useNavigate()

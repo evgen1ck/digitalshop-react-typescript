@@ -1,14 +1,13 @@
-import UseHttpErrorsHandler from "../lib/responds"
 import {toast} from "react-hot-toast"
 import React from "react" 
 import {NavigateFunction} from "react-router-dom"
+import {ApiUrl} from "../lib/queries"
 
-const AppUrl = 'http://localhost:9990/api/v1/'
-const authSignupUrl = AppUrl+"auth/signup"
-const authSignupWithTokenUrl = AppUrl+"auth/signup-with-token"
-const authLoginUrl = AppUrl+"auth/login"
-const authLogoutUrl = AppUrl+"user/logout"
-const authAlogin = AppUrl+"auth/alogin"
+const authSignupUrl = ApiUrl+"auth/signup"
+const authSignupWithTokenUrl = ApiUrl+"auth/signup-with-token"
+const authLoginUrl = ApiUrl+"auth/login"
+const authLogoutUrl = ApiUrl+"user/logout"
+const authAlogin = ApiUrl+"auth/alogin"
 
 interface AuthSignup {
     nickname: string
@@ -28,7 +27,7 @@ export const AuthSignupQuery = async ({nickname, email, password, setEmailError,
 
     try {
         const response = await fetch(authSignupUrl, {
-            method: 'POST',
+            method: "POST",
             headers: {
                 "Content-Type": "application/json",
             },
@@ -39,20 +38,20 @@ export const AuthSignupQuery = async ({nickname, email, password, setEmailError,
             const data = await response.json()
             switch (true) {
                 case data.description.toLowerCase().includes("this nickname is already in use".toLowerCase()):
-                    setNicknameError('Псевдоним уже используется')
+                    setNicknameError("Псевдоним уже используется")
                     return
                 case data.description.toLowerCase().includes("the email domain is not exist".toLowerCase()):
-                    setEmailError('Домена электронной почты не существует')
+                    setEmailError("Домена электронной почты не существует")
                     return
                 case data.description.toLowerCase().includes("this email is already in use".toLowerCase()):
-                    setEmailError('Электронная почта уже используется')
+                    setEmailError("Электронная почта уже используется")
                     return
             }
             //await UseHttpErrorsHandler(response, navigate)
             return
         }
 
-        navigate('/completion-of-signup', { state: { email: email } })
+        navigate("/completion-of-signup", { state: { email: email } })
     } catch (error) {
         //toast.error(UnknownError)
         console.error("Error fetching data: ", error)
@@ -72,7 +71,7 @@ export const AuthSignupWithTokenQuery = async ({token, signal, navigate}: AuthSi
 
     try {
         const response = await fetch(authSignupWithTokenUrl, {
-            method: 'POST',
+            method: "POST",
             headers: {
                 "Content-Type": "application/json",
             },
@@ -99,7 +98,7 @@ interface AuthLogin {
 
 export const AuthLoginQuery = async ({login, password, setLoginError, setPasswordError, navigate}: AuthLogin) => {
     let nickname, email: string
-    if (login.includes('@')) {
+    if (login.includes("@")) {
         nickname = ""
         email = login
     } else {
@@ -114,7 +113,7 @@ export const AuthLoginQuery = async ({login, password, setLoginError, setPasswor
 
     try {
         const response = await fetch(authLoginUrl, {
-            method: 'POST',
+            method: "POST",
             headers: {
                 "Content-Type": "application/json",
             },
@@ -126,22 +125,22 @@ export const AuthLoginQuery = async ({login, password, setLoginError, setPasswor
         if (!response.ok) {
             switch (true) {
                 case data.description.toLowerCase().includes("invalid password".toLowerCase()):
-                    setPasswordError('Неверный пароль')
+                    setPasswordError("Неверный пароль")
                     return
                 case data.description.toLowerCase().includes("user with this email was not found".toLowerCase()):
-                    setLoginError('Аккаунта с этой электронной почтой не существует')
+                    setLoginError("Аккаунта с этой электронной почтой не существует")
                     return
                 case data.description.toLowerCase().includes("user with this nickname was not found".toLowerCase()):
-                    setLoginError('Аккаунта с этим псевдонимом не существует')
+                    setLoginError("Аккаунта с этим псевдонимом не существует")
                     return
                 case data.description.toLowerCase().includes("the email domain is not exist".toLowerCase()):
-                    setLoginError('Домена электронной почты не существует')
+                    setLoginError("Домена электронной почты не существует")
                     return
                 case data.description.toLowerCase().includes("account has been blocked".toLowerCase()):
-                    setPasswordError('Аккаунт заблокирован')
+                    setPasswordError("Аккаунт заблокирован")
                     return
                 case data.description.toLowerCase().includes("account has been deleted".toLowerCase()):
-                    setPasswordError('Аккаунт был удалён')
+                    setPasswordError("Аккаунт был удалён")
                     return
             }
             //await UseHttpErrorsHandler(response, navigate)
@@ -151,7 +150,6 @@ export const AuthLoginQuery = async ({login, password, setLoginError, setPasswor
         toast.success("Успешная авторизация")
         return data
     } catch (error) {
-        //toast.error(UnknownError)
         console.error("Error fetching data: ", error)
     }
 }
@@ -164,7 +162,7 @@ interface AuthLogout {
 export const AuthLogoutQuery = async ({token, navigate}: AuthLogout) => {
     try {
         const response = await fetch(authLogoutUrl, {
-            method: 'POST',
+            method: "POST",
             headers: {
                 "Content-Type": "application/json",
                 "Authorization": "Bearer " + token
@@ -199,7 +197,7 @@ export const AuthAloginQuery = async ({login, password, setLoginError, setPasswo
 
     try {
         const response = await fetch(authAlogin, {
-            method: 'POST',
+            method: "POST",
             headers: {
                 "Content-Type": "application/json",
             },
@@ -211,19 +209,19 @@ export const AuthAloginQuery = async ({login, password, setLoginError, setPasswo
         if (!response.ok) {
             switch (true) {
                 case data.description.toLowerCase().includes("invalid password".toLowerCase()):
-                    setPasswordError('Неверный пароль')
+                    setPasswordError("Неверный пароль")
                     return
                 case data.description.toLowerCase().includes("admin with this login was not found".toLowerCase()):
-                    setLoginError('Аккаунта с этим логином не существует')
+                    setLoginError("Аккаунта с этим логином не существует")
                     return
                 case data.description.toLowerCase().includes("the email domain is not exist".toLowerCase()):
-                    setLoginError('Домена электронной почты не существует')
+                    setLoginError("Домена электронной почты не существует")
                     return
                 case data.description.toLowerCase().includes("account has been blocked".toLowerCase()):
-                    setPasswordError('Аккаунт заблокирован')
+                    setPasswordError("Аккаунт заблокирован")
                     return
                 case data.description.toLowerCase().includes("account has been deleted".toLowerCase()):
-                    setPasswordError('Аккаунт был удалён')
+                    setPasswordError("Аккаунт был удалён")
                     return
             }
             //await UseHttpErrorsHandler(response, navigate)

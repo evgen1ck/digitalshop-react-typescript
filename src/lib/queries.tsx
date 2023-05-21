@@ -1,29 +1,29 @@
-import axios, { AxiosResponse } from 'axios'
+import axios, { AxiosResponse } from "axios"
 
 //export const ApiUrl = "https://api.digitalshop.evgenick.com/api/v1/"
 export const ApiUrl = "http://localhost:9990/api/v1/"
 
-export const ApiAuthSignupUrl = ApiUrl + 'auth/signup'
-export const ApiAuthSignupWithTokenUrl = ApiUrl + 'auth/signup-with-token'
-export const ApiAuthLoginUrl = ApiUrl + 'auth/login'
-export const ApiAuthAloginUrl = ApiUrl + 'auth/alogin'
+export const ApiAuthSignupUrl = ApiUrl + "auth/signup"
+export const ApiAuthSignupWithTokenUrl = ApiUrl + "auth/signup-with-token"
+export const ApiAuthLoginUrl = ApiUrl + "auth/login"
+export const ApiAuthAloginUrl = ApiUrl + "auth/alogin"
 
-export const ApiUserPaymentUrl = ApiUrl + 'user/payment'
-export const ApiUserLogoutUrl = ApiUrl + 'user/logout'
+export const ApiUserPaymentUrl = ApiUrl + "user/payment"
+export const ApiUserLogoutUrl = ApiUrl + "user/logout"
 
-export const ApiAdminProductUrl = ApiUrl + 'admin/product'
-export const ApiAdminServiceUrl = ApiUrl + 'admin/service'
-export const ApiAdminStateUrl = ApiUrl + 'admin/state'
-export const ApiAdminItemUrl = ApiUrl + 'admin/item'
-export const ApiAdminTypeUrl = ApiUrl + 'admin/type'
-export const ApiAdminSubtypeUrl = ApiUrl + 'admin/subtype'
-export const ApiAdminVariantUrl = ApiUrl + 'admin/variant'
+export const ApiAdminProductUrl = ApiUrl + "admin/product"
+export const ApiAdminServiceUrl = ApiUrl + "admin/service"
+export const ApiAdminStateUrl = ApiUrl + "admin/state"
+export const ApiAdminItemUrl = ApiUrl + "admin/item"
+export const ApiAdminTypeUrl = ApiUrl + "admin/type"
+export const ApiAdminSubtypeUrl = ApiUrl + "admin/subtype"
+export const ApiAdminVariantUrl = ApiUrl + "admin/variant"
 
-export const ApiProductUrl = ApiUrl + 'product'
-export const ApiProductMainpageUrl = ApiUrl + 'product/mainpage'
+export const ApiProductUrl = ApiUrl + "product"
+export const ApiProductMainpageUrl = ApiUrl + "product/mainpage"
 
 export const getAxioser = async (url: string) => {
-    const headers: { [key: string]: string } = { Authorization: `Bearer ${localStorage.getItem('token')}` }
+    const headers: { [key: string]: string } = { Authorization: `Bearer ${localStorage.getItem("token")}` }
 
     return await axios.get(url, { headers })
         .then(checkOnBadHttpCode)
@@ -31,10 +31,10 @@ export const getAxioser = async (url: string) => {
 }
 
 export const postAxioser = (url: string, body = {}) => {
-    const headers: { [key: string]: string } = { Authorization: `Bearer ${localStorage.getItem('token')}` }
+    const headers: { [key: string]: string } = { Authorization: `Bearer ${localStorage.getItem("token")}` }
 
     if (Object.keys(body).length !== 0)
-        headers['Content-Type'] = 'application/json';
+        headers["Content-Type"] = "application/json"
 
     return axios.post(url, body, { headers })
         .then(checkOnBadHttpCode)
@@ -42,10 +42,10 @@ export const postAxioser = (url: string, body = {}) => {
 }
 
 export const patchAxioser = (url: string, body = {}) => {
-    const headers: { [key: string]: string } = { Authorization: `Bearer ${localStorage.getItem('token')}` }
+    const headers: { [key: string]: string } = { Authorization: `Bearer ${localStorage.getItem("token")}` }
 
     if (Object.keys(body).length !== 0)
-        headers['Content-Type'] = 'application/json';
+        headers["Content-Type"] = "application/json"
 
     return axios.patch(url, body, { headers })
         .then(checkOnBadHttpCode)
@@ -53,7 +53,7 @@ export const patchAxioser = (url: string, body = {}) => {
 }
 
 export const deleteAxioser = async (url: string) => {
-    const headers: { [key: string]: string } = { Authorization: `Bearer ${localStorage.getItem('token')}` }
+    const headers: { [key: string]: string } = { Authorization: `Bearer ${localStorage.getItem("token")}` }
 
     return await axios.delete(url, { headers })
         .then(checkOnBadHttpCode)

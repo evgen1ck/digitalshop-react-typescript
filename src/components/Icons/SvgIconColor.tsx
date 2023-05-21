@@ -8,7 +8,7 @@ interface ISVGIcon {
 
 const SVGIcon = ({ url, alt, className }: ISVGIcon) => {
     const [svgContent, setSvgContent] = useState<string | null>(null)
-    let fillColor = localStorage.getItem('color-theme') === 'dark' ? 'white' : 'black'
+    let fillColor = localStorage.getItem("color-theme") === "dark" ? "white" : "black"
 
     useEffect(() => {
         const fetchSvg = async () => {

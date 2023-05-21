@@ -1,7 +1,7 @@
 import {toast} from "react-hot-toast"
 import {RedirectTo} from "./redirect"
 import {NavigateFunction} from "react-router-dom"
-import {AxiosResponse} from "axios";
+import {AxiosResponse} from "axios"
 
 export default async function httpErrorsHandler(response: AxiosResponse<any, any>, navigate: NavigateFunction): Promise<null> {
     switch (response.status) {
@@ -26,19 +26,19 @@ export default async function httpErrorsHandler(response: AxiosResponse<any, any
             switch (true) {
                 case response.data.description.toLowerCase().includes("Token expired".toLowerCase()):
                     toast.error("Время сессии подошло к концу")
-                    RedirectTo('/login', navigate, 1000)
+                    RedirectTo("/login", navigate, 1000)
                     break
                 case response.data.description.toLowerCase().includes("token in stop-list".toLowerCase()):
                     toast.error("Сессия уже недействительна")
-                    RedirectTo('/login', navigate, 1000)
+                    RedirectTo("/login", navigate, 1000)
                     break
                 case response.data.description.toLowerCase().includes("account has been deleted".toLowerCase()):
                     toast.error("Аккаунт был удалён")
-                    RedirectTo('/login', navigate, 1000)
+                    RedirectTo("/login", navigate, 1000)
                     break
                 case response.data.description.toLowerCase().includes("account has been blocked".toLowerCase()):
                     toast.error("Аккаунт был заблокирован")
-                    RedirectTo('/login', navigate, 1000)
+                    RedirectTo("/login", navigate, 1000)
                     break
                 case response.data.description.toLowerCase().includes("this account has a different role".toLowerCase()):
                     toast.error("Аккаунт имеет другие права")
@@ -46,7 +46,7 @@ export default async function httpErrorsHandler(response: AxiosResponse<any, any
             }
             break
         default:
-            toast.error('Неизвестная ошибка')
+            toast.error("Неизвестная ошибка")
             console.log(`Unknown error: ${response.status} (${response.statusText}): ${response.data?.description} - ${JSON.stringify(response.data)}`)
     }
     return null

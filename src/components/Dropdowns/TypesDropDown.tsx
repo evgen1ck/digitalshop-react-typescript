@@ -1,12 +1,12 @@
-import React, {useEffect, useState} from 'react'
+import React, {useEffect, useState} from "react"
 import Select, {components, OptionProps, SingleValueProps} from "react-select"
 import {RowBlockLower} from "../Blocks/PageBlocks"
-import {customStyles, DropDownProps, formatGroupLabel, useUpdateSelectedOption} from "./DropDownData";
-import {AdminGetTypesQuery} from "../../queries/admin";
-import {Hint} from "@skbkontur/react-ui";
-import {AiOutlineEdit} from "react-icons/ai";
-import {toast} from "react-hot-toast";
-import {MdOutlineDelete} from "react-icons/md";
+import {customStyles, DropDownProps, formatGroupLabel, useUpdateSelectedOption} from "./DropDownData"
+import {AdminGetTypesQuery} from "../../queries/admin"
+import {Hint} from "@skbkontur/react-ui"
+import {AiOutlineEdit} from "react-icons/ai"
+import {toast} from "react-hot-toast"
+import {MdOutlineDelete} from "react-icons/md"
 
 export interface DataOption {
     type_no: number
@@ -33,11 +33,11 @@ const filterOptions = (inputValue: string, options: GroupedOption[]): GroupedOpt
 
 const Option = (props: OptionProps<DataOption, false, GroupedOption>) => {
     const { data, isFocused, innerProps } = props
-    const [isHovered, setIsHovered] = useState(isFocused);
+    const [isHovered, setIsHovered] = useState(isFocused)
 
     useEffect(() => {
-        setIsHovered(isFocused);
-    }, [isFocused]);
+        setIsHovered(isFocused)
+    }, [isFocused])
 
     return (
         <components.Option {...props}
@@ -48,12 +48,12 @@ const Option = (props: OptionProps<DataOption, false, GroupedOption>) => {
                 <span className="pr-2 inline-flex space-x-5">
                     {isHovered && localStorage.getItem("role") == "admin" &&
                         <Hint pos={"bottom"} text="Редактировать"> <AiOutlineEdit className="system-animation-2" onClick={() => {
-                            toast.success('abcd')
+                            toast.success("abcd")
                         }} /> </Hint>
                     }
                     {isHovered && localStorage.getItem("role") == "admin" &&
                         <Hint pos={"bottom"} text="Удалить"> <MdOutlineDelete color="red" className="system-animation-2" onClick={() => {
-                            toast.success('ab')
+                            toast.success("ab")
                         }} /> </Hint>
                     }
                 </span>
@@ -78,7 +78,7 @@ const SingleValue = (props: SingleValueProps<DataOption, false, GroupedOption>) 
 
 export const TypesDropDown = ({value, header, nameField, placeholder, id, isLoading, setLoading, isClearable, isSearchable, setError, error, setValue, setDisabled, disabled, hasWarnLabel, addToClassName, navigate, checkOnEmpty}: DropDownProps) => {
     const [data, setData] = useState([])
-    const [inputValue, setInputValue] = useState('')
+    const [inputValue, setInputValue] = useState("")
     const [selectedOption, setSelectedOption] = useState<DataOption | null>(null)
 
     useEffect(() => {
@@ -112,11 +112,11 @@ export const TypesDropDown = ({value, header, nameField, placeholder, id, isLoad
     const handleProductChange = (selectedOption: DataOption | null) => {
         setSelectedOption(selectedOption)
         if (selectedOption) setValue(selectedOption.type_name)
-        else setValue('')
+        else setValue("")
 
         if (checkOnEmpty) {
             if (selectedOption == null) setError("Поле обязательно к заполнению!")
-            else setError('')
+            else setError("")
         }
     }
 

@@ -1,5 +1,5 @@
 export const isNotBlank = (value: any) => {
-    if (typeof value === 'string' && value.trim() === "") {
+    if (typeof value === "string" && value.trim() === "") {
         return "Поле обязательно к заполнению!"
     }
     return ""
@@ -91,7 +91,6 @@ export const isMoney = (value: any) => {
     const regex = /^\d+([.,]\d{1,2})?$/
     if (!regex.test(value))
         return "Текст не является денежным эквивалентом"
-    // if (parseFloat(value.replace(',', '.')) <= 0)
     if (value <= 0)
         return "Значение должно быть больше нуля"
     return ""
@@ -101,7 +100,6 @@ export const isPercentage = (value: any) => {
     const regex = /^\d+([.,]\d{1,2})?%?$/
     if (!regex.test(value))
         return "Текст не является процентным значением"
-    //const numberValue = parseFloat(value.replace(',', '.').slice(0, -1))
     if (value <= 0)
         return "Значение должно быть больше 0"
     if (value >= 100)

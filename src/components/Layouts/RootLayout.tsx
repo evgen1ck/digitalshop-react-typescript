@@ -1,4 +1,4 @@
-import React, { useState } from 'react' 
+import React, { useState } from "react" 
 import {Outlet, Link, useNavigate} from "react-router-dom" 
 import SwitchTheme from "../../storage/switchTheme"
 import {Toaster} from "react-hot-toast"
@@ -14,20 +14,20 @@ export default function RootLayout() {
 
     const initialLinks: ILink[] = [
         {
-            name: 'Главная',
-            link: '/'
+            name: "Главная",
+            link: "/"
         },
         {
-            name: 'Ничего',
-            link: 'nothing'
+            name: "Ничего",
+            link: "nothing"
         },
         {
-            name: 'Тоже ничего',
-            link: 'nothing'
+            name: "Тоже ничего",
+            link: "nothing"
         },
         {
-            name: 'Тут тоже',
-            link: 'nothing'
+            name: "Тут тоже",
+            link: "nothing"
         }
     ]
     const navigate = useNavigate()
@@ -41,7 +41,7 @@ export default function RootLayout() {
     function handleLogoutClick() {
         setIsSubmitting(true)
         AuthLogoutQuery({
-            token: localStorage.getItem('token') || '',
+            token: localStorage.getItem("token") || "",
             navigate: navigate
         }).then(_ => {
             DeleteUserAuth(navigate, true, setAuthState)

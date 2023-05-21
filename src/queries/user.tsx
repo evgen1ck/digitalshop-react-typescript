@@ -1,9 +1,8 @@
-import React from 'react'
-import {NavigateFunction} from "react-router-dom";
-import UseHttpErrorsHandler from "../lib/responds";
+import React from "react"
+import {NavigateFunction} from "react-router-dom"
+import {ApiUrl} from "../lib/queries"
 
-const AppUrl = 'http://localhost:9990/api/v1/'
-const userGetPayment = AppUrl+"user/payment"
+const userGetPayment = ApiUrl+"user/payment"
 
 interface UserGetPayment {
     navigate: NavigateFunction
@@ -16,9 +15,9 @@ export const UserGetPaymentQuery = async ({ navigate, variant_id}: UserGetPaymen
     }
     try {
         const response = await fetch(userGetPayment, {
-            method: 'POST',
+            method: "POST",
             headers: {
-                "Authorization": "Bearer " + localStorage.getItem('token') || ''
+                "Authorization": "Bearer " + localStorage.getItem("token") || ""
             },
             body: JSON.stringify(requestBody),
         })

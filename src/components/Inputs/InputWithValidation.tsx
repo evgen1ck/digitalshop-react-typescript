@@ -49,10 +49,10 @@ export default function InputWithValidation ({
                                                  disabled} : InputWithValidationProps) {
 
     function handleKeyDown(event: React.KeyboardEvent<HTMLInputElement>) {
-        if (!insertSpace && event.key === ' ') {
+        if (!insertSpace && event.key === " ") {
             event.preventDefault() 
         }
-        if (event.key === 'Escape') {
+        if (event.key === "Escape") {
             event.currentTarget.blur() 
         }
 

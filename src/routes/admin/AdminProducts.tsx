@@ -1,21 +1,21 @@
 import React, {useEffect, useState} from "react"
-import {Link, useNavigate} from "react-router-dom";
-import {RowBlock} from "../../components/Blocks/PageBlocks";
+import {Link, useNavigate} from "react-router-dom"
+import {RowBlock} from "../../components/Blocks/PageBlocks"
 import {
     AdminProductCard,
     ProductWithVariant
-} from "../../components/Cards/ProductCards";
+} from "../../components/Cards/ProductCards"
 import {
     ApiAdminVariantUrl,
     deleteAxioser,
     getAxioser
-} from "../../lib/queries";
-import httpErrorsHandler from "../../lib/responds";
-import {CentralTextBlock} from "../../components/Blocks/CentralTextBlock";
-import {toast} from "react-hot-toast";
-import axios, {AxiosError} from "axios";
-import Select from "react-select";
-import {formatGroupLabel} from "../../components/Dropdowns/DropDownData";
+} from "../../lib/queries"
+import httpErrorsHandler from "../../lib/responds"
+import {CentralTextBlock} from "../../components/Blocks/CentralTextBlock"
+import {toast} from "react-hot-toast"
+import axios, {AxiosError} from "axios"
+import Select from "react-select"
+import {formatGroupLabel} from "../../components/Dropdowns/DropDownData"
 
 
 export default function AdminProducts() {
@@ -35,7 +35,7 @@ export default function AdminProducts() {
             setMainDataError("Серверная ошибка получения данных")
         }).finally(() => setMainDataLoading(false))
     }, [])
-    if (mainDataLoading) return <CentralTextBlock text='Ожидаем ответ...' />
+    if (mainDataLoading) return <CentralTextBlock text="Ожидаем ответ..." />
     if (mainDataError) return <CentralTextBlock text={mainDataError} />
 
 

@@ -1,12 +1,12 @@
-import React, {useEffect, useState} from 'react'
+import React, {useEffect, useState} from "react"
 import Select, {components, OptionProps, SingleValueProps} from "react-select"
 import {RowBlockLower} from "../Blocks/PageBlocks"
 import {customStyles, DropDownProps, useUpdateSelectedOption} from "./DropDownData"
 import {AdminGetSubtypesQuery} from "../../queries/admin"
-import {toast} from "react-hot-toast";
-import { MdOutlineDelete} from 'react-icons/md';
-import {Hint} from "@skbkontur/react-ui";
-import {AiOutlineEdit} from "react-icons/ai";
+import {toast} from "react-hot-toast"
+import { MdOutlineDelete} from "react-icons/md"
+import {Hint} from "@skbkontur/react-ui"
+import {AiOutlineEdit} from "react-icons/ai"
 
 
 interface DataOption {
@@ -34,11 +34,11 @@ const filterOptions = (inputValue: string, options: GroupedOption[]): GroupedOpt
 
 const Option = (props: OptionProps<DataOption, false, GroupedOption>) => {
     const { data, isFocused, innerProps } = props
-    const [isHovered, setIsHovered] = useState(isFocused);
+    const [isHovered, setIsHovered] = useState(isFocused)
 
     useEffect(() => {
-        setIsHovered(isFocused);
-    }, [isFocused]);
+        setIsHovered(isFocused)
+    }, [isFocused])
 
     return (
         <components.Option {...props}
@@ -49,12 +49,12 @@ const Option = (props: OptionProps<DataOption, false, GroupedOption>) => {
                 <span className="pr-2 inline-flex space-x-5">
                     {isHovered && localStorage.getItem("role") == "admin" &&
                         <Hint pos={"bottom"} text="Редактировать"> <AiOutlineEdit className="system-animation-2" onClick={() => {
-                            toast.success('abcd')
+                            toast.success("abcd")
                         }} /> </Hint>
                     }
                     {isHovered && localStorage.getItem("role") == "admin" &&
                         <Hint pos={"bottom"} text="Удалить"> <MdOutlineDelete color="red" className="system-animation-2" onClick={() => {
-                            toast.success('ab')
+                            toast.success("ab")
                         }} /> </Hint>
                     }
                 </span>
@@ -79,7 +79,7 @@ const SingleValue = (props: SingleValueProps<DataOption, false, GroupedOption>) 
 
 export const SubtypesDropDown = ({value, header, nameField, placeholder, id, isLoading, setLoading, isClearable, isSearchable, setError, error, setValue, setDisabled, disabled, hasWarnLabel, addToClassName, navigate, checkOnEmpty, typeName}: DropDownProps) => {
     const [data, setData] = useState([])
-    const [inputValue, setInputValue] = useState('')
+    const [inputValue, setInputValue] = useState("")
     const [selectedOption, setSelectedOption] = useState<DataOption | null>(null)
 
     useEffect(() => {
@@ -91,7 +91,7 @@ export const SubtypesDropDown = ({value, header, nameField, placeholder, id, isL
             setDisabled(false)
         }
         setSelectedOption(null)
-        setValue('')
+        setValue("")
     }, [typeName])
 
     useEffect(() => {
@@ -133,11 +133,11 @@ export const SubtypesDropDown = ({value, header, nameField, placeholder, id, isL
 
 
     const handleProductChange = (selectedOption: DataOption | null) => {
-        setValue(selectedOption ? selectedOption.subtype_name : '')
-        setSelectedOption(selectedOption);
+        setValue(selectedOption ? selectedOption.subtype_name : "")
+        setSelectedOption(selectedOption)
         if (checkOnEmpty) {
             if (selectedOption == null) setError("Поле обязательно к заполнению!")
-            else setError('')
+            else setError("")
         }
     }
 

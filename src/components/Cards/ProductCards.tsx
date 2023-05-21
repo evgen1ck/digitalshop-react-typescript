@@ -1,13 +1,13 @@
 import React, {useState} from "react"
-import SVGIcon from "../Icons/SvgIconColor";
+import SVGIcon from "../Icons/SvgIconColor"
 import {
     translateProductState,
     translateProductSubtype,
     translateProductType,
     translateTextQuantity
-} from "../../lib/translate";
-import {Link} from "react-router-dom";
-import { Hint } from '@skbkontur/react-ui';
+} from "../../lib/translate"
+import {Link} from "react-router-dom"
+import { Hint } from "@skbkontur/react-ui"
 
 export interface Variant {
     variant_name: string
@@ -56,7 +56,7 @@ export const ProductCardForMainpage = ({product, handleModalOpen, isPurchasing}:
                 <div className="flex flex-col rounded-lg bg-white shadow-lg md:flex-row h-max border-solid border-2 border-light-second dark:border-dark-second">
                     <img className="w-full max-w-full h-auto rounded-l-lg object-cover md:h-auto md:w-2/5"
                          src={product.product_image_url}
-                         alt='' />
+                         alt="" />
                     <div className="flex flex-col justify-start px-6 py-4">
                         <h1 className="mb-2 sm:text-3xl text-xl font-bold uppercase">
                             {product.product_name}
@@ -87,7 +87,7 @@ export const ProductCardForMainpage = ({product, handleModalOpen, isPurchasing}:
                                  key={variant.variant_id}>
                                 <div className={`flex flex-col justify-start px-6 py-4 ${variant.text_quantity.includes("out of stock") || variant.state.includes("unavailable") || !isPurchasing ? "cursor-not-allowed" : "cursor-pointer"}`}
                                      onClick={() => {
-                                         if (!(variant.text_quantity.includes('out of stock') || variant.state.includes('unavailable') || !isPurchasing))
+                                         if (!(variant.text_quantity.includes("out of stock") || variant.state.includes("unavailable") || !isPurchasing))
                                              handleModalOpen(variant.variant_id)
                                      }}>
                                     <span className="pb-1">
@@ -98,11 +98,11 @@ export const ProductCardForMainpage = ({product, handleModalOpen, isPurchasing}:
                                     <span className="pb-1">
                                         <p className={`text-base ${variant.state.includes("unavailable without price") && "invisible"}`}>
                                             <b className={`border-solid ${variant.discount_percent > 0 || variant.discount_money > 0 ? "line-through pr-1 text-light-second dark:text-dark-second" : variant.text_quantity.includes("out of stock") ? "text-light-second dark:text-dark-second" : "text-error"}`}>
-                                                {Intl.NumberFormat('ru-RU').format(variant.price)}₽
+                                                {Intl.NumberFormat("ru-RU").format(variant.price)}₽
                                             </b>
                                             {(variant.discount_percent > 0 || variant.discount_money > 0) && (
                                                 <b className={variant.text_quantity.includes("out of stock") ? "text-light-second dark:text-dark-second" : "border-solid text-error"}>
-                                                    {Intl.NumberFormat('ru-RU').format(variant.final_price)}₽
+                                                    {Intl.NumberFormat("ru-RU").format(variant.final_price)}₽
                                                 </b>
                                             )}
                                             {variant.discount_percent > 0 && (
@@ -112,7 +112,7 @@ export const ProductCardForMainpage = ({product, handleModalOpen, isPurchasing}:
                                             )}
                                             {variant.discount_money > 0 && (
                                                 <span className="ml-2 sm:text-sm text-xs text-gray-500">
-                                                    Скидка: {Intl.NumberFormat('ru-RU').format(variant.discount_money)}₽
+                                                    Скидка: {Intl.NumberFormat("ru-RU").format(variant.discount_money)}₽
                                                 </span>
                                             )}
                                         </p>
@@ -221,17 +221,17 @@ export const AdminProductCard = ({ variant, handleDelete, deleteLoading }: Admin
                     </span>
                     <span>
                         <button
-                                className={`btn-classic block lg:inline-block lg:mt-0 ml-4 ${hoveredCard === variant.variant_id ? 'visible' : 'invisible'}` }
+                                className={`btn-classic block lg:inline-block lg:mt-0 ml-4 ${hoveredCard === variant.variant_id ? "visible" : "invisible"}` }
                                 onClick={() => {}}>
                             Пополнить
                         </button>
                         <Link
-                              className={`btn-classic block lg:inline-block lg:mt-0 ml-4 ${hoveredCard === variant.variant_id ? 'visible' : 'invisible'}` }
+                              className={`btn-classic block lg:inline-block lg:mt-0 ml-4 ${hoveredCard === variant.variant_id ? "visible" : "invisible"}` }
                               to={"edit?id="+variant.variant_id}>
                             Изменить
                         </Link>
                         <button
-                                className={`btn-classic block lg:inline-block text-error lg:mt-0 ml-4 ${hoveredCard === variant.variant_id ? 'visible' : 'invisible'}` }
+                                className={`btn-classic block lg:inline-block text-error lg:mt-0 ml-4 ${hoveredCard === variant.variant_id ? "visible" : "invisible"}` }
                                 onDoubleClick={() => {handleDelete(variant.variant_id)}}
                                 disabled={deleteLoading}>
                             Удалить
@@ -246,11 +246,11 @@ export const AdminProductCard = ({ variant, handleDelete, deleteLoading }: Admin
                 <span className="pb-1">
                     <p className={`text-base`}>
                         <b className={`border-solid ${variant.discount_percent > 0 || variant.discount_money > 0 ? "line-through pr-1 text-light-second dark:text-dark-second" : variant.text_quantity.includes("out of stock") ? "text-light-second dark:text-dark-second" : "text-error"}`}>
-                            {Intl.NumberFormat('ru-RU').format(variant.price)}₽
+                            {Intl.NumberFormat("ru-RU").format(variant.price)}₽
                         </b>
                         {(variant.discount_percent > 0 || variant.discount_money > 0) && (
                             <b className={variant.text_quantity.includes("out of stock") ? "text-light-second dark:text-dark-second" : "border-solid text-error"}>
-                                {Intl.NumberFormat('ru-RU').format(variant.final_price)}₽
+                                {Intl.NumberFormat("ru-RU").format(variant.final_price)}₽
                             </b>
                         )}
                         {variant.discount_percent > 0 && (
@@ -260,7 +260,7 @@ export const AdminProductCard = ({ variant, handleDelete, deleteLoading }: Admin
                         )}
                         {variant.discount_money > 0 && (
                             <span className="ml-2 sm:text-sm text-xs text-gray-500">
-                                Скидка: {Intl.NumberFormat('ru-RU').format(variant.discount_money)}₽
+                                Скидка: {Intl.NumberFormat("ru-RU").format(variant.discount_money)}₽
                             </span>
                         )}
                     </p>

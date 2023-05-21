@@ -1,8 +1,8 @@
-import React, {useRef, useState} from 'react'
+import React, {useRef, useState} from "react"
 import {Link, useNavigate} from "react-router-dom"
 import {ServicesDropDown} from "../../components/Dropdowns/ServicesDropDown"
 import {RowBlock, RowBlockUpper} from "../../components/Blocks/PageBlocks"
-import {GoPlus} from 'react-icons/go'
+import {GoPlus} from "react-icons/go"
 import InputWithValidation, {NUMBER, TEXT} from "../../components/Inputs/InputWithValidation"
 import {
     isNotContainsConsecutiveSpaces,
@@ -16,8 +16,8 @@ import {TypesDropDown} from "../../components/Dropdowns/TypesDropDown"
 import {SubtypesDropDown} from "../../components/Dropdowns/SubtypesDropDown"
 import {StatesDropDown} from "../../components/Dropdowns/StatesDropDown"
 import {ItemsDropDown} from "../../components/Dropdowns/ItemsDropDown"
-import {AdminNewVariantQuery} from "../../queries/admin";
-import {toast} from "react-hot-toast";
+import {AdminNewVariantQuery} from "../../queries/admin"
+import {toast} from "react-hot-toast"
 
 
 const AdminProductsAdd = () => {
@@ -25,64 +25,64 @@ const AdminProductsAdd = () => {
     const [isSubmitting, setIsSubmitting] = useState(false)
 
     // Types data
-    const [typeValue, setTypeValue] = useState('')
-    const [typeError, setTypeError] = useState('')
+    const [typeValue, setTypeValue] = useState("")
+    const [typeError, setTypeError] = useState("")
     const [typesLoading, setTypesLoading] = useState(true)
     const [typesDisabled, setTypesDisabled] = useState(false)
 
     // Subtypes data
-    const [subtypeValue, setSubtypeValue] = useState('')
-    const [subtypeError, setSubtypeError] = useState('')
+    const [subtypeValue, setSubtypeValue] = useState("")
+    const [subtypeError, setSubtypeError] = useState("")
     const [subtypesLoading, setSubtypesLoading] = useState(true)
     const [subtypesDisabled, setSubtypesDisabled] = useState(false)
 
     // Service data
-    const [serviceValue, setServiceValue] = useState('')
-    const [serviceError, setServiceError] = useState('')
+    const [serviceValue, setServiceValue] = useState("")
+    const [serviceError, setServiceError] = useState("")
     const [servicesLoading, setServicesLoading] = useState(true)
     const [servicesDisabled, setServicesDisabled] = useState(false)
 
     // State data
-    const [stateValue, setStateValue] = useState('')
-    const [stateError, setStateError] = useState('')
+    const [stateValue, setStateValue] = useState("")
+    const [stateError, setStateError] = useState("")
     const [statesLoading, setStatesLoading] = useState(true)
     const [statesDisabled, setStatesDisabled] = useState(false)
 
     // Product data
-    const [productValue, setProductValue] = useState('')
-    const [productError, setProductError] = useState('')
+    const [productValue, setProductValue] = useState("")
+    const [productError, setProductError] = useState("")
     const [productsLoading, setProductsLoading] = useState(true)
     const [productsDisabled, setProductsDisabled] = useState(false)
 
     // Item data
-    const [itemValue, setItemValue] = useState('')
-    const [itemError, setItemError] = useState('')
+    const [itemValue, setItemValue] = useState("")
+    const [itemError, setItemError] = useState("")
     const [itemsLoading, setItemsLoading] = useState(true)
     const [itemsDisabled, setItemsDisabled] = useState(false)
 
     // Name data
-    const [nameValue, setNameValue] = useState('')
-    const [nameError, setNameError] = useState('')
+    const [nameValue, setNameValue] = useState("")
+    const [nameError, setNameError] = useState("")
     const inputNameRef = useRef<HTMLInputElement>(null)
 
     // Mask data
-    const [maskValue, setMaskValue] = useState('')
-    const [maskError, setMaskError] = useState('')
+    const [maskValue, setMaskValue] = useState("")
+    const [maskError, setMaskError] = useState("")
     const inputMaskRef = useRef<HTMLInputElement>(null)
 
     // Discount money data
-    const [discountMoneyValue, setDiscountMoneyValue] = useState('')
-    const [discountMoneyError, setDiscountMoneyError] = useState('')
+    const [discountMoneyValue, setDiscountMoneyValue] = useState("")
+    const [discountMoneyError, setDiscountMoneyError] = useState("")
     const inputDiscountMoneyRef = useRef<HTMLInputElement>(null)
 
     // Discount percent data
-    const [discountPercentValue, setDiscountPercentValue] = useState('')
-    const [discountPercentError, setDiscountPercentError] = useState('')
+    const [discountPercentValue, setDiscountPercentValue] = useState("")
+    const [discountPercentError, setDiscountPercentError] = useState("")
     const inputDiscountPercentRef = useRef<HTMLInputElement>(null)
 
     // Price data
-    const [priceValue, setPriceValue] = useState('')
-    const [priceError, setPriceError] = useState('')
+    const [priceValue, setPriceValue] = useState("")
+    const [priceError, setPriceError] = useState("")
     const inputPriceRef = useRef<HTMLInputElement>(null)
 
     function handleAddClick() {

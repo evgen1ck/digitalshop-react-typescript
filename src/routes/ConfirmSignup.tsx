@@ -1,5 +1,5 @@
-import React, {useEffect, useState} from 'react' 
-import {Link, useNavigate} from 'react-router-dom' 
+import React, {useEffect, useState} from "react" 
+import {Link, useNavigate} from "react-router-dom" 
 import {CreateUserAuth, useAuthContext} from "../storage/auth" 
 import {AuthSignupWithTokenQuery} from "../queries/auth" 
 
@@ -13,7 +13,7 @@ const CompletionOfSignup = () => {
     useEffect(() => {
         const abortController = new AbortController 
 
-        let token: string = new URLSearchParams(window.location.search).get('token') || '' 
+        let token: string = new URLSearchParams(window.location.search).get("token") || "" 
         AuthSignupWithTokenQuery({
             token: token,
             signal: abortController.signal,

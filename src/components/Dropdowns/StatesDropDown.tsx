@@ -1,8 +1,8 @@
-import React, {useEffect, useState} from 'react'
+import React, {useEffect, useState} from "react"
 import Select, {components, OptionProps, SingleValueProps} from "react-select"
 import {RowBlockLower} from "../Blocks/PageBlocks"
-import {customStyles, DropDownProps, formatGroupLabel, useUpdateSelectedOption} from "./DropDownData";
-import {AdminGetStatesQuery} from "../../queries/admin";
+import {customStyles, DropDownProps, formatGroupLabel, useUpdateSelectedOption} from "./DropDownData"
+import {AdminGetStatesQuery} from "../../queries/admin"
 
 export interface DataOption {
     state_no: number
@@ -55,7 +55,7 @@ const SingleValue = (props: SingleValueProps<DataOption, false, GroupedOption>) 
 
 export const StatesDropDown = ({value, header, nameField, placeholder, id, isLoading, setLoading, isClearable, isSearchable, setError, error, setValue, setDisabled, disabled, hasWarnLabel, addToClassName, navigate, checkOnEmpty}: DropDownProps) => {
     const [data, setData] = useState<DataOption[]>([])
-    const [inputValue, setInputValue] = useState('')
+    const [inputValue, setInputValue] = useState("")
     const [selectedOption, setSelectedOption] = useState<DataOption | null>(null)
 
     useEffect(() => {
@@ -88,10 +88,10 @@ export const StatesDropDown = ({value, header, nameField, placeholder, id, isLoa
 
     const handleProductChange = (selectedOption: DataOption | null) => {
         setSelectedOption(selectedOption)
-        setValue(selectedOption ? selectedOption.state_name : '')
+        setValue(selectedOption ? selectedOption.state_name : "")
         if (checkOnEmpty) {
             if (selectedOption == null) setError("Поле обязательно к заполнению!")
-            else setError('')
+            else setError("")
         }
     }
 

@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react'
+import React, {useEffect, useRef, useState} from "react"
 import {Link, useLocation, useNavigate} from "react-router-dom"
 import {ServicesDropDown} from "../../components/Dropdowns/ServicesDropDown"
 import {RowBlock, RowBlockUpper} from "../../components/Blocks/PageBlocks"
@@ -15,79 +15,79 @@ import {TypesDropDown} from "../../components/Dropdowns/TypesDropDown"
 import {SubtypesDropDown} from "../../components/Dropdowns/SubtypesDropDown"
 import {StatesDropDown} from "../../components/Dropdowns/StatesDropDown"
 import {ItemsDropDown} from "../../components/Dropdowns/ItemsDropDown"
-import {toast} from "react-hot-toast";
-import {ApiAdminVariantUrl, getAxioser, patchAxioser} from "../../lib/queries";
-import httpErrorsHandler from "../../lib/responds";
-import {CentralTextBlock} from "../../components/Blocks/CentralTextBlock";
-import {ProductWithVariant} from "../../components/Cards/ProductCards";
-import {AxiosResponse} from "axios";
-import {RedirectTo} from "../../lib/redirect";
+import {toast} from "react-hot-toast"
+import {ApiAdminVariantUrl, getAxioser, patchAxioser} from "../../lib/queries"
+import httpErrorsHandler from "../../lib/responds"
+import {CentralTextBlock} from "../../components/Blocks/CentralTextBlock"
+import {ProductWithVariant} from "../../components/Cards/ProductCards"
+import {AxiosResponse} from "axios"
+import {RedirectTo} from "../../lib/redirect"
 
 const AdminProductsEdit = () => {
     const navigate = useNavigate()
     const [isSubmitting, setIsSubmitting] = useState(false)
 
     // Types data
-    const [typeValue, setTypeValue] = useState('')
-    const [typeError, setTypeError] = useState('')
+    const [typeValue, setTypeValue] = useState("")
+    const [typeError, setTypeError] = useState("")
     const [typesLoading, setTypesLoading] = useState(true)
     const [typesDisabled, setTypesDisabled] = useState(true)
 
     // Subtypes data
-    const [subtypeValue, setSubtypeValue] = useState('')
-    const [subtypeError, setSubtypeError] = useState('')
+    const [subtypeValue, setSubtypeValue] = useState("")
+    const [subtypeError, setSubtypeError] = useState("")
     const [subtypesLoading, setSubtypesLoading] = useState(true)
     const [subtypesDisabled, setSubtypesDisabled] = useState(true)
 
     // Service data
-    const [serviceValue, setServiceValue] = useState('')
-    const [serviceError, setServiceError] = useState('')
+    const [serviceValue, setServiceValue] = useState("")
+    const [serviceError, setServiceError] = useState("")
     const [servicesLoading, setServicesLoading] = useState(true)
     const [servicesDisabled, setServicesDisabled] = useState(false)
 
     // State data
-    const [stateValue, setStateValue] = useState('')
-    const [stateError, setStateError] = useState('')
+    const [stateValue, setStateValue] = useState("")
+    const [stateError, setStateError] = useState("")
     const [statesLoading, setStatesLoading] = useState(true)
     const [statesDisabled, setStatesDisabled] = useState(false)
 
     // Product data
-    const [productValue, setProductValue] = useState('')
-    const [productError, setProductError] = useState('')
+    const [productValue, setProductValue] = useState("")
+    const [productError, setProductError] = useState("")
     const [productsLoading, setProductsLoading] = useState(true)
     const [productsDisabled, setProductsDisabled] = useState(false)
 
     // Item data
-    const [itemValue, setItemValue] = useState('')
-    const [itemError, setItemError] = useState('')
+    const [itemValue, setItemValue] = useState("")
+    const [itemError, setItemError] = useState("")
     const [itemsLoading, setItemsLoading] = useState(true)
     const [itemsDisabled, setItemsDisabled] = useState(false)
 
     // Name data
-    const [nameValue, setNameValue] = useState('')
-    const [nameError, setNameError] = useState('')
+    const [nameValue, setNameValue] = useState("")
+    const [nameError, setNameError] = useState("")
     const inputNameRef = useRef<HTMLInputElement>(null)
 
     // Mask data
-    const [maskValue, setMaskValue] = useState('')
-    const [maskError, setMaskError] = useState('')
+    const [maskValue, setMaskValue] = useState("")
+    const [maskError, setMaskError] = useState("")
     const inputMaskRef = useRef<HTMLInputElement>(null)
 
     // Discount money data
-    const [discountMoneyValue, setDiscountMoneyValue] = useState('')
-    const [discountMoneyError, setDiscountMoneyError] = useState('')
+    const [discountMoneyValue, setDiscountMoneyValue] = useState("")
+    const [discountMoneyError, setDiscountMoneyError] = useState("")
     const inputDiscountMoneyRef = useRef<HTMLInputElement>(null)
 
     // Discount percent data
-    const [discountPercentValue, setDiscountPercentValue] = useState('')
-    const [discountPercentError, setDiscountPercentError] = useState('')
+    const [discountPercentValue, setDiscountPercentValue] = useState("")
+    const [discountPercentError, setDiscountPercentError] = useState("")
     const inputDiscountPercentRef = useRef<HTMLInputElement>(null)
 
     // Price data
-    const [priceValue, setPriceValue] = useState('')
-    const [priceError, setPriceError] = useState('')
+    const [priceValue, setPriceValue] = useState("")
+    const [priceError, setPriceError] = useState("")
     const inputPriceRef = useRef<HTMLInputElement>(null)
-    const location = useLocation();
+    const location = useLocation()
 
     const [mainData, setMainData] = useState<ProductWithVariant>()
     const [mainForComparisonData, setMainForComparisonData] = useState<ProductWithVariant>()
@@ -98,7 +98,7 @@ const AdminProductsEdit = () => {
         setMainDataLoading(true)
         const id = new URLSearchParams(location.search).get("id")
         if (id == null) {
-            setMainDataError('Отсутствует параметр id')
+            setMainDataError("Отсутствует параметр id")
             return
         }
         getAxioser(ApiAdminVariantUrl + "?id=" + id).then(data => {
@@ -106,7 +106,7 @@ const AdminProductsEdit = () => {
             setMainForComparisonData(data[0])
         }).catch((response) => {
             httpErrorsHandler(response, navigate)
-            setMainDataError('Серверная ошибка получения данных.')
+            setMainDataError("Серверная ошибка получения данных.")
         }).finally(() => setMainDataLoading(false))
     }, [])
 
@@ -122,24 +122,24 @@ const AdminProductsEdit = () => {
             setServiceValue(mainData.service_name)
             setStateValue(mainData.state_name)
             setItemValue(mainData.item_name)
-            setSubtypeValue(mainData.subtype_name);
+            setSubtypeValue(mainData.subtype_name)
         }
-    }, [typesLoading, subtypesLoading, productsLoading, servicesLoading, statesLoading, itemsLoading, mainData]);
+    }, [typesLoading, subtypesLoading, productsLoading, servicesLoading, statesLoading, itemsLoading, mainData])
 
     useEffect(() => {
         if (mainData && !subtypesLoading)
-            setSubtypeValue(mainData.subtype_name);
-    }, [subtypesLoading, mainData]);
+            setSubtypeValue(mainData.subtype_name)
+    }, [subtypesLoading, mainData])
 
     if (mainDataError) return <CentralTextBlock text={mainDataError} />
-    if (mainDataLoading) return <CentralTextBlock text='Ожидаем ответ...' />
+    if (mainDataLoading) return <CentralTextBlock text="Ожидаем ответ..." />
 
     type ProductWithVariantIndexable = ProductWithVariant & {
-        [key: string]: any;
-    };
+        [key: string]: any
+    }
 
     function getModifiedFields() {
-        const modifiedFields: Partial<ProductWithVariantIndexable> = {};
+        const modifiedFields: Partial<ProductWithVariantIndexable> = {}
         const currentData: Record<string, any> = {
             mask: maskValue,
             price: parseFloat(priceValue),
@@ -148,19 +148,19 @@ const AdminProductsEdit = () => {
             variant_name: nameValue,
             state_name: stateValue,
             item_name: itemValue,
-        };
+        }
 
-        const mainForComparisonDataIndexable = mainForComparisonData as ProductWithVariantIndexable;
+        const mainForComparisonDataIndexable = mainForComparisonData as ProductWithVariantIndexable
 
         if (mainForComparisonDataIndexable) {
             for (const key in mainForComparisonDataIndexable) {
                 if (currentData[key] !== mainForComparisonDataIndexable[key]) {
-                    modifiedFields[key] = currentData[key];
+                    modifiedFields[key] = currentData[key]
                 }
             }
         }
 
-        return JSON.stringify(modifiedFields);
+        return JSON.stringify(modifiedFields)
     }
 
     function handleEditClick() {
@@ -243,7 +243,7 @@ const AdminProductsEdit = () => {
         const id = new URLSearchParams(location.search).get("id")
         patchAxioser(ApiAdminVariantUrl + "?id=" + id, getModifiedFields()).then(() => {
             toast.success("Изменение прошло успешно")
-            RedirectTo('/admin/products', navigate, 100)
+            RedirectTo("/admin/products", navigate, 100)
         }).catch((response: AxiosResponse) => {
             httpErrorsHandler(response, navigate)
         }).finally(() => setIsSubmitting(false))

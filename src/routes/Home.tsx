@@ -4,11 +4,11 @@ import {RowBlock, RowBlockUpper} from "../components/Blocks/PageBlocks"
 import InputWithValidation, {TEXT} from "../components/Inputs/InputWithValidation"
 import {isMinMaxLen} from "../lib/validators"
 import {Product, ProductCardForMainpage} from "../components/Cards/ProductCards"
-import {useAuthContext} from "../storage/auth";
-import {PaymentModal} from "../components/Modals/PaymentModal";
-import {ApiProductMainpageUrl, getAxioser} from "../lib/queries";
-import {CentralTextBlock} from "../components/Blocks/CentralTextBlock";
-import httpErrorsHandler from "../lib/responds";
+import {useAuthContext} from "../storage/auth"
+import {PaymentModal} from "../components/Modals/PaymentModal"
+import {ApiProductMainpageUrl, getAxioser} from "../lib/queries"
+import {CentralTextBlock} from "../components/Blocks/CentralTextBlock"
+import httpErrorsHandler from "../lib/responds"
 
 export default function Home() {
     const navigate = useNavigate()
@@ -19,7 +19,7 @@ export default function Home() {
     const [searchError, setSearchError] = useState("") 
     const searchRef = useRef<HTMLInputElement>(null)
 
-    const [variantId, setVariantId] = useState<string>('')
+    const [variantId, setVariantId] = useState<string>("")
     const [isModalOpen, setIsModalOpen] = useState(false)
     const handleModalOpen = (id: string) => {
         setVariantId(id)
@@ -27,7 +27,7 @@ export default function Home() {
     }
 
     const handleEnterPress = (event: any) => {
-        if (event.key === 'Enter') {
+        if (event.key === "Enter") {
             goSearch()
         }
     }
@@ -58,7 +58,7 @@ export default function Home() {
             setMainDataError("Серверная ошибка получения данных")
         }).finally(() => setMainDataLoading(false))
     }, [])
-    if (mainDataLoading) return <CentralTextBlock text='Ожидаем ответ...' />
+    if (mainDataLoading) return <CentralTextBlock text="Ожидаем ответ..." />
     if (mainDataError) return <CentralTextBlock text={mainDataError} />
 
     return (
@@ -101,7 +101,7 @@ export default function Home() {
                     {mainData && mainData.map((product) => (
                         <ProductCardForMainpage product={product}
                                                 handleModalOpen={handleModalOpen}
-                                                isPurchasing={role == 'user'}
+                                                isPurchasing={role == "user"}
                                                 key={product.product_id} />
                     ))}
                 </div>
