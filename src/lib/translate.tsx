@@ -71,3 +71,14 @@ export function translateProductState(s: string) {
             return s
     }
 }
+
+export function translateProductItem(s: string) {
+    switch (s.toLowerCase()) {
+        case "link":
+            return "Ссылка"
+        case "key/code":
+            return "Ключ/Код"
+        default:
+            return s
+    }
+}

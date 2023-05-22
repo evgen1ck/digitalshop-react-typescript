@@ -1,6 +1,7 @@
 import React, {useState} from "react"
 import SVGIcon from "../Icons/SvgIconColor"
 import {
+    translateProductItem,
     translateProductState,
     translateProductSubtype,
     translateProductType,
@@ -193,18 +194,19 @@ export interface ProductWithVariant {
 
 interface AdminProductCardProps {
     variant: ProductWithVariant
-    handleUpload?: (id: string) => void
+    handleFile: React.ChangeEventHandler<HTMLInputElement>
     handleEdit?: (id: string) => void
     handleDelete: (id: string) => void
     deleteLoading: boolean
+    uploadLoading: boolean
 }
 
-export const AdminProductCard = ({ variant, handleDelete, deleteLoading }: AdminProductCardProps) => {
-    const [hoveredCard, setHoveredCard] = useState("")
+export const AdminProductCard = ({ variant, handleDelete, deleteLoading, handleFile, uploadLoading }: AdminProductCardProps) => {
+    const [hoveredCard, setHoveredCard] = useState("");
 
     return (
-        <div className={`flex sm:w-auto flex-col rounded-lg bg-white shadow-lg h-max bg-light-additional dark:bg-dark-additional ${variant.state_name != "active" ? "" : "hover:-translate-y-1.5 system-animation btn-classic-frame"}`}>
-            <div className={`flex flex-col justify-start px-6 py-4`}
+        <div className={`flex sm:w-auto flex-col rounded-lg bg-white shadow-lg h-max bg-light-additional dark:bg-dark-additional ${variant.state_name == "active" && "hover:-translate-y-1.5 system-animation btn-classic-frame"}`}>
+            <div className={`flex flex-col justify-start px-6 py-4 ${variant.quantity_current == 0 && "bg-light-additional dark:bg-dark-additional"}`}
                  onMouseEnter={() => setHoveredCard(variant.variant_id)}
                  onMouseLeave={() => setHoveredCard("")}>
                 <div className="flex justify-between items-center">
@@ -220,29 +222,43 @@ export const AdminProductCard = ({ variant, handleDelete, deleteLoading }: Admin
                         </h3>
                     </span>
                     <span>
-                        <button
-                                className={`btn-classic block lg:inline-block lg:mt-0 ml-4 ${hoveredCard === variant.variant_id ? "visible" : "invisible"}` }
-                                onClick={() => {}}>
-                            Пополнить
-                        </button>
-                        <Link
-                              className={`btn-classic block lg:inline-block lg:mt-0 ml-4 ${hoveredCard === variant.variant_id ? "visible" : "invisible"}` }
-                              to={"edit?id="+variant.variant_id}>
-                            Изменить
-                        </Link>
-                        <button
-                                className={`btn-classic block lg:inline-block text-error lg:mt-0 ml-4 ${hoveredCard === variant.variant_id ? "visible" : "invisible"}` }
-                                onDoubleClick={() => {handleDelete(variant.variant_id)}}
-                                disabled={deleteLoading}>
-                            Удалить
-                        </button>
+                        {hoveredCard == variant.variant_id && (
+                            <label className={`btn-classic block lg:inline-block lg:mt-0 ml-4 ${uploadLoading ? "cursor-not-allowed" : "cursor-pointer"}`}
+                                   htmlFor="dropzone-file">
+                                Пополнить
+                                <input
+                                    id="dropzone-file"
+                                    accept=".txt"
+                                    type="file"
+                                    className="hidden"
+                                    disabled={uploadLoading}
+                                    onChange={handleFile}
+                                />
+                            </label>
+                        )}
+                        {hoveredCard == variant.variant_id && (
+                            <Link
+                                className="btn-classic block lg:inline-block lg:mt-0 ml-4"
+                                to={"edit?id="+variant.variant_id}>
+                                Изменить
+                            </Link>
+                        )}
+                        {hoveredCard == variant.variant_id && (
+                            <button className="btn-classic block lg:inline-block text-error lg:mt-0 ml-4"
+                                    onDoubleClick={() => {handleDelete(variant.variant_id)}}
+                                    disabled={deleteLoading}>
+                                Удалить
+                            </button>
+                        )}
                     </span>
                 </div>
-                <span className="pb-1 space-x-3">
-                    <h3 className="sm:text-2xl text-xl font-bold uppercase inline-block">
-                        {variant.variant_name}
-                    </h3>
-                </span>
+                <div className="flex justify-between items-center">
+                    <span className="pb-1 space-x-3">
+                        <h3 className="sm:text-2xl text-xl font-bold uppercase inline-block">
+                            {variant.variant_name}
+                        </h3>
+                    </span>
+                </div>
                 <span className="pb-1">
                     <p className={`text-base`}>
                         <b className={`border-solid ${variant.discount_percent > 0 || variant.discount_money > 0 ? "line-through pr-1 text-light-second dark:text-dark-second" : variant.text_quantity.includes("out of stock") ? "text-light-second dark:text-dark-second" : "text-error"}`}>
@@ -277,14 +293,16 @@ export const AdminProductCard = ({ variant, handleDelete, deleteLoading }: Admin
                         }
                         {variant.quantity_current != 0 &&
                             <p className="sm:text-base text-sm">
-                                в наличии {variant.quantity_current} шт.
+                                {variant.quantity_current > 1 && `в наличии ${variant.quantity_current} шт.`}
+                                {variant.quantity_current > 1 && variant.quantity_sold > 0 && ` / `}
+                                {variant.quantity_sold > 0 && `продано ${variant.quantity_sold} шт.`}
                             </p>
                         }
                     </div>
                     <div className="flex items-center justify-end space-x-3">
                         <span>
                             <Hint text={variant.mask} pos={"bottom"}>
-                                {variant.item_name.toUpperCase()}
+                                {translateProductItem(variant.item_name).toUpperCase()}
                             </Hint>
                         </span>
                         <span className="sm:text-xl text-lg items-center inline-flex space-x-2">
@@ -303,5 +321,3 @@ export const AdminProductCard = ({ variant, handleDelete, deleteLoading }: Admin
         </div>
     )
 }
-
-

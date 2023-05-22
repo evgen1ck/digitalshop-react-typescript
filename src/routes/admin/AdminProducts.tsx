@@ -23,6 +23,9 @@ export default function AdminProducts() {
 
     const [deleteLoading, setDeleteLoading] = useState(false)
 
+    const [uploadData, setUploadData] = useState<object[]>([]);
+    const [uploadLoading, setUploadLoading] = useState(false)
+
     const [mainData, setMainData] = useState<ProductWithVariant[]>([])
     const [mainDataLoading, setMainDataLoading] = useState(true)
     const [mainDataError, setMainDataError] = useState("")
@@ -54,6 +57,26 @@ export default function AdminProducts() {
         }).finally(() => setDeleteLoading(false))
     }
 
+
+    const handleFile = async (event: React.ChangeEvent<HTMLInputElement>) => {
+        setUploadLoading(true);
+        const file = event.target.files?.[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                if (e.target) {
+                    const content = e.target.result as string;
+                    const lines = content.split("\n");
+                    const objects = lines.map((line) => ({ data: line.trim() }));
+                    setUploadData(objects);
+                }
+            };
+            reader.readAsText(file);
+        }
+        console.log(uploadData);
+        setUploadLoading(false);
+    };
+
     return (
         <>
             <RowBlock>
@@ -65,11 +88,7 @@ export default function AdminProducts() {
             <RowBlock>
                 <div className="flex justify-between items-center space-x-3">
                     <div className="inline-flex lg:w-1/2 w-full">
-                        <Select
-                            formatGroupLabel={formatGroupLabel}
-                            noOptionsMessage={() => "Пусто"}
-                            loadingMessage={() => "Загрузка данных..."}
-                        />
+
                     </div>
                     <div className="flex justify-end items-center space-x-3 mb-6">
                         <div className="text-center w-auto mt-4">
@@ -86,6 +105,8 @@ export default function AdminProducts() {
                 <div className="space-y-8 select-none">
                     {mainData && mainData.map((data) => (
                         <AdminProductCard variant={data}
+                                          handleFile={handleFile}
+                                          uploadLoading={uploadLoading}
                                           deleteLoading={deleteLoading}
                                           handleDelete={handleDeleteClick}
                                           key={data.variant_id} />

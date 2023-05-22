@@ -1,7 +1,7 @@
 import axios, { AxiosResponse } from "axios"
 
-//export const ApiUrl = "https://api.digitalshop.evgenick.com/api/v1/"
-export const ApiUrl = "http://localhost:9990/api/v1/"
+export const ApiUrl = "https://api.digitalshop.evgenick.com/api/v1/"
+//export const ApiUrl = "http://localhost:9990/api/v1/"
 
 export const ApiAuthSignupUrl = ApiUrl + "auth/signup"
 export const ApiAuthSignupWithTokenUrl = ApiUrl + "auth/signup-with-token"

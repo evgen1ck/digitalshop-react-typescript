@@ -43,20 +43,10 @@ const Option = (props: OptionProps<DataOption, false, GroupedOption>) => {
         <components.Option {...props}
                            key={data.item_name}
                            innerProps={{...innerProps, onMouseEnter: () => setIsHovered(true), onMouseLeave: () => setIsHovered(false)}}>
-            <div className={`flex items-center space-x-2 justify-between ${!props.isDisabled && "cursor-pointer"}`}>
-                <span>{data.item_name.toUpperCase()}</span>
-                <span className="pr-2 inline-flex space-x-5">
-                    {isHovered && localStorage.getItem("role") == "admin" &&
-                        <Hint pos={"bottom"} text="Редактировать"> <AiOutlineEdit className="system-animation-2" onClick={() => {
-                            toast.success("abcd")
-                        }} /> </Hint>
-                    }
-                    {isHovered && localStorage.getItem("role") == "admin" &&
-                        <Hint pos={"bottom"} text="Удалить"> <MdOutlineDelete color="red" className="system-animation-2" onClick={() => {
-                            toast.success("ab")
-                        }} /> </Hint>
-                    }
-                </span>
+            <div className={`flex items-center space-x-2 ${!props.isDisabled && "cursor-pointer"}`}>
+                <div className={`flex items-center space-x-2 ${!props.isDisabled && "cursor-pointer"}`}>
+                    <span>{data.item_name.toUpperCase()}</span>
+                </div>
             </div>
         </components.Option>
     )
