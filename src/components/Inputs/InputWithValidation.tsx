@@ -14,7 +14,7 @@ interface InputWithValidationProps {
     value: string
     setError: React.Dispatch<React.SetStateAction<string>>
     error: string
-    inputRef: React.RefObject<HTMLInputElement>
+    inputRef?: React.RefObject<HTMLInputElement>
     insertSpace: boolean
     iconName?: string
     maxLength?: number

@@ -11,6 +11,7 @@ interface ILink {
 }
 
 export default function RootLayout() {
+    const { role } = useAuthContext()
 
     const initialLinks: ILink[] = [
         {
@@ -42,7 +43,8 @@ export default function RootLayout() {
         setIsSubmitting(true)
         AuthLogoutQuery({
             token: localStorage.getItem("token") || "",
-            navigate: navigate
+            navigate: navigate,
+            role: role,
         }).then(_ => {
             DeleteUserAuth(navigate, true, setAuthState)
             setIsSubmitting(false)

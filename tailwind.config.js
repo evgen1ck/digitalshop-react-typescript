@@ -8,6 +8,7 @@ module.exports = {
     colors: {
       transparent: 'transparent', // test value, unused in the web application
       'error': '#B22222', // color for incorrect fields
+      'green': '#228B22', // color for incorrect fields
       'light': { // colors for light theme
         main: '#E6E6E6', // background color
         additional: '#CCCAC3', // background color for header and footer

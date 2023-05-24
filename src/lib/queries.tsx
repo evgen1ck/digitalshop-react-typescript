@@ -1,7 +1,7 @@
 import axios, { AxiosResponse } from "axios"
 
-export const ApiUrl = "https://api.digitalshop.evgenick.com/api/v1/"
-//export const ApiUrl = "http://localhost:9990/api/v1/"
+//export const ApiUrl = "https://api.digitalshop.evgenick.com/api/v1/"
+export const ApiUrl = "http://localhost:9990/api/v1/"
 
 export const ApiAuthSignupUrl = ApiUrl + "auth/signup"
 export const ApiAuthSignupWithTokenUrl = ApiUrl + "auth/signup-with-token"
@@ -9,6 +9,7 @@ export const ApiAuthLoginUrl = ApiUrl + "auth/login"
 export const ApiAuthAloginUrl = ApiUrl + "auth/alogin"
 
 export const ApiUserPaymentUrl = ApiUrl + "user/payment"
+export const ApiUserOrderUrl = ApiUrl + "user/order"
 export const ApiUserLogoutUrl = ApiUrl + "user/logout"
 
 export const ApiAdminProductUrl = ApiUrl + "admin/product"
@@ -48,6 +49,17 @@ export const patchAxioser = (url: string, body = {}) => {
         headers["Content-Type"] = "application/json"
 
     return axios.patch(url, body, { headers })
+        .then(checkOnBadHttpCode)
+        .then((res) => res.data)
+}
+
+export const putAxioser = (url: string, body = {}) => {
+    const headers: { [key: string]: string } = { Authorization: `Bearer ${localStorage.getItem("token")}` }
+
+    if (Object.keys(body).length !== 0)
+        headers["Content-Type"] = "application/json"
+
+    return axios.put(url, body, { headers })
         .then(checkOnBadHttpCode)
         .then((res) => res.data)
 }

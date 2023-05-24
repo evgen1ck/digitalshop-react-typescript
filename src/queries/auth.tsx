@@ -2,11 +2,13 @@ import {toast} from "react-hot-toast"
 import React from "react" 
 import {NavigateFunction} from "react-router-dom"
 import {ApiUrl} from "../lib/queries"
+import {useAuthContext} from "../storage/auth";
 
 const authSignupUrl = ApiUrl+"auth/signup"
 const authSignupWithTokenUrl = ApiUrl+"auth/signup-with-token"
 const authLoginUrl = ApiUrl+"auth/login"
-const authLogoutUrl = ApiUrl+"user/logout"
+const authUserLogoutUrl = ApiUrl+"user/logout"
+const authAdminLogoutUrl = ApiUrl+"admin/logout"
 const authAlogin = ApiUrl+"auth/alogin"
 
 interface AuthSignup {
@@ -157,11 +159,13 @@ export const AuthLoginQuery = async ({login, password, setLoginError, setPasswor
 interface AuthLogout {
     token: string
     navigate: NavigateFunction
+    role: string
 }
 
-export const AuthLogoutQuery = async ({token, navigate}: AuthLogout) => {
+export const AuthLogoutQuery = async ({token, navigate, role}: AuthLogout) => {
+    const url = role == "user" ? authUserLogoutUrl : authAdminLogoutUrl
     try {
-        const response = await fetch(authLogoutUrl, {
+        const response = await fetch(url, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -176,7 +180,7 @@ export const AuthLogoutQuery = async ({token, navigate}: AuthLogout) => {
 
         toast.success("Успешный выход")
     } catch (error) {
-        //toast.error(UnknownError)
+        toast.error("ddd")
         console.error("Error fetching data: ", error)
     }
 }

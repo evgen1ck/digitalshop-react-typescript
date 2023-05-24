@@ -8,7 +8,7 @@ import {
 import {
     ApiAdminVariantUrl,
     deleteAxioser,
-    getAxioser
+    getAxioser, putAxioser
 } from "../../lib/queries"
 import httpErrorsHandler from "../../lib/responds"
 import {CentralTextBlock} from "../../components/Blocks/CentralTextBlock"
@@ -16,6 +16,7 @@ import {toast} from "react-hot-toast"
 import axios, {AxiosError} from "axios"
 import Select from "react-select"
 import {formatGroupLabel} from "../../components/Dropdowns/DropDownData"
+import {isMinMaxLen, isNotBlank, isNotContainsConsecutiveSpaces} from "../../lib/validators";
 
 
 export default function AdminProducts() {
@@ -23,21 +24,25 @@ export default function AdminProducts() {
 
     const [deleteLoading, setDeleteLoading] = useState(false)
 
-    const [uploadData, setUploadData] = useState<object[]>([]);
     const [uploadLoading, setUploadLoading] = useState(false)
 
     const [mainData, setMainData] = useState<ProductWithVariant[]>([])
     const [mainDataLoading, setMainDataLoading] = useState(true)
     const [mainDataError, setMainDataError] = useState("")
-    useEffect(() => {
-        setMainDataLoading(true)
-        getAxioser(ApiAdminVariantUrl).then(data => {
-            setMainData(data)
+    const fetchData = () => {
+        setMainDataLoading(true);
+        getAxioser(ApiAdminVariantUrl).then((data) => {
+            setMainData(data);
         }).catch((response) => {
-            httpErrorsHandler(response, navigate)
-            setMainDataError("Серверная ошибка получения данных")
-        }).finally(() => setMainDataLoading(false))
-    }, [])
+            httpErrorsHandler(response, navigate);
+            setMainDataError("Серверная ошибка получения данных");
+        }).finally(() => setMainDataLoading(false));
+    };
+
+    useEffect(() => {
+        fetchData();
+    }, []);
+
     if (mainDataLoading) return <CentralTextBlock text="Ожидаем ответ..." />
     if (mainDataError) return <CentralTextBlock text={mainDataError} />
 
@@ -57,8 +62,7 @@ export default function AdminProducts() {
         }).finally(() => setDeleteLoading(false))
     }
 
-
-    const handleFile = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const handleFile = (event: React.ChangeEvent<HTMLInputElement>, id: string) => {
         setUploadLoading(true);
         const file = event.target.files?.[0];
         if (file) {
@@ -67,15 +71,58 @@ export default function AdminProducts() {
                 if (e.target) {
                     const content = e.target.result as string;
                     const lines = content.split("\n");
-                    const objects = lines.map((line) => ({ data: line.trim() }));
-                    setUploadData(objects);
+                    const objects = lines
+                        .map((line) => line.trim())
+                        .filter((line) => line !== "")
+                        .map((line) => ({ data: line }));
+
+                    let lineNum = 0;
+                    let hasError = false;
+                    objects.forEach((obj) => {
+                        lineNum++;
+                        const value = obj.data;
+                        let errorMessage = "";
+                        for (const validator of [
+                            isNotBlank,
+                            isMinMaxLen(3, 10240),
+                            isNotContainsConsecutiveSpaces,
+                        ]) {
+                            errorMessage = validator(value);
+                            if (errorMessage) {
+                                toast.error(errorMessage + " на строке " + lineNum);
+                                hasError = true;
+                                break;
+                            }
+                        }
+                    });
+
+                    if (!hasError && objects.length > 0) {
+                        console.log(objects.length)
+                        console.log(objects)
+                        putAxioser(ApiAdminVariantUrl + "?id=" + id, objects)
+                            .then(() => {
+                                toast.success("Пополнение прошло успешно");
+                                fetchData();
+                            })
+                            .catch((response) => {
+                                httpErrorsHandler(response, navigate);
+                            })
+                            .finally(() => setUploadLoading(false));
+                    } else if (objects.length == 0) {
+                        toast.error("Файл не содержит текст")
+                        setUploadLoading(false);
+                    } else {
+                        setUploadLoading(false);
+                    }
                 }
             };
+
             reader.readAsText(file);
+        } else {
+            setUploadLoading(false);
         }
-        console.log(uploadData);
-        setUploadLoading(false);
     };
+
 
     return (
         <>

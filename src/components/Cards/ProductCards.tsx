@@ -46,11 +46,10 @@ interface UniqueService {
 
 interface ProductCardForMainpageProps {
     product: Product
-    handleModalOpen: (id: string) => void
     isPurchasing: boolean
 }
 
-export const ProductCardForMainpage = ({product, handleModalOpen, isPurchasing}: ProductCardForMainpageProps) => {
+export const ProductCardForMainpage = ({product, isPurchasing}: ProductCardForMainpageProps) => {
     return (
         <div className="px-6 py-4 bg-light-additional2 dark:bg-dark-additional2 rounded-lg border-solid border-2 border-light-second dark:border-dark-second">
             <div className="flex justify-center bg-light-additional dark:bg-dark-additional hover:hover:-translate-1.5 system-animation rounded-lg">
@@ -79,18 +78,15 @@ export const ProductCardForMainpage = ({product, handleModalOpen, isPurchasing}:
                             {translateProductType(subtype.type)}
                         </h2>
                         <h2 className="mb-1 sm:text-xl text-lg font-bold">
-                            {translateProductSubtype(subtype.subtype_name)}
+                            {translateProductSubtype(subtype.subtype_name).toUpperCase()}
                         </h2>
                     </div>
                     <div className="flex flex-wrap gap-4">
                         {subtype.variants.map((variant) => (
-                            <div className={`flex sm:w-auto w-full flex-col rounded-lg bg-white shadow-lg sm:flex-row h-max bg-light-additional dark:bg-dark-additional ${variant.text_quantity.includes("out of stock") || variant.state.includes("unavailable")  ? "cursor-not-allowed" : "hover:-translate-y-1.5 system-animation btn-classic-frame cursor-pointer"}`}
-                                 key={variant.variant_id}>
-                                <div className={`flex flex-col justify-start px-6 py-4 ${variant.text_quantity.includes("out of stock") || variant.state.includes("unavailable") || !isPurchasing ? "cursor-not-allowed" : "cursor-pointer"}`}
-                                     onClick={() => {
-                                         if (!(variant.text_quantity.includes("out of stock") || variant.state.includes("unavailable") || !isPurchasing))
-                                             handleModalOpen(variant.variant_id)
-                                     }}>
+                            <Link className={`flex sm:w-auto w-full flex-col rounded-lg bg-white shadow-lg sm:flex-row h-max bg-light-additional dark:bg-dark-additional ${variant.text_quantity.includes("out of stock") || variant.state.includes("unavailable")  ? "cursor-not-allowed" : "hover:-translate-y-1.5 system-animation btn-classic-frame cursor-pointer"}`}
+                                  key={variant.variant_id}
+                                  to={"/product/" + variant.variant_id}>
+                                <div className={`flex flex-col justify-start px-6 py-4 ${variant.text_quantity.includes("out of stock") || variant.state.includes("unavailable") || !isPurchasing ? "cursor-not-allowed" : "cursor-pointer"}`}>
                                     <span className="pb-1">
                                         <h3 className="sm:text-xl text-lg font-bold uppercase inline-block">
                                             {variant.variant_name}
@@ -129,7 +125,7 @@ export const ProductCardForMainpage = ({product, handleModalOpen, isPurchasing}:
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+                            </Link>
                         ))}
                     </div>
                 </div>
@@ -138,7 +134,7 @@ export const ProductCardForMainpage = ({product, handleModalOpen, isPurchasing}:
     )
 }
 
-const ProductSvgIcons = (props: {product: Product}) => {
+export const ProductSvgIcons = (props: {product: Product}) => {
     const { product } = props
 
     const uniqueServices: UniqueService[] = product.subtypes
@@ -194,7 +190,7 @@ export interface ProductWithVariant {
 
 interface AdminProductCardProps {
     variant: ProductWithVariant
-    handleFile: React.ChangeEventHandler<HTMLInputElement>
+    handleFile: (event: React.ChangeEvent<HTMLInputElement>, id: string) => void
     handleEdit?: (id: string) => void
     handleDelete: (id: string) => void
     deleteLoading: boolean
@@ -232,7 +228,7 @@ export const AdminProductCard = ({ variant, handleDelete, deleteLoading, handleF
                                     type="file"
                                     className="hidden"
                                     disabled={uploadLoading}
-                                    onChange={handleFile}
+                                    onChange={(event) => handleFile(event, variant.variant_id)}
                                 />
                             </label>
                         )}

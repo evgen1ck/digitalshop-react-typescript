@@ -22,6 +22,7 @@ import AdminProducts from "./routes/admin/AdminProducts"
 import Alogin from "./routes/Alogin"
 import AdminProductsEdit from "./routes/admin/AdminProductEdit"
 import Home from "./routes/Home"
+import ProductPage from "./routes/ProductPage";
 
 // const AuthProtectedRoute = (props: { children: ReactNode, accountRole: string }) => {
 //     const { children, accountRole } = props
@@ -52,6 +53,7 @@ const router = createBrowserRouter(
     createRoutesFromElements(
         <Route path="/" element={<RootLayout />}>
             <Route index element={<Home />} />
+            <Route path="product/:id" element={<ProductPage />} />
             <Route path="login" element={<NoAgainAuth> <Login/> </NoAgainAuth>} />
             <Route path="alogin" element={<NoAgainAuth> <Alogin/> </NoAgainAuth>} />
             <Route path="signup" element={<NoAgainAuth> <Signup /> </NoAgainAuth>} />

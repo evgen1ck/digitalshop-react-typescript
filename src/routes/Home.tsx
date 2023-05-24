@@ -19,13 +19,6 @@ export default function Home() {
     const [searchError, setSearchError] = useState("") 
     const searchRef = useRef<HTMLInputElement>(null)
 
-    const [variantId, setVariantId] = useState<string>("")
-    const [isModalOpen, setIsModalOpen] = useState(false)
-    const handleModalOpen = (id: string) => {
-        setVariantId(id)
-        setIsModalOpen(true)
-    }
-
     const handleEnterPress = (event: any) => {
         if (event.key === "Enter") {
             goSearch()
@@ -96,11 +89,9 @@ export default function Home() {
             </RowBlockUpper>
 
             <RowBlock>
-                <PaymentModal onShow={isModalOpen} setShow={setIsModalOpen} canLeave={true} variantId={variantId} />
                 <div className="space-y-8 select-none">
                     {mainData && mainData.map((product) => (
                         <ProductCardForMainpage product={product}
-                                                handleModalOpen={handleModalOpen}
                                                 isPurchasing={role == "user"}
                                                 key={product.product_id} />
                     ))}
