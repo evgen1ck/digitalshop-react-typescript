@@ -190,18 +190,17 @@ export interface ProductWithVariant {
 
 interface AdminProductCardProps {
     variant: ProductWithVariant
-    handleFile: (event: React.ChangeEvent<HTMLInputElement>, id: string) => void
     handleEdit?: (id: string) => void
     handleDelete: (id: string) => void
     deleteLoading: boolean
     uploadLoading: boolean
 }
 
-export const AdminProductCard = ({ variant, handleDelete, deleteLoading, handleFile, uploadLoading }: AdminProductCardProps) => {
+export const AdminProductCard = ({ variant, handleDelete, deleteLoading, uploadLoading }: AdminProductCardProps) => {
     const [hoveredCard, setHoveredCard] = useState("");
 
     return (
-        <div className={`flex sm:w-auto flex-col rounded-lg bg-white shadow-lg h-max bg-light-additional dark:bg-dark-additional ${variant.state_name == "active" && "hover:-translate-y-1.5 system-animation btn-classic-frame"}`}>
+        <div className={`flex sm:w-auto flex-col bg-white shadow-lg h-max bg-light-additional dark:bg-dark-additional ${variant.state_name == "active" && "hover:-translate-y-1.5 system-animation btn-classic-frame"}`}>
             <div className={`flex flex-col justify-start px-6 py-4 ${variant.quantity_current == 0 && "bg-light-additional dark:bg-dark-additional"}`}
                  onMouseEnter={() => setHoveredCard(variant.variant_id)}
                  onMouseLeave={() => setHoveredCard("")}>
@@ -219,18 +218,11 @@ export const AdminProductCard = ({ variant, handleDelete, deleteLoading, handleF
                     </span>
                     <span>
                         {hoveredCard == variant.variant_id && (
-                            <label className={`btn-classic block lg:inline-block lg:mt-0 ml-4 ${uploadLoading ? "cursor-not-allowed" : "cursor-pointer"}`}
-                                   htmlFor="dropzone-file">
+                            <Link
+                                className="btn-classic block lg:inline-block lg:mt-0 ml-4"
+                                to={"upload?id="+variant.variant_id}>
                                 Пополнить
-                                <input
-                                    id="dropzone-file"
-                                    accept=".txt"
-                                    type="file"
-                                    className="hidden"
-                                    disabled={uploadLoading}
-                                    onChange={(event) => handleFile(event, variant.variant_id)}
-                                />
-                            </label>
+                            </Link>
                         )}
                         {hoveredCard == variant.variant_id && (
                             <Link

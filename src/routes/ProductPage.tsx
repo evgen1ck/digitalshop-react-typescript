@@ -32,7 +32,6 @@ const ProductPage = () => {
         setIsModalOpen(true)
     }
 
-
     useEffect(() => {
         setMainDataLoading(true);
         getAxioser(ApiProductMainpageUrl + "?id="+id).then((data) => {

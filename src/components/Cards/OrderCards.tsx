@@ -1,5 +1,5 @@
 import { format } from "date-fns";
-import React from "react";
+import React, {useEffect, useState} from "react";
 
 export interface Order {
     order_id: string
@@ -17,6 +17,9 @@ interface OrderCardProps {
 }
 
 export const OrderCard = ({order}: OrderCardProps) => {
+    const orderDate = new Date(order.created_at)
+    orderDate.setHours(orderDate.getHours() + 3)
+
     return (
         <div>
             <div className={`flex sm:w-auto w-full flex-col rounded-lg bg-white shadow-lg sm:flex-row h-max bg-light-additional dark:bg-dark-additional hover:-translate-y-1 system-animation btn-classic-frame`}>
@@ -51,11 +54,11 @@ export const OrderCard = ({order}: OrderCardProps) => {
                             <h3 className="sm:text-lg text-base inline-block">
                                 от{' '}
                                 <h3 className="sm:text-lg font-bold text-base inline-block">
-                                    {format(new Date(order.created_at), 'dd.MM.yyyy')}
+                                    {format(orderDate, 'dd.MM.yyyy')}
                                 </h3>
                                 {' '}в{' '}
                                 <h3 className="sm:text-lg font-bold text-base inline-block">
-                                    {format(new Date(order.created_at), 'HH:mm')}
+                                    {format(orderDate, 'HH:mm')}
                                 </h3>
                             </h3>
                             <h3 className="sm:text-lg text-base inline-block">

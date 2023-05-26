@@ -49,14 +49,17 @@ export default function InputWithValidation ({
                                                  disabled} : InputWithValidationProps) {
 
     function handleKeyDown(event: React.KeyboardEvent<HTMLInputElement>) {
+        const input = event.currentTarget;
         if (!insertSpace && event.key === " ") {
-            event.preventDefault() 
+            event.preventDefault()
+        }
+        if (input.value.slice(-1) === " " && event.key === " ") {
+            event.preventDefault();
         }
         if (event.key === "Escape") {
-            event.currentTarget.blur() 
+            input.blur();
         }
-
-        onKeyPress && onKeyPress(event) 
+        onKeyPress && onKeyPress(event);
     }
 
     const [isFocused, setIsFocused] = useState(false) 
@@ -64,17 +67,19 @@ export default function InputWithValidation ({
         setIsFocused(true)
     }
 
-    let errorMessage = ""
     const handleBlur = () => {
-        if ((!requiredField && value != "") || requiredField) {
-            value = value.trim()
+        value = value.trim();
+        let errorMessage = "";
+        if ((!requiredField && value !== "") || (requiredField && requiredValidators.length > 0)) {
             for (const validator of requiredValidators) {
-                errorMessage = validator(value)
-                if (errorMessage) break
+                errorMessage = validator(value);
+                if (errorMessage)
+                    break
             }
-            handleChange(value, errorMessage)
+            handleChange(value, errorMessage);
         }
-    }
+    };
+
 
     const handleChange = (value: string, error: string) => {
         setValue(value)

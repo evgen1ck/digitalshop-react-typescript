@@ -109,13 +109,6 @@ export default function Login() {
                     <Link to="/signup" className="btn-usual-link">Сделайте!</Link>
                 </div>
             </RowBlock>
-
-            <RowBlock>
-                <div className="text-center w-full lg:flex lg:justify-center select-none">
-                    <p className="leading-tight mx-1">Забыли пароль?</p>
-                    <Link to="/recover-password" className="btn-usual-link">Восстановите!</Link>
-                </div>
-            </RowBlock>
         </div>
     )
 }

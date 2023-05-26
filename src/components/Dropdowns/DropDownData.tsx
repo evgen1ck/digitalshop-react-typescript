@@ -1,5 +1,6 @@
 import React, {useEffect} from "react"
 import {NavigateFunction} from "react-router-dom"
+import {DataOption} from "./SortDropDown";
 
 export interface DropDownProps {
     nameField: string
@@ -21,7 +22,9 @@ export interface DropDownProps {
     checkOnEmpty: boolean
     addToClassName?: string
     typeName?: string
+    defaultValue?: string
     setTypeValue?: React.Dispatch<React.SetStateAction<string>>
+    dataForSort?: DataOption[]
 }
 
 export const customStyles = (isDisabled: boolean) => ({

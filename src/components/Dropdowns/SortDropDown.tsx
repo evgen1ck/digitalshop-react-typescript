@@ -2,14 +2,9 @@ import React, {useEffect, useState} from "react"
 import Select, {components, OptionProps, SingleValueProps} from "react-select"
 import {RowBlockLower} from "../Blocks/PageBlocks"
 import {customStyles, DropDownProps, formatGroupLabel, useUpdateSelectedOption} from "./DropDownData"
-import {AdminGetItemsQuery} from "../../queries/admin"
 
 export interface DataOption {
-    item_no: number
-    item_name: string
-    created_at: string
-    modified_at: string
-    commentary: string | null
+    sort_name_ru: string
 }
 
 export interface GroupedOption {
@@ -20,9 +15,8 @@ export interface GroupedOption {
 const filterOptions = (inputValue: string, options: GroupedOption[]): GroupedOption[] => {
     return options.map(group => {
         const filteredOptions = group.options.filter(option =>
-            option.item_name.toLowerCase().includes(inputValue.toLowerCase())
+            option.sort_name_ru.toLowerCase().includes(inputValue.toLowerCase())
         )
-
         return { ...group, options: filteredOptions }
     })
 }
@@ -37,11 +31,11 @@ const Option = (props: OptionProps<DataOption, false, GroupedOption>) => {
 
     return (
         <components.Option {...props}
-                           key={data.item_name}
+                           key={data.sort_name_ru}
                            innerProps={{...innerProps, onMouseEnter: () => setIsHovered(true), onMouseLeave: () => setIsHovered(false)}}>
             <div className={`flex items-center space-x-2 ${!props.isDisabled && "cursor-pointer"}`}>
                 <div className={`flex items-center space-x-2 ${!props.isDisabled && "cursor-pointer"}`}>
-                    <span>{data.item_name.toUpperCase()}</span>
+                    <span>{data.sort_name_ru.toUpperCase()}</span>
                 </div>
             </div>
         </components.Option>
@@ -52,52 +46,52 @@ const SingleValue = (props: SingleValueProps<DataOption, false, GroupedOption>) 
     const { data } = props
     return (
         <components.SingleValue {...props}
-                                key={data.item_name}>
+                                key={data.sort_name_ru}>
             <div className={`flex items-center space-x-2 ${!props.isDisabled && "cursor-pointer"}`}>
                 <div className={`flex items-center space-x-2 ${!props.isDisabled && "cursor-pointer"}`}>
-                    <span>{data.item_name.toUpperCase()}</span>
+                    <span>{data.sort_name_ru.toUpperCase()}</span>
                 </div>
             </div>
         </components.SingleValue>
     )
 }
 
-export const ItemsDropDown = ({value, header, nameField, placeholder, id, isLoading, setLoading, isClearable, isSearchable, setError, error, setValue, setDisabled, disabled, hasWarnLabel, addToClassName, navigate, checkOnEmpty}: DropDownProps) => {
-    const [data, setData] = useState([])
+export const SortDropDown = ({value, header, defaultValue, nameField, placeholder, id, isLoading, setLoading, isClearable, isSearchable, setError, error, setValue, setDisabled, disabled, hasWarnLabel, addToClassName, navigate, checkOnEmpty}: DropDownProps) => {
+    const dataForSort: DataOption[] = [
+        {sort_name_ru: "по типу"},
+        {sort_name_ru: "по подтипу"},
+        {sort_name_ru: "по названию продукта"},
+        {sort_name_ru: "по названию варианта"},
+        {sort_name_ru: "по начальной стоимости"},
+        {sort_name_ru: "по итоговой стоимости"},
+        {sort_name_ru: "по скидке в деньгах"},
+        {sort_name_ru: "по скидке в процентах"},
+        {sort_name_ru: "по текущему количеству"},
+    ]
+    const [data, setData] = useState<DataOption[] | null>(dataForSort || null)
     const [inputValue, setInputValue] = useState("")
-    const [selectedOption, setSelectedOption] = useState<DataOption | null>(null)
-
-    useEffect(() => {
-        const abortController = new AbortController
-
-        AdminGetItemsQuery({
-            signal: abortController.signal,
-            navigate: navigate
-        }).then(data => {
-            setData(data)
-            setLoading(false)
-        }).catch(() => {
-            setDisabled(true)
-            setLoading(false)
-        })
-
-        return () => {
-            abortController.abort()
-        }
-    }, [])
+    const defaultDataOption = typeof defaultValue === 'string'
+        ? dataForSort.find(option => option.sort_name_ru === defaultValue)
+        : undefined;
+    const [selectedOption, setSelectedOption] = useState<DataOption | null>(defaultDataOption || null);
 
     const filteredOptions = filterOptions(inputValue, [
         {
             header: header,
-            options: data ? data.map((option: DataOption) => ({...option, label: option.item_name, value: option.item_no})) : [],
+            options: data ? data.map((option: DataOption) => ({...option, label: option.sort_name_ru, value: option.sort_name_ru})) : [],
         }
     ])
 
-    useUpdateSelectedOption(data, value, setSelectedOption, "item_name")
+    useEffect(() => {
+        if (selectedOption)
+            setValue(selectedOption.sort_name_ru)
+    }, [selectedOption])
+
+    useUpdateSelectedOption(data, value, setSelectedOption, "sort_name_ru")
 
     const handleProductChange = (selectedOption: DataOption | null) => {
         setSelectedOption(selectedOption)
-        setValue(selectedOption ? selectedOption.item_name : "")
+        setValue(selectedOption ? selectedOption.sort_name_ru : "")
         if (checkOnEmpty) {
             if (selectedOption == null) setError("Поле обязательно к заполнению!")
             else setError("")
@@ -116,6 +110,7 @@ export const ItemsDropDown = ({value, header, nameField, placeholder, id, isLoad
                 isDisabled={disabled}
                 options={filteredOptions}
                 value={selectedOption}
+                defaultValue={selectedOption}
                 formatGroupLabel={formatGroupLabel}
                 components={{ Option, SingleValue }}
                 onInputChange={(value) => setInputValue(value)}

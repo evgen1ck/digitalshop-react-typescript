@@ -126,6 +126,12 @@ export const AuthLoginQuery = async ({login, password, setLoginError, setPasswor
 
         if (!response.ok) {
             switch (true) {
+                case data.description.toLowerCase().includes("email:".toLowerCase()):
+                    setLoginError("Некорректная почта")
+                    return
+                case data.description.toLowerCase().includes("nickname:".toLowerCase()):
+                    setLoginError("Некорректный псевдоним")
+                    return
                 case data.description.toLowerCase().includes("invalid password".toLowerCase()):
                     setPasswordError("Неверный пароль")
                     return

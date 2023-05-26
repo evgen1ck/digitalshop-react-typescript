@@ -94,9 +94,11 @@ export default function RootLayout() {
                                 )}
                                 {isLoggedIn && (
                                     <div className="flex justify-end items-center">
-                                        <Link to="/profile" className="btn-classic block lg:inline-block lg:mt-0 ml-4 mr-6">
-                                            Профиль аккаунта
-                                        </Link>
+                                        {role == "user" && (
+                                            <Link to="/profile" className="btn-classic block lg:inline-block lg:mt-0 ml-4 mr-6">
+                                                Профиль аккаунта
+                                            </Link>
+                                        )}
                                         <button className="btn-classic-frame bg-light-additional dark:bg-dark-additional block lg:inline-block py-2 uppercase max-w-md:hidden inline-block px-4 mt-4 lg:mt-0"
                                                 onClick={handleLogoutClick}
                                                 disabled={isSubmitting}>

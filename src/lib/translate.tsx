@@ -82,3 +82,52 @@ export function translateProductItem(s: string) {
             return s
     }
 }
+
+export function translateSort(s: string, b: boolean) {
+    let res: string = ""
+    if (b) {
+        switch (s) {
+            case "по типу": res = "type_name"
+                break
+            case "по подтипу": res = "subtype_name"
+                break
+            case "по названию продукта": res = "product_name"
+                break
+            case "по названию варианта": res = "variant_name"
+                break
+            case "по начальной стоимости": res = "price"
+                break
+            case "по итоговой стоимости": res = "final_price"
+                break
+            case "по скидке в деньгах": res = "discount_money"
+                break
+            case "по скидке в процентах": res = "discount_percent"
+                break
+            case "по текущему количеству": res = "quantity_current"
+                break
+        }
+    } else {
+        switch (s) {
+            case "type_name": res = "по типу"
+                break
+            case "subtype_name": res = "по подтипу"
+                break
+            case "product_name": res = "по названию продукта"
+                break
+            case "variant_name": res = "по названию варианта"
+                break
+            case "price": res = "по начальной стоимости"
+                break
+            case "final_price": res = "по итоговой стоимости"
+                break
+            case "discount_money": res = "по скидке в деньгах"
+                break
+            case "discount_percent": res = "по скидке в процентах"
+                break
+            case "quantity_current": res = "по текущему количеству"
+                break
+        }
+    }
+
+    return res
+}

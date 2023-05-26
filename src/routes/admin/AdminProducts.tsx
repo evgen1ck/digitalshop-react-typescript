@@ -1,6 +1,6 @@
-import React, {useEffect, useState} from "react"
-import {Link, useNavigate} from "react-router-dom"
-import {RowBlock} from "../../components/Blocks/PageBlocks"
+import React, {useEffect, useMemo, useRef, useState} from "react"
+import {Link, useLocation, useNavigate} from "react-router-dom"
+import {RowBlock, RowBlockUpper} from "../../components/Blocks/PageBlocks"
 import {
     AdminProductCard,
     ProductWithVariant
@@ -17,21 +17,41 @@ import axios, {AxiosError} from "axios"
 import Select from "react-select"
 import {formatGroupLabel} from "../../components/Dropdowns/DropDownData"
 import {isMinMaxLen, isNotBlank, isNotContainsConsecutiveSpaces} from "../../lib/validators";
+import {GoPlus} from "react-icons/go";
+import {SortDropDown} from "../../components/Dropdowns/SortDropDown";
+import InputWithValidation, {TEXT} from "../../components/Inputs/InputWithValidation";
+import {useAuthContext} from "../../storage/auth";
+import {translateSort} from "../../lib/translate";
+import {FaSortAmountDown, FaSortAmountDownAlt} from "react-icons/fa";
 
 
 export default function AdminProducts() {
     const navigate = useNavigate()
+    const location = useLocation();
+    const queryParams = new URLSearchParams(location.search);
+    const { role } = useAuthContext()
 
     const [deleteLoading, setDeleteLoading] = useState(false)
-
     const [uploadLoading, setUploadLoading] = useState(false)
+
+    const [searchSubmitting, setSearchSubmitting] = useState(false)
+    const [searchValue, setSearchValue] = useState(decodeURIComponent(queryParams.get('search') || ""))
+    const [searchError, setSearchError] = useState("")
+    const searchRef = useRef<HTMLInputElement>(null)
+
+    const [sortValue, setSortValue] = useState("")
+    const [sortError, setSortError] = useState("")
+    const [sortsLoading, setSortsLoading] = useState(false)
+    const [sortsDisabled, setSortsDisabled] = useState(false)
+
+    const [sortTypeIsAsc, setSortTypeIsAsc] = useState(queryParams.get("sort_type") == "asc")
 
     const [mainData, setMainData] = useState<ProductWithVariant[]>([])
     const [mainDataLoading, setMainDataLoading] = useState(true)
     const [mainDataError, setMainDataError] = useState("")
-    const fetchData = () => {
+    const goUpdate = () => {
         setMainDataLoading(true);
-        getAxioser(ApiAdminVariantUrl).then((data) => {
+        getAxioser(ApiAdminVariantUrl + "?" + queryParams).then((data) => {
             setMainData(data);
         }).catch((response) => {
             httpErrorsHandler(response, navigate);
@@ -40,12 +60,46 @@ export default function AdminProducts() {
     };
 
     useEffect(() => {
-        fetchData();
+        goUpdate();
     }, []);
 
-    if (mainDataLoading) return <CentralTextBlock text="Ожидаем ответ..." />
-    if (mainDataError) return <CentralTextBlock text={mainDataError} />
+    const updatedQueryParams = useMemo(() => {
+        return new URLSearchParams(location.search);
+    }, [location.search]);
+    useEffect(() => {
+        goUpdate()
+    }, [updatedQueryParams])
 
+    const handleEnterPress = (event: any) => {
+        if (event.key === "Enter") {
+            goSearch()
+        }
+    }
+
+    const goSearch = () => {
+        setSearchSubmitting(true)
+        searchRef.current?.focus()
+        searchRef.current?.blur()
+
+        queryParams.set('search', searchValue)
+
+        if (searchValue == "") {
+            queryParams.delete('search')
+        }
+
+        navigate(`?${queryParams.toString()}`)
+        setSearchSubmitting(false)
+    }
+
+    useEffect(() => {
+        setSortsLoading(true)
+        let sortBy: string = translateSort(sortValue, true)
+
+        queryParams.set('sort_by', sortBy)
+
+        navigate(`?${queryParams.toString()}`)
+        setSortsLoading(false)
+    }, [sortValue])
 
     async function handleDeleteClick(id: string) {
         setDeleteLoading(true)
@@ -62,82 +116,96 @@ export default function AdminProducts() {
         }).finally(() => setDeleteLoading(false))
     }
 
-    const handleFile = (event: React.ChangeEvent<HTMLInputElement>, id: string) => {
-        setUploadLoading(true);
-        const file = event.target.files?.[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                if (e.target) {
-                    const content = e.target.result as string;
-                    const lines = content.split("\n");
-                    const objects = lines
-                        .map((line) => line.trim())
-                        .filter((line) => line !== "")
-                        .map((line) => ({ data: line }));
+    function handleSortTypeClick() {
+        setSortTypeIsAsc(!sortTypeIsAsc)
+        queryParams.set('sort_type', sortTypeIsAsc ? "asc" : "desc")
+        navigate(`?${queryParams.toString()}`)
+    }
 
-                    let lineNum = 0;
-                    let hasError = false;
-                    objects.forEach((obj) => {
-                        lineNum++;
-                        const value = obj.data;
-                        let errorMessage = "";
-                        for (const validator of [
-                            isNotBlank,
-                            isMinMaxLen(3, 10240),
-                            isNotContainsConsecutiveSpaces,
-                        ]) {
-                            errorMessage = validator(value);
-                            if (errorMessage) {
-                                toast.error(errorMessage + " на строке " + lineNum);
-                                hasError = true;
-                                break;
-                            }
-                        }
-                    });
-
-                    if (!hasError && objects.length > 0) {
-                        console.log(objects.length)
-                        console.log(objects)
-                        putAxioser(ApiAdminVariantUrl + "?id=" + id, objects)
-                            .then(() => {
-                                toast.success("Пополнение прошло успешно");
-                                fetchData();
-                            })
-                            .catch((response) => {
-                                httpErrorsHandler(response, navigate);
-                            })
-                            .finally(() => setUploadLoading(false));
-                    } else if (objects.length == 0) {
-                        toast.error("Файл не содержит текст")
-                        setUploadLoading(false);
-                    } else {
-                        setUploadLoading(false);
-                    }
-                }
-            };
-
-            reader.readAsText(file);
-        } else {
-            setUploadLoading(false);
-        }
-    };
-
+    function handleClearClick() {
+        setSearchValue("")
+        setSortTypeIsAsc(false)
+        setSortValue("по типу")
+        queryParams.delete('search')
+        queryParams.delete('sort_type')
+        queryParams.delete('sort_by')
+        navigate(`?${queryParams.toString()}`)
+    }
 
     return (
         <>
             <RowBlock>
                 <div className="text-center w-full">
-                    <h3 className="sm:text-3xl text-2xl font-bold mb-6 uppercase select-none">Продукты</h3>
+                    <h3 className="sm:text-3xl text-2xl font-bold mb-6 uppercase select-none">Поиск по товарам</h3>
                 </div>
             </RowBlock>
+            <RowBlockUpper addToClassName="items-center justify-center flex">
+                <div className="inline-flex sm:w-2/3 sm:items-center w-full">
+                    <InputWithValidation
+                        nameField={""}
+                        placeholder={"Поиск по товарам, например, GTA"}
+                        id={"field-search"}
+                        type={TEXT}
+                        hasWarnLabel={true}
+                        spellCheck={false}
+                        requiredValidators={[isMinMaxLen(3, 32)]}
+                        setValue={setSearchValue}
+                        value={searchValue}
+                        setError={setSearchError}
+                        error={searchError}
+                        inputRef={searchRef}
+                        insertSpace={true}
+                        requiredField={false}
+                        onKeyPress={handleEnterPress} />
+                    <button className="btn-classic-frame select-none flex text-center h-12 px-4 py-2 sm:mb-7 mt-2 sm:text-xl text-lg uppercase"
+                            type="submit"
+                            onClick={goSearch}
+                            disabled={searchSubmitting || searchValue == ""}>
+                        Искать
+                    </button>
+                </div>
+            </RowBlockUpper>
 
             <RowBlock>
                 <div className="flex justify-between items-center space-x-3">
-                    <div className="inline-flex lg:w-1/2 w-full">
-
+                    <div className="inline-flex lg:w-[50%] w-full">
+                        <SortDropDown addToClassName=""
+                                      header="Сортировки"
+                                      nameField="Сортировка"
+                                      placeholder="Поле сортировки"
+                                      id="field-sort"
+                                      isLoading={sortsLoading}
+                                      setLoading={setSortsLoading}
+                                      navigate={navigate}
+                                      isClearable={false}
+                                      isSearchable={false}
+                                      defaultValue={translateSort(queryParams.get("sort_by") || "type_name", false)}
+                                      setError={setSortError}
+                                      error={sortError}
+                                      setValue={setSortValue}
+                                      value={sortValue}
+                                      disabled={sortsDisabled}
+                                      setDisabled={setSortsDisabled}
+                                      checkOnEmpty={true}
+                                      hasWarnLabel={true} />
+                        <button className="btn-classic-frame select-none flex text-center sm:mt-8 mt-7 h-11 cursor-pointer p-3"
+                                type="submit"
+                                onClick={handleSortTypeClick}>
+                            {sortTypeIsAsc ? <FaSortAmountDown /> : <FaSortAmountDownAlt /> }
+                        </button>
+                        <button className="btn-classic-frame select-none flex text-center sm:mt-8 mt-7 h-11 cursor-pointer p-3 ml-4 uppercase"
+                                type="submit"
+                                onClick={handleClearClick}>
+                            Очистить
+                        </button>
                     </div>
                     <div className="flex justify-end items-center space-x-3 mb-6">
+                        <div className="text-center w-auto mt-4">
+                            <button className="btn-classic-frame select-none px-6 py-2.5 sm:text-xl text-lg uppercase"
+                                    onClick={() => {goUpdate()}}>
+                                Обновить
+                            </button>
+                        </div>
                         <div className="text-center w-auto mt-4">
                             <Link className="btn-classic-frame select-none px-6 py-2.5 sm:text-xl text-lg uppercase"
                                   to="add">
@@ -150,17 +218,18 @@ export default function AdminProducts() {
 
             <RowBlock>
                 <div className="space-y-8 select-none">
+                    {mainDataLoading && <CentralTextBlock text="Загрузка данных..." />}
+                    {mainDataError && <CentralTextBlock text={mainDataError} />}
                     {mainData && mainData.map((data) => (
                         <AdminProductCard variant={data}
-                                          handleFile={handleFile}
                                           uploadLoading={uploadLoading}
                                           deleteLoading={deleteLoading}
                                           handleDelete={handleDeleteClick}
                                           key={data.variant_id} />
                     ))}
+                    {mainData == null && (<CentralTextBlock text={"Не найдено"} />)}
                 </div>
             </RowBlock>
-
         </>
     )
 }

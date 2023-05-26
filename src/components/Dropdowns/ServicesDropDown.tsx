@@ -46,17 +46,30 @@ const Option = (props: OptionProps<DataOption, false, GroupedOption>) => {
                            key={data.service_name}
                            innerProps={{...innerProps, onMouseEnter: () => setIsHovered(true), onMouseLeave: () => setIsHovered(false)}}>
             <div className={`flex items-center space-x-2 justify-between ${!props.isDisabled && "cursor-pointer"}`}>
-                <span>{data.service_name.toUpperCase()}</span>
+                <div className="inline-flex space-x-2">
+                    {data.service_name.toLowerCase() != "universal" &&
+                        <SVGIcon
+                            url={data.service_url}
+                            alt={data.service_name}
+                            className="w-6 h-6"
+                        />
+                    }
+                    <span>{data.service_name.toUpperCase()}</span>
+                </div>
                 <span className="pr-2 inline-flex space-x-5">
                     {isHovered && localStorage.getItem("role") == "admin" &&
-                        <Hint pos={"bottom"} text="Редактировать"> <AiOutlineEdit className="system-animation-2" onClick={() => {
-                            toast.success("abcd")
-                        }} /> </Hint>
+                        <Hint pos={"bottom"} text="Редактировать">
+                            <AiOutlineEdit className="system-animation-2" onClick={() => {
+                                toast.success("abcd")
+                            }}/>
+                        </Hint>
                     }
                     {isHovered && localStorage.getItem("role") == "admin" &&
-                        <Hint pos={"bottom"} text="Удалить"> <MdOutlineDelete color="red" className="system-animation-2" onClick={() => {
-                            toast.success("ab")
-                        }} /> </Hint>
+                        <Hint pos={"bottom"} text="Удалить">
+                            <MdOutlineDelete color="red" className="system-animation-2" onClick={() => {
+                                toast.success("ab")
+                            }} />
+                        </Hint>
                     }
                 </span>
             </div>

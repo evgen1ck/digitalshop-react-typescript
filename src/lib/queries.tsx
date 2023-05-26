@@ -19,6 +19,7 @@ export const ApiAdminItemUrl = ApiUrl + "admin/item"
 export const ApiAdminTypeUrl = ApiUrl + "admin/type"
 export const ApiAdminSubtypeUrl = ApiUrl + "admin/subtype"
 export const ApiAdminVariantUrl = ApiUrl + "admin/variant"
+export const AdminVariantUploadUrl = ApiUrl + "admin/variant/upload"
 
 export const ApiProductUrl = ApiUrl + "product"
 export const ApiProductMainpageUrl = ApiUrl + "product/mainpage"

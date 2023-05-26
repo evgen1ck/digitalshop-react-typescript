@@ -11,7 +11,7 @@ import {Order, OrderCard} from "../components/Cards/OrderCards";
 const Profile = () => {
     const navigate = useNavigate()
 
-    const loginValue: string = localStorage.getItem("login") || "";
+    const loginValue: string = localStorage.getItem("nickname") || "";
     const emailValue: string = localStorage.getItem("email") || "";
 
     const [mainData, setMainData] = useState<Order[]>([])
