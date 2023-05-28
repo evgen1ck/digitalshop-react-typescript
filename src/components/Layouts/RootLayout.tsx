@@ -130,6 +130,9 @@ export default function RootLayout() {
                         <Link to="/" className="hover:underline uppercase ">Evgenick's digitals</Link> © Copyright {new Date().getFullYear()}
                     </span>
                     <span>
+                        Telegram:{' '}
+                        <a href={"https://t.me/evgen1ck"} className={"hover:underline"}>@evgen1ck</a>
+                        <a> | </a>
                         <a>Сделано </a><a href="https://helloworld.evgenick.com" className="hover:underline">Кочетковым Евгением</a>
                         <a> | </a>
                         <a href="https://docs.digitalshop.evgenick.com" className="hover:underline">Документация</a>

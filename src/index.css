@@ -99,7 +99,7 @@ button[disabled]:hover {
 
 .checkbox-classic {
     @apply p-1
-    appearance-none leading-tight border-2 rounded bg-clip-content cursor-pointer
+    appearance-none leading-tight border-2 rounded bg-clip-content cursor-pointer select-none
     checked:bg-light-second dark:checked:bg-dark-second
     hover:checked:bg-light-focusing hover:dark:checked:bg-dark-focusing
     hover:border-light-focusing hover:dark:border-dark-focusing
@@ -113,4 +113,12 @@ button[disabled]:hover {
     hover:shadow-light-focusing hover:dark:shadow-dark-focusing
     hover:border-light-focusing hover:dark:border-dark-focusing
     system-shadow system-animation system-field;
+}
+
+.checkbox:checked {
+    @apply bg-light-active;
+}
+
+.checkbox:not(:checked) {
+    @apply bg-light-main;
 }

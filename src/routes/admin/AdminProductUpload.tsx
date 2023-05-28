@@ -161,6 +161,12 @@ const AdminProductUpload = () => {
                     {mainData == null && (<CentralTextBlock text={"Пусто"} />)}
                 </div>
             </RowBlock>
+
+            <RowBlock>
+                <div className="text-center w-full lg:flex lg:justify-center select-none">
+                    <Link to="/admin/products" className="btn-usual-link">Вернуться назад</Link>
+                </div>
+            </RowBlock>
         </>
     )
 }

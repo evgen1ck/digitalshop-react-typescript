@@ -9,8 +9,6 @@ import {ApiProductMainpageUrl, getAxioser} from "../lib/queries"
 import {CentralTextBlock} from "../components/Blocks/CentralTextBlock"
 import httpErrorsHandler from "../lib/responds"
 import {AxiosResponse} from "axios";
-import {GoPlus} from "react-icons/go";
-import {DataOption, SortDropDown} from "../components/Dropdowns/SortDropDown";
 
 export default function Home() {
     const navigate = useNavigate()
@@ -86,7 +84,7 @@ export default function Home() {
             </RowBlock>
             <RowBlockUpper addToClassName="items-center justify-center flex">
                 <div className="inline-flex md:w-3/4 sm:items-center w-full">
-                    <button className="btn-classic-frame select-none  text-center h-12 px-4 py-2 sm:mb-7 mt-2 sm:text-xl text-lg uppercase hidden sm:block"
+                    <button className="btn-classic-frame select-none text-center h-12 px-4 py-2 sm:mb-7 mt-2 sm:text-xl text-lg uppercase hidden sm:block"
                             type="submit"
                             onClick={goClear}
                             disabled={searchSubmitting}>

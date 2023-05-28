@@ -23,6 +23,8 @@ import InputWithValidation, {TEXT} from "../../components/Inputs/InputWithValida
 import {useAuthContext} from "../../storage/auth";
 import {translateSort} from "../../lib/translate";
 import {FaSortAmountDown, FaSortAmountDownAlt} from "react-icons/fa";
+import CommonCheckField from "../../components/Checkboxs/Checkboxs";
+import {tr} from "date-fns/locale";
 
 
 export default function AdminProducts() {
@@ -30,6 +32,8 @@ export default function AdminProducts() {
     const location = useLocation();
     const queryParams = new URLSearchParams(location.search);
     const { role } = useAuthContext()
+
+    const [searchSubmitting2, setSearchSubmitting2] = useState(queryParams.get('active_first') !== null ? queryParams.get('active_first') === "true" : true)
 
     const [deleteLoading, setDeleteLoading] = useState(false)
     const [uploadLoading, setUploadLoading] = useState(false)
@@ -101,6 +105,15 @@ export default function AdminProducts() {
         setSortsLoading(false)
     }, [sortValue])
 
+    useEffect(() => {
+        setSortsLoading(true)
+
+        queryParams.set('active_first', String(searchSubmitting2))
+
+        navigate(`?${queryParams.toString()}`)
+        setSortsLoading(false)
+    }, [searchSubmitting2])
+
     async function handleDeleteClick(id: string) {
         setDeleteLoading(true)
         deleteAxioser(ApiAdminVariantUrl + "?id=" + id).then(() => {
@@ -126,9 +139,11 @@ export default function AdminProducts() {
         setSearchValue("")
         setSortTypeIsAsc(false)
         setSortValue("по типу")
+        setSearchSubmitting2(true)
         queryParams.delete('search')
         queryParams.delete('sort_type')
         queryParams.delete('sort_by')
+        queryParams.delete('active_first')
         navigate(`?${queryParams.toString()}`)
     }
 
@@ -168,7 +183,7 @@ export default function AdminProducts() {
 
             <RowBlock>
                 <div className="flex justify-between items-center space-x-3">
-                    <div className="inline-flex lg:w-[50%] w-full">
+                    <div className="inline-flex lg:w-[44%] w-full">
                         <SortDropDown addToClassName=""
                                       header="Сортировки"
                                       nameField="Сортировка"
@@ -200,6 +215,9 @@ export default function AdminProducts() {
                         </button>
                     </div>
                     <div className="flex justify-end items-center space-x-3 mb-6">
+                        <div className="text-center w-auto mt-4">
+                            <CommonCheckField id={"field-active-first"} text={"Сначала активные"} value={searchSubmitting2} setValue={setSearchSubmitting2} />
+                        </div>
                         <div className="text-center w-auto mt-4">
                             <button className="btn-classic-frame select-none px-6 py-2.5 sm:text-xl text-lg uppercase"
                                     onClick={() => {goUpdate()}}>
