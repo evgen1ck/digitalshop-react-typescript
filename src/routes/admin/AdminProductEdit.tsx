@@ -21,10 +21,12 @@ import httpErrorsHandler from "../../lib/responds"
 import {CentralTextBlock} from "../../components/Blocks/CentralTextBlock"
 import {ProductWithVariant} from "../../components/Cards/ProductCards"
 import {AxiosResponse} from "axios"
-import {RedirectTo} from "../../lib/redirect"
+import { HistoryNavigation} from "../../lib/redirect"
 
 const AdminProductsEdit = () => {
-    const navigate = useNavigate()
+    const navigate = useNavigate();
+    const location = useLocation();
+
     const [isSubmitting, setIsSubmitting] = useState(false)
 
     // Types data
@@ -87,7 +89,6 @@ const AdminProductsEdit = () => {
     const [priceValue, setPriceValue] = useState("")
     const [priceError, setPriceError] = useState("")
     const inputPriceRef = useRef<HTMLInputElement>(null)
-    const location = useLocation()
 
     const [mainData, setMainData] = useState<ProductWithVariant>()
     const [mainForComparisonData, setMainForComparisonData] = useState<ProductWithVariant>()
@@ -155,7 +156,9 @@ const AdminProductsEdit = () => {
         if (mainForComparisonDataIndexable) {
             for (const key in mainForComparisonDataIndexable) {
                 if (currentData[key] !== mainForComparisonDataIndexable[key]) {
-                    modifiedFields[key] = currentData[key]
+                    modifiedFields[key] = typeof currentData[key] === 'number'
+                        ? (isNaN(currentData[key]) ? "0" : currentData[key].toString())
+                        : currentData[key]
                 }
             }
         }
@@ -228,22 +231,23 @@ const AdminProductsEdit = () => {
             return
         }
 
-        if (discountMoneyValueNum < 1 && priceValueNum - discountMoneyValueNum < 10) {
+        if (priceValueNum - discountMoneyValueNum < 10) {
             setDiscountMoneyError("Стоимость товара после скидки должна быть не менее 10")
             setIsSubmitting(false)
             return
         }
 
-        if (discountPercentValueNum < 1 && priceValueNum - (priceValueNum * discountPercentValueNum / 100) < 10) {
+        if (priceValueNum - (priceValueNum * discountPercentValueNum / 100) < 10) {
             setDiscountPercentError("Стоимость товара после скидки должна быть не менее 10")
             setIsSubmitting(false)
             return
         }
 
+        console.log(getModifiedFields())
         const id = new URLSearchParams(location.search).get("id")
         patchAxioser(ApiAdminVariantUrl + "?id=" + id, getModifiedFields()).then(() => {
             toast.success("Изменение прошло успешно")
-            RedirectTo("/admin/products", navigate, 100)
+            HistoryNavigation(navigate, "/admin/products", window.history.length)
         }).catch((response: AxiosResponse) => {
             httpErrorsHandler(response, navigate)
         }).finally(() => setIsSubmitting(false))

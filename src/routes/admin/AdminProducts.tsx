@@ -140,6 +140,7 @@ export default function AdminProducts() {
         setSortTypeIsAsc(false)
         setSortValue("по типу")
         setSearchSubmitting2(true)
+
         queryParams.delete('search')
         queryParams.delete('sort_type')
         queryParams.delete('sort_by')

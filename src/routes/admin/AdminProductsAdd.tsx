@@ -1,5 +1,5 @@
 import React, {useRef, useState} from "react"
-import {Link, useNavigate} from "react-router-dom"
+import {Link, useLocation, useNavigate} from "react-router-dom"
 import {ServicesDropDown} from "../../components/Dropdowns/ServicesDropDown"
 import {RowBlock, RowBlockUpper} from "../../components/Blocks/PageBlocks"
 import {GoPlus} from "react-icons/go"
@@ -21,7 +21,9 @@ import {toast} from "react-hot-toast"
 
 
 const AdminProductsAdd = () => {
-    const navigate = useNavigate()
+    const navigate = useNavigate();
+    const location = useLocation();
+
     const [isSubmitting, setIsSubmitting] = useState(false)
 
     // Types data
@@ -190,8 +192,13 @@ const AdminProductsAdd = () => {
                                    setDisabled={setTypesDisabled}
                                    checkOnEmpty={true}
                                    hasWarnLabel={true} />
+                    <button className="btn-classic-frame select-none flex text-center p-2 pt-3 sm:mt-8 mt-7 h-11 cursor-pointer"
+                            type="submit"
+                            disabled={productsDisabled}>
+                        <GoPlus />
+                    </button>
                 </div>
-                <div className="flex inline-flex lg:w-1/2 w-full">
+                <div className="inline-flex lg:w-1/2 w-full">
                     <SubtypesDropDown addToClassName=""
                                       header="Подтипы"
                                       nameField="Подтип"
@@ -211,11 +218,16 @@ const AdminProductsAdd = () => {
                                       checkOnEmpty={true}
                                       typeName={typeValue}
                                       hasWarnLabel={true} />
+                    <button className="btn-classic-frame select-none flex text-center p-2 pt-3 sm:mt-8 mt-7 h-11 cursor-pointer"
+                            type="submit"
+                            disabled={productsDisabled}>
+                        <GoPlus />
+                    </button>
                 </div>
             </RowBlockUpper>
 
             <RowBlockUpper>
-                <div className="flex inline-flex lg:w-1/2 w-full">
+                <div className="inline-flex lg:w-1/2 w-full">
                     <ProductsDropDown addToClassName=""
                                       header="Продукты"
                                       nameField="Продукт"
@@ -240,7 +252,7 @@ const AdminProductsAdd = () => {
                         <GoPlus />
                     </button>
                 </div>
-                <div className="flex inline-flex lg:w-1/2 w-full">
+                <div className="inline-flex lg:w-1/2 w-full">
                     <InputWithValidation
                         nameField={"Название варианта"}
                         placeholder={"Grand Theft Auto: San Andreas"}
@@ -260,7 +272,7 @@ const AdminProductsAdd = () => {
             </RowBlockUpper>
 
             <RowBlockUpper addToClassName="">
-                <div className="flex inline-flex lg:w-1/2 w-full">
+                <div className="inline-flex lg:w-1/2 w-full">
                     <ServicesDropDown addToClassName=""
                                       header="Сервисы"
                                       nameField="Сервис"
@@ -285,7 +297,7 @@ const AdminProductsAdd = () => {
                         <GoPlus />
                     </button>
                 </div>
-                <div className="flex inline-flex lg:w-1/2 w-full">
+                <div className="inline-flex lg:w-1/2 w-full">
                     <StatesDropDown addToClassName=""
                                     header="Статусы"
                                     nameField="Статус"
@@ -308,7 +320,7 @@ const AdminProductsAdd = () => {
             </RowBlockUpper>
 
             <RowBlockUpper>
-                <div className="flex inline-flex lg:w-1/2 w-full">
+                <div className="inline-flex lg:w-1/2 w-full">
                     <ItemsDropDown addToClassName=""
                                    header="Форматы"
                                    nameField="Формат"
@@ -328,7 +340,7 @@ const AdminProductsAdd = () => {
                                    checkOnEmpty={true}
                                    hasWarnLabel={true} />
                 </div>
-                <div className="flex inline-flex lg:w-1/2 w-full">
+                <div className="inline-flex lg:w-1/2 w-full">
                     <InputWithValidation
                         nameField={"Маска формата"}
                         placeholder={"AAAAA-BBBBB-CCCCC"}
@@ -349,7 +361,7 @@ const AdminProductsAdd = () => {
             </RowBlockUpper>
 
             <RowBlockUpper>
-                <div className="flex inline-flex lg:w-1/3 w-full">
+                <div className="inline-flex lg:w-1/3 w-full">
                     <InputWithValidation
                         nameField={"Стоимость"}
                         placeholder={"100,2"}
@@ -367,7 +379,7 @@ const AdminProductsAdd = () => {
                         requiredField={true}
                         insertSpace={false} />
                 </div>
-                <div className="flex inline-flex lg:w-1/3 w-full">
+                <div className="inline-flex lg:w-1/3 w-full">
                     <InputWithValidation
                         nameField={"Скидка в деньгах"}
                         placeholder={"100,2"}
@@ -384,7 +396,7 @@ const AdminProductsAdd = () => {
                         requiredField={false}
                         insertSpace={false} />
                 </div>
-                <div className="flex inline-flex lg:w-1/3 w-full">
+                <div className="inline-flex lg:w-1/3 w-full">
                     <InputWithValidation
                         nameField={"Скидка в процентах"}
                         placeholder={"22"}

@@ -7,6 +7,8 @@ import {Hint} from "@skbkontur/react-ui"
 import {AiOutlineEdit} from "react-icons/ai"
 import {toast} from "react-hot-toast"
 import {MdOutlineDelete} from "react-icons/md"
+import {handleDeleteClick} from "../../lib/deleters";
+import {ApiAdminTypeUrl} from "../../lib/queries";
 
 export interface DataOption {
     type_no: number
@@ -21,6 +23,10 @@ export interface GroupedOption {
     readonly options: DataOption[]
 }
 
+interface OptionPropsWithDelete extends OptionProps<DataOption, false, GroupedOption> {
+    onDelete: (typeName: string) => void;
+}
+
 const filterOptions = (inputValue: string, options: GroupedOption[]): GroupedOption[] => {
     return options.map(group => {
         const filteredOptions = group.options.filter(option =>
@@ -31,7 +37,7 @@ const filterOptions = (inputValue: string, options: GroupedOption[]): GroupedOpt
     })
 }
 
-const Option = (props: OptionProps<DataOption, false, GroupedOption>) => {
+const Option = (props: OptionPropsWithDelete) => {
     const { data, isFocused, innerProps } = props
     const [isHovered, setIsHovered] = useState(isFocused)
 
@@ -52,9 +58,15 @@ const Option = (props: OptionProps<DataOption, false, GroupedOption>) => {
                         }} /> </Hint>
                     }
                     {isHovered && localStorage.getItem("role") == "admin" &&
-                        <Hint pos={"bottom"} text="Удалить"> <MdOutlineDelete color="red" className="system-animation-2" onClick={() => {
-                            toast.success("ab")
-                        }} /> </Hint>
+                        <Hint pos={"bottom"} text="Удалить">
+                            <MdOutlineDelete color="red" className="system-animation-2" onClick={async () => {
+                                let result: boolean = await handleDeleteClick(data.type_name, ApiAdminTypeUrl)
+                                console.log(result)
+                                if (result) {
+                                    props.onDelete(data.type_name)
+                                }
+                            }} />
+                        </Hint>
                     }
                 </span>
             </div>
@@ -77,9 +89,13 @@ const SingleValue = (props: SingleValueProps<DataOption, false, GroupedOption>) 
 }
 
 export const TypesDropDown = ({value, header, nameField, placeholder, id, isLoading, setLoading, isClearable, isSearchable, setError, error, setValue, setDisabled, disabled, hasWarnLabel, addToClassName, navigate, checkOnEmpty}: DropDownProps) => {
-    const [data, setData] = useState([])
+    const [data, setData] = useState<DataOption[]>([]);
     const [inputValue, setInputValue] = useState("")
     const [selectedOption, setSelectedOption] = useState<DataOption | null>(null)
+
+    const handleDelete = (type_name: string) => {
+        setData(prevData => prevData.filter(option => option.type_name !== type_name))
+    }
 
     useEffect(() => {
         const abortController = new AbortController
@@ -133,7 +149,10 @@ export const TypesDropDown = ({value, header, nameField, placeholder, id, isLoad
                 options={filteredOptions}
                 value={selectedOption}
                 formatGroupLabel={formatGroupLabel}
-                components={{ Option, SingleValue }}
+                components={{
+                    Option: (props) => <Option {...props} onDelete={handleDelete} />,
+                    SingleValue
+                }}
                 onInputChange={(value) => setInputValue(value)}
                 onChange={handleProductChange}
                 placeholder={placeholder}

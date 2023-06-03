@@ -1,35 +1,23 @@
 import React, {useEffect, useState} from "react"
-import {Link, useLocation, useNavigate, useParams} from "react-router-dom"
-import {AdminProductCard, Product, ProductSvgIcons} from "../../components/Cards/ProductCards";
+import {useLocation, useNavigate} from "react-router-dom"
 import {
-    AdminVariantUploadUrl,
-    ApiAdminVariantUrl,
-    ApiProductMainpageUrl,
+    ApiAdminVariantUploadUrl, ApiAdminVariantUrl, deleteAxioser,
     getAxioser, postAxioser,
-    putAxioser
 } from "../../lib/queries";
 import httpErrorsHandler from "../../lib/responds";
 import {CentralTextBlock} from "../../components/Blocks/CentralTextBlock";
-import {
-    translateProductItem, translateProductState,
-    translateProductSubtype,
-    translateProductType,
-    translateTextQuantity
-} from "../../lib/translate";
-import {useAuthContext} from "../../storage/auth";
-import {Hint} from "@skbkontur/react-ui";
-import SVGIcon from "../../components/Icons/SvgIconColor";
-import {PaymentModal} from "../../components/Modals/PaymentModal";
 import {RowBlock} from "../../components/Blocks/PageBlocks";
 import {toast} from "react-hot-toast";
 import {isMinMaxLen, isNotBlank, isNotContainsConsecutiveSpaces} from "../../lib/validators";
 import {Content, ContentCard} from "../../components/Cards/ContentCards";
+import {HistoryNavigation} from "../../lib/redirect";
+import axios, {AxiosError} from "axios";
 
 const AdminProductUpload = () => {
     const navigate = useNavigate()
     const location = useLocation();
-    const queryParams = new URLSearchParams(location.search);
-    const { role } = useAuthContext()
+
+    const [deleteLoading, setDeleteLoading] = useState(false)
 
     const [mainData, setMainData] = useState<Content[]>([])
     const [mainDataLoading, setMainDataLoading] = useState(true)
@@ -44,7 +32,7 @@ const AdminProductUpload = () => {
             return
         }
         setMainDataLoading(true);
-        getAxioser(AdminVariantUploadUrl + "?id="+id).then((data) => {
+        getAxioser(ApiAdminVariantUploadUrl + "?id="+id).then((data) => {
             setMainData(data);
         }).catch((response) => {
             httpErrorsHandler(response, navigate);
@@ -55,6 +43,21 @@ const AdminProductUpload = () => {
     useEffect(() => {
         goUpdate()
     }, []);
+
+    async function handleDeleteClick(id: string) {
+        setDeleteLoading(true)
+        deleteAxioser(ApiAdminVariantUploadUrl + "?id=" + id).then(() => {
+            toast.success("Удаление прошло успешно")
+            setMainData(data => data.filter(item => item.content_id !== id))
+        }).catch((error: AxiosError) => {
+            if (axios.isAxiosError(error) && error.response) {
+                if (error.response.status == 409)
+                    toast.error("Используется в заказах")
+                else
+                    httpErrorsHandler(error.response, navigate)
+            }
+        }).finally(() => setDeleteLoading(false))
+    }
 
     const handleFile = (event: React.ChangeEvent<HTMLInputElement>) => {
         setUploadLoading(true);
@@ -92,7 +95,7 @@ const AdminProductUpload = () => {
 
                     if (!hasError && objects.length > 0) {
                         const id = new URLSearchParams(location.search).get("id")
-                        postAxioser(AdminVariantUploadUrl + "?id=" + id, objects)
+                        postAxioser(ApiAdminVariantUploadUrl + "?id=" + id, objects)
                             .then(() => {
                                 toast.success("Пополнение прошло успешно");
                                 goUpdate()
@@ -155,8 +158,8 @@ const AdminProductUpload = () => {
                     {mainData && mainData.map((data) => (
                         <ContentCard key={data.content_id}
                                      content={data}
-                                     uploadLoading={uploadLoading}
-                                     handleFile={handleFile} />
+                                     deleteLoading={uploadLoading}
+                                     handleDelete={handleDeleteClick} />
                     ))}
                     {mainData == null && (<CentralTextBlock text={"Пусто"} />)}
                 </div>
@@ -164,7 +167,10 @@ const AdminProductUpload = () => {
 
             <RowBlock>
                 <div className="text-center w-full lg:flex lg:justify-center select-none">
-                    <Link to="/admin/products" className="btn-usual-link">Вернуться назад</Link>
+                    <button onClick={() => {HistoryNavigation(navigate, "/admin/products", window.history.length)}}
+                            className="btn-usual-link cursor-pointer">
+                        Вернуться назад
+                    </button>
                 </div>
             </RowBlock>
         </>

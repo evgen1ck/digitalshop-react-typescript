@@ -14,6 +14,7 @@ const CommonCheckField = ({id, text, value, setValue}: CommonCheckFieldProps) =>
             <input id={id}
                    onChange={() => {setValue(!value)}}
                    defaultChecked={value}
+                   checked={value}
                    type="checkbox"
                    className="w-4 h-4 checkbox-classic" />
             <label htmlFor={id}

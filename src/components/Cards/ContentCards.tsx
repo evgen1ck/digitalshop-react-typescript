@@ -4,20 +4,20 @@ import {translateProductSubtype, translateProductType} from "../../lib/translate
 import {Link} from "react-router-dom";
 
 export interface Content {
-  content_id: string
-  data: string
-  created_at: string
-  modified_at: string
-  commentary: string
+    content_id: string
+    data: string
+    created_at: string
+    modified_at: string
+    commentary: string
 }
 
 interface ContentCardProps {
     content: Content
-    handleFile: (event: React.ChangeEvent<HTMLInputElement>, id: string) => void
-    uploadLoading: boolean
+    handleDelete: (id: string) => void
+    deleteLoading: boolean
 }
 
-export const ContentCard = ({ content, handleFile, uploadLoading }: ContentCardProps) => {
+export const ContentCard = ({ content, handleDelete, deleteLoading }: ContentCardProps) => {
     const [hoveredCard, setHoveredCard] = useState("");
     const orderDate = new Date(content.created_at)
     orderDate.setHours(orderDate.getHours() + 3)
@@ -39,14 +39,9 @@ export const ContentCard = ({ content, handleFile, uploadLoading }: ContentCardP
                         </span>
                         <span>
                             {hoveredCard == content.content_id && (
-                                <button className="btn-classic block lg:inline-block lg:mt-0 ml-4">
-                                    Изменить
-                                </button>
-                            )}
-                            {hoveredCard == content.content_id && (
                                 <button className="btn-classic block lg:inline-block text-error lg:mt-0 ml-4"
-                                        // onDoubleClick={() => {handleDelete(variant.variant_id)}}
-                                        // disabled={deleteLoading}
+                                        onDoubleClick={() => {handleDelete(content.content_id)}}
+                                        disabled={deleteLoading}
                                     >
                                     Удалить
                                 </button>
