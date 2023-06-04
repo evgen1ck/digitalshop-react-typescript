@@ -106,7 +106,7 @@ const SingleValue = (props: SingleValueProps<DataOption, false, GroupedOption>) 
     )
 }
 
-export const ServicesDropDown = ({value, header, nameField, placeholder, id, isLoading, setLoading, isClearable, isSearchable, setError, error, setValue, disabled, setDisabled, hasWarnLabel, addToClassName, navigate, checkOnEmpty}: DropDownProps) => {
+export const ServicesDropDown = ({updateTrigger, value, header, nameField, placeholder, id, isLoading, setLoading, isClearable, isSearchable, setError, error, setValue, disabled, setDisabled, hasWarnLabel, addToClassName, navigate, checkOnEmpty}: DropDownProps) => {
     const [data, setData] = useState<DataOption[]>([]);
     const [inputValue, setInputValue] = useState("")
     const [selectedOption, setSelectedOption] = useState<DataOption | null>(null)
@@ -132,7 +132,7 @@ export const ServicesDropDown = ({value, header, nameField, placeholder, id, isL
         return () => {
             abortController.abort()
         }
-    }, [])
+    }, [updateTrigger])
 
     const filteredOptions = filterOptions(inputValue, [
         {

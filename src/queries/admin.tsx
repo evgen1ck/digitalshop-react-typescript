@@ -182,7 +182,6 @@ export const AdminNewVariantQuery = async ({navigate, subtype, product, name, se
         toast.success("Успешное добавление")
         RedirectTo('/admin/products', navigate, 100)
     } catch (error) {
-        //toast.error(UnknownError)
         console.error("Error fetching data: ", error)
     }
 }

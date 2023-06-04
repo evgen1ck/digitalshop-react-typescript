@@ -43,6 +43,24 @@ export const postAxioser = (url: string, body = {}) => {
         .then((res) => res.data)
 }
 
+export const postAxioserWithFormData = (url: string, body: {[key: string]: any} = {}, file?: File): Promise<any> => {
+    const headers: { [key: string]: string } = { Authorization: `Bearer ${localStorage.getItem("token")}` }
+    let data = new FormData();
+
+    // Add other body data to FormData
+    for (let key in body) {
+        data.append(key, body[key]);
+    }
+
+    if (file) {
+        data.append('file', file);
+    }
+
+    return axios.post(url, data, { headers })
+        .then(checkOnBadHttpCode)
+        .then((res: AxiosResponse) => res.data);
+}
+
 export const patchAxioser = (url: string, body = {}) => {
     const headers: { [key: string]: string } = { Authorization: `Bearer ${localStorage.getItem("token")}` }
 

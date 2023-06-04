@@ -25,6 +25,7 @@ export interface DropDownProps {
     defaultValue?: string
     setTypeValue?: React.Dispatch<React.SetStateAction<string>>
     dataForSort?: DataOption[]
+    updateTrigger?: boolean
 }
 
 export const customStyles = (isDisabled: boolean) => ({

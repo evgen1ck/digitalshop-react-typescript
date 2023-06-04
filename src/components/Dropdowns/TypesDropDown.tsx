@@ -88,13 +88,14 @@ const SingleValue = (props: SingleValueProps<DataOption, false, GroupedOption>) 
     )
 }
 
-export const TypesDropDown = ({value, header, nameField, placeholder, id, isLoading, setLoading, isClearable, isSearchable, setError, error, setValue, setDisabled, disabled, hasWarnLabel, addToClassName, navigate, checkOnEmpty}: DropDownProps) => {
+export const TypesDropDown = ({value, header, nameField, placeholder, id, isLoading, setLoading, isClearable, isSearchable, setError, error, setValue, setDisabled, disabled, hasWarnLabel, addToClassName, navigate, checkOnEmpty, updateTrigger}: DropDownProps) => {
     const [data, setData] = useState<DataOption[]>([]);
     const [inputValue, setInputValue] = useState("")
     const [selectedOption, setSelectedOption] = useState<DataOption | null>(null)
 
     const handleDelete = (type_name: string) => {
         setData(prevData => prevData.filter(option => option.type_name !== type_name))
+        setValue("")
     }
 
     useEffect(() => {
@@ -114,7 +115,7 @@ export const TypesDropDown = ({value, header, nameField, placeholder, id, isLoad
         return () => {
             abortController.abort()
         }
-    }, [])
+    }, [updateTrigger])
 
     const filteredOptions = filterOptions(inputValue, [
         {

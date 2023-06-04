@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react"
 import {useLocation, useNavigate} from "react-router-dom"
 import {
-    ApiAdminVariantUploadUrl, ApiAdminVariantUrl, deleteAxioser,
+    ApiAdminVariantUploadUrl, deleteAxioser,
     getAxioser, postAxioser,
 } from "../../lib/queries";
 import httpErrorsHandler from "../../lib/responds";

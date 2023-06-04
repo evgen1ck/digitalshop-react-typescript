@@ -1,4 +1,4 @@
-import React, {useRef, useState} from "react"
+import React, {useEffect, useRef, useState} from "react"
 import {Link, useLocation, useNavigate} from "react-router-dom"
 import {ServicesDropDown} from "../../components/Dropdowns/ServicesDropDown"
 import {RowBlock, RowBlockUpper} from "../../components/Blocks/PageBlocks"
@@ -18,6 +18,9 @@ import {StatesDropDown} from "../../components/Dropdowns/StatesDropDown"
 import {ItemsDropDown} from "../../components/Dropdowns/ItemsDropDown"
 import {AdminNewVariantQuery} from "../../queries/admin"
 import {toast} from "react-hot-toast"
+import {AddTypeModal} from "../../components/Modals/AddTypeModal";
+import {AddSubtypeModal} from "../../components/Modals/AddSubtypeModal";
+import {AddServiceModal} from "../../components/Modals/AddServiceModal";
 
 
 const AdminProductsAdd = () => {
@@ -86,6 +89,33 @@ const AdminProductsAdd = () => {
     const [priceValue, setPriceValue] = useState("")
     const [priceError, setPriceError] = useState("")
     const inputPriceRef = useRef<HTMLInputElement>(null)
+
+    const [isModalOpen, setIsModalOpen] = useState(false)
+    const [updateTypes, setUpdateTypes] = useState(false);
+
+    const [isModalSubtypesOpen, setIsModalSubtypesOpen] = useState(false)
+    const [updateSubtypes, setUpdateSubtypes] = useState(false);
+
+    const [isModalServicesOpen, setIsModalServicesOpen] = useState(false)
+    const [updateServices, setUpdateServices] = useState(false);
+
+    useEffect(() => {
+        if (!isModalOpen) {
+            setUpdateTypes(prevState => !prevState);
+        }
+    }, [isModalOpen])
+
+    useEffect(() => {
+        if (!isModalSubtypesOpen) {
+            setUpdateSubtypes(prevState => !prevState);
+        }
+    }, [isModalSubtypesOpen])
+
+    useEffect(() => {
+        if (!isModalServicesOpen) {
+            setUpdateServices(prevState => !prevState);
+        }
+    }, [isModalServicesOpen])
 
     function handleAddClick() {
         setIsSubmitting(true)
@@ -173,6 +203,9 @@ const AdminProductsAdd = () => {
             </RowBlock>
 
             <RowBlockUpper>
+                <AddTypeModal onShow={isModalOpen} setShow={setIsModalOpen} canLeave={true} />
+                <AddSubtypeModal onShow={isModalSubtypesOpen} setShow={setIsModalSubtypesOpen} canLeave={true} typeName={typeValue} />
+                <AddServiceModal onShow={isModalServicesOpen} setShow={setIsModalServicesOpen} canLeave={true} />
                 <div className="inline-flex lg:w-1/2 w-full">
                     <TypesDropDown addToClassName=""
                                    header="Типы"
@@ -191,10 +224,12 @@ const AdminProductsAdd = () => {
                                    disabled={typesDisabled}
                                    setDisabled={setTypesDisabled}
                                    checkOnEmpty={true}
+                                   updateTrigger={updateTypes}
                                    hasWarnLabel={true} />
                     <button className="btn-classic-frame select-none flex text-center p-2 pt-3 sm:mt-8 mt-7 h-11 cursor-pointer"
                             type="submit"
-                            disabled={productsDisabled}>
+                            onClick={() => {setIsModalOpen(true)}}
+                            disabled={typesDisabled}>
                         <GoPlus />
                     </button>
                 </div>
@@ -216,11 +251,13 @@ const AdminProductsAdd = () => {
                                       disabled={subtypesDisabled}
                                       setDisabled={setSubtypesDisabled}
                                       checkOnEmpty={true}
+                                      updateTrigger={updateSubtypes}
                                       typeName={typeValue}
                                       hasWarnLabel={true} />
                     <button className="btn-classic-frame select-none flex text-center p-2 pt-3 sm:mt-8 mt-7 h-11 cursor-pointer"
                             type="submit"
-                            disabled={productsDisabled}>
+                            onClick={() => {setIsModalSubtypesOpen(true)}}
+                            disabled={subtypesDisabled}>
                         <GoPlus />
                     </button>
                 </div>
@@ -289,10 +326,12 @@ const AdminProductsAdd = () => {
                                       value={serviceValue}
                                       disabled={servicesDisabled}
                                       setDisabled={setServicesDisabled}
+                                      updateTrigger={updateServices}
                                       checkOnEmpty={true}
                                       hasWarnLabel={true} />
                     <button className="btn-classic-frame select-none flex text-center p-2 pt-3 sm:mt-8 mt-7 h-11 cursor-pointer"
                             type="submit"
+                            onClick={() => {setIsModalServicesOpen(true)}}
                             disabled={servicesDisabled}>
                         <GoPlus />
                     </button>
@@ -424,8 +463,8 @@ const AdminProductsAdd = () => {
                         Добавить вариант
                     </button>
                 </div>
-
             </RowBlock>
+
             <RowBlock>
                 <div className="text-center w-full lg:flex lg:justify-center select-none">
                     <Link to="/admin/products" className="btn-usual-link">Вернуться назад</Link>

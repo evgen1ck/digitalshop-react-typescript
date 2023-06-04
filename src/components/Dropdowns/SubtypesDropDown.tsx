@@ -89,13 +89,14 @@ const SingleValue = (props: SingleValueProps<DataOption, false, GroupedOption>) 
     )
 }
 
-export const SubtypesDropDown = ({value, header, nameField, placeholder, id, isLoading, setLoading, isClearable, isSearchable, setError, error, setValue, setDisabled, disabled, hasWarnLabel, addToClassName, navigate, checkOnEmpty, typeName}: DropDownProps) => {
+export const SubtypesDropDown = ({updateTrigger, value, header, nameField, placeholder, id, isLoading, setLoading, isClearable, isSearchable, setError, error, setValue, setDisabled, disabled, hasWarnLabel, addToClassName, navigate, checkOnEmpty, typeName}: DropDownProps) => {
     const [data, setData] = useState<DataOption[]>([]);
     const [inputValue, setInputValue] = useState("")
     const [selectedOption, setSelectedOption] = useState<DataOption | null>(null)
 
     const handleDelete = (type_name: string) => {
         setData(prevData => prevData.filter(option => option.subtype_name !== type_name))
+        setValue("")
     }
 
     useEffect(() => {
@@ -109,6 +110,28 @@ export const SubtypesDropDown = ({value, header, nameField, placeholder, id, isL
         setSelectedOption(null)
         setValue("")
     }, [typeName])
+
+    useEffect(() => {
+        if (typeName) {
+            const abortController = new AbortController
+
+            AdminGetSubtypesQuery({
+                signal: abortController.signal,
+                navigate: navigate,
+                type_name: typeName
+            }).then(data => {
+                setData(data)
+                setLoading(false)
+            }).catch(() => {
+                setDisabled(true)
+                setLoading(false)
+            })
+
+            return () => {
+                abortController.abort()
+            }
+        }
+    }, [updateTrigger])
 
     useEffect(() => {
         if (typeName) {
