@@ -31,6 +31,21 @@ const Modal: React.FC<ModalProps> = ({ setShow, children, onShow, canLeave, titl
         }
     }, [handleKeyPress, onShow])
 
+    useEffect(() => {
+        if (onShow) {
+            const handleClickOutside = (event: MouseEvent) => {
+                if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
+                    setShow(false)
+                }
+            }
+
+            document.addEventListener("mousedown", handleClickOutside)
+            return () => {
+                document.removeEventListener("mousedown", handleClickOutside)
+            }
+        }
+    }, [onShow, setShow])
+
     return (
         <>
             {onShow && (

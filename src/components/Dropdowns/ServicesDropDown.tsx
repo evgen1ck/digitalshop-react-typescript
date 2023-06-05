@@ -10,8 +10,9 @@ import {toast} from "react-hot-toast"
 import {MdOutlineDelete} from "react-icons/md"
 import {handleDeleteClick} from "../../lib/deleters";
 import {ApiAdminServiceUrl, ApiAdminSubtypeUrl} from "../../lib/queries";
+import {Link} from "react-router-dom";
 
-interface DataOption {
+export interface DataOption {
     service_no: number
     service_name: string
     service_url: string
@@ -64,11 +65,7 @@ const Option = (props: OptionPropsWithDelete) => {
                 </div>
                 <span className="pr-2 inline-flex space-x-5">
                     {isHovered && localStorage.getItem("role") == "admin" &&
-                        <Hint pos={"bottom"} text="Редактировать">
-                            <AiOutlineEdit className="system-animation-2" onClick={() => {
-                                toast.success("abcd")
-                            }}/>
-                        </Hint>
+                        <Link to={"/admin/products/service?name=" + data.service_name} ><Hint pos={"bottom"} text="Редактировать"> <AiOutlineEdit className="system-animation-2"> </AiOutlineEdit> </Hint> </Link>
                     }
                     {isHovered && localStorage.getItem("role") == "admin" &&
                         <Hint pos={"bottom"} text="Удалить">

@@ -497,7 +497,7 @@ const AdminProductsEdit = () => {
             </RowBlock>
             <RowBlock>
                 <div className="text-center w-full lg:flex lg:justify-center select-none">
-                    <Link to="/admin/products" className="btn-usual-link">Вернуться назад</Link>
+                    <button onClick={() => {HistoryNavigation(navigate, "/admin/products", window.history.length)}} className="btn-usual-link">Вернуться назад</button>
                 </div>
             </RowBlock>
         </>

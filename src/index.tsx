@@ -24,6 +24,9 @@ import AdminProductsEdit from "./routes/admin/AdminProductEdit"
 import Home from "./routes/Home"
 import ProductPage from "./routes/ProductPage";
 import AdminProductUpload from "./routes/admin/AdminProductUpload";
+import {TypeEdit} from "./routes/Edits/TypeEdit";
+import {SubtypeEdit} from "./routes/Edits/SubtypeEdit";
+import {ServiceEdit} from "./routes/Edits/ServiceEdit";
 
 // const AuthProtectedRoute = (props: { children: ReactNode, accountRole: string }) => {
 //     const { children, accountRole } = props
@@ -65,6 +68,9 @@ const router = createBrowserRouter(
             <Route path="admin/products/edit" element={<AdminProductsEdit />} />
             <Route path="admin/products/add" element={<AdminProductsAdd />} />
             <Route path="admin/products/upload" element={<AdminProductUpload />} />
+            <Route path="admin/products/type" element={<TypeEdit />} />
+            <Route path="admin/products/subtype" element={<SubtypeEdit />} />
+            <Route path="admin/products/service" element={<ServiceEdit />} />
             <Route path="forbidden" element={<Forbidden />} />
             <Route path="finish" element={<CompletingOrder />} />
             <Route path="*" element={<NoMatch />} />

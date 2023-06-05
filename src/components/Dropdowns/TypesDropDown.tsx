@@ -9,6 +9,8 @@ import {toast} from "react-hot-toast"
 import {MdOutlineDelete} from "react-icons/md"
 import {handleDeleteClick} from "../../lib/deleters";
 import {ApiAdminTypeUrl} from "../../lib/queries";
+import {AddTypeModal} from "../Modals/AddTypeModal";
+import {Link} from "react-router-dom";
 
 export interface DataOption {
     type_no: number
@@ -53,9 +55,7 @@ const Option = (props: OptionPropsWithDelete) => {
                 <span>{data.type_name.toUpperCase()}</span>
                 <span className="pr-2 inline-flex space-x-5">
                     {isHovered && localStorage.getItem("role") == "admin" &&
-                        <Hint pos={"bottom"} text="Редактировать"> <AiOutlineEdit className="system-animation-2" onClick={() => {
-                            toast.success("abcd")
-                        }} /> </Hint>
+                        <Link to={"/admin/products/type?name=" + data.type_name} ><Hint pos={"bottom"} text="Редактировать"> <AiOutlineEdit className="system-animation-2"> </AiOutlineEdit> </Hint> </Link>
                     }
                     {isHovered && localStorage.getItem("role") == "admin" &&
                         <Hint pos={"bottom"} text="Удалить">
@@ -152,7 +152,7 @@ export const TypesDropDown = ({value, header, nameField, placeholder, id, isLoad
                 formatGroupLabel={formatGroupLabel}
                 components={{
                     Option: (props) => <Option {...props} onDelete={handleDelete} />,
-                    SingleValue
+                    SingleValue,
                 }}
                 onInputChange={(value) => setInputValue(value)}
                 onChange={handleProductChange}

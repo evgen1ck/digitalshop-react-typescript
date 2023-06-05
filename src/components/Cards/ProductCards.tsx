@@ -52,8 +52,8 @@ interface ProductCardForMainpageProps {
 export const ProductCardForMainpage = ({product, isPurchasing}: ProductCardForMainpageProps) => {
     return (
         <div className="px-6 py-4 bg-light-additional2 dark:bg-dark-additional2 rounded-lg border-solid border-2 border-light-second dark:border-dark-second">
-            <div className="flex justify-center bg-light-additional dark:bg-dark-additional hover:hover:-translate-1.5 system-animation rounded-lg">
-                <div className="flex flex-col rounded-lg bg-white shadow-lg md:flex-row h-max border-solid border-2 border-light-second dark:border-dark-second">
+            <div className="flex justify-start bg-light-additional dark:bg-dark-additional hover:hover:-translate-1.5 system-animation rounded-lg">
+                <div className="flex flex-col w-full rounded-lg bg-white shadow-lg md:flex-row h-max border-solid border-2 border-light-second dark:border-dark-second">
                     <img className="w-full max-w-full h-auto rounded-l-lg object-cover md:h-auto md:w-2/5"
                          src={product.product_image_url}
                          alt="" />

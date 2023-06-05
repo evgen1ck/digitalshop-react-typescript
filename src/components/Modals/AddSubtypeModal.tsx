@@ -27,6 +27,7 @@ export const AddSubtypeModal = ({ onShow, setShow, canLeave, typeName }: AddModa
     async function handleAddClick() {
         setError("")
         inputRef.current?.focus()
+        inputRef.current?.blur()
 
         if (value == "") {
             setIsSubmitting(false)

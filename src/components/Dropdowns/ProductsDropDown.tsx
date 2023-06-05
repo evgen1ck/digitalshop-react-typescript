@@ -54,11 +54,11 @@ const Option = (props: OptionPropsWithDelete) => {
             <div className={`flex items-center space-x-2 justify-between ${!props.isDisabled && "cursor-pointer"}`}>
                 <span>{data.product_name.toUpperCase()}</span>
                 <span className="pr-2 inline-flex space-x-5">
-                    {isHovered && localStorage.getItem("role") == "admin" &&
-                        <Hint pos={"bottom"} text="Редактировать"> <AiOutlineEdit className="system-animation-2" onClick={() => {
-                            toast.success("abcd")
-                        }} /> </Hint>
-                    }
+                    {/*{isHovered && localStorage.getItem("role") == "admin" &&*/}
+                    {/*    <Hint pos={"bottom"} text="Редактировать"> <AiOutlineEdit className="system-animation-2" onClick={() => {*/}
+                    {/*        toast.success("abcd")*/}
+                    {/*    }} /> </Hint>*/}
+                    {/*}*/}
                     {isHovered && localStorage.getItem("role") == "admin" &&
                         <Hint pos={"bottom"} text="Удалить">
                             <MdOutlineDelete color="red" className="system-animation-2" onClick={async () => {
@@ -90,7 +90,7 @@ const SingleValue = (props: SingleValueProps<DataOption, false, GroupedOption>) 
     )
 }
 
-export const ProductsDropDown = ({value, header, nameField, placeholder, id, isLoading, setLoading, isClearable, isSearchable, setError, error, setValue, setDisabled, disabled, hasWarnLabel, addToClassName, navigate, checkOnEmpty}: DropDownProps) => {
+export const ProductsDropDown = ({updateTrigger, value, header, nameField, placeholder, id, isLoading, setLoading, isClearable, isSearchable, setError, error, setValue, setDisabled, disabled, hasWarnLabel, addToClassName, navigate, checkOnEmpty}: DropDownProps) => {
     const [data, setData] = useState<DataOption[]>([]);
     const [inputValue, setInputValue] = useState("")
     const [selectedOption, setSelectedOption] = useState<DataOption | null>(null)
@@ -116,7 +116,7 @@ export const ProductsDropDown = ({value, header, nameField, placeholder, id, isL
         return () => {
             abortController.abort()
         }
-    }, [])
+    }, [updateTrigger])
 
     const filteredOptions = filterOptions(inputValue, [
         {

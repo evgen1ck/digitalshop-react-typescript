@@ -21,6 +21,8 @@ import {toast} from "react-hot-toast"
 import {AddTypeModal} from "../../components/Modals/AddTypeModal";
 import {AddSubtypeModal} from "../../components/Modals/AddSubtypeModal";
 import {AddServiceModal} from "../../components/Modals/AddServiceModal";
+import {AddProductModal} from "../../components/Modals/AddProductModal";
+import {HistoryNavigation} from "../../lib/redirect";
 
 
 const AdminProductsAdd = () => {
@@ -99,6 +101,9 @@ const AdminProductsAdd = () => {
     const [isModalServicesOpen, setIsModalServicesOpen] = useState(false)
     const [updateServices, setUpdateServices] = useState(false);
 
+    const [isModalProductsOpen, setIsModalProductsOpen] = useState(false)
+    const [updateProducts, setUpdateProducts] = useState(false);
+
     useEffect(() => {
         if (!isModalOpen) {
             setUpdateTypes(prevState => !prevState);
@@ -116,6 +121,12 @@ const AdminProductsAdd = () => {
             setUpdateServices(prevState => !prevState);
         }
     }, [isModalServicesOpen])
+
+    useEffect(() => {
+        if (!isModalProductsOpen) {
+            setUpdateProducts(prevState => !prevState);
+        }
+    }, [isModalProductsOpen])
 
     function handleAddClick() {
         setIsSubmitting(true)
@@ -206,6 +217,7 @@ const AdminProductsAdd = () => {
                 <AddTypeModal onShow={isModalOpen} setShow={setIsModalOpen} canLeave={true} />
                 <AddSubtypeModal onShow={isModalSubtypesOpen} setShow={setIsModalSubtypesOpen} canLeave={true} typeName={typeValue} />
                 <AddServiceModal onShow={isModalServicesOpen} setShow={setIsModalServicesOpen} canLeave={true} />
+                <AddProductModal onShow={isModalProductsOpen} setShow={setIsModalProductsOpen} canLeave={true} />
                 <div className="inline-flex lg:w-1/2 w-full">
                     <TypesDropDown addToClassName=""
                                    header="Типы"
@@ -280,11 +292,13 @@ const AdminProductsAdd = () => {
                                       setValue={setProductValue}
                                       value={productValue}
                                       disabled={productsDisabled}
+                                      updateTrigger={updateProducts}
                                       setDisabled={setProductsDisabled}
                                       checkOnEmpty={true}
                                       hasWarnLabel={true} />
                     <button className="btn-classic-frame select-none flex text-center p-2 pt-3 sm:mt-8 mt-7 h-11 cursor-pointer"
                             type="submit"
+                            onClick={() => {setIsModalProductsOpen(true)}}
                             disabled={productsDisabled}>
                         <GoPlus />
                     </button>
@@ -467,7 +481,7 @@ const AdminProductsAdd = () => {
 
             <RowBlock>
                 <div className="text-center w-full lg:flex lg:justify-center select-none">
-                    <Link to="/admin/products" className="btn-usual-link">Вернуться назад</Link>
+                    <button onClick={() => {HistoryNavigation(navigate, "/admin/products", window.history.length)}} className="btn-usual-link">Вернуться назад</button>
                 </div>
             </RowBlock>
         </>

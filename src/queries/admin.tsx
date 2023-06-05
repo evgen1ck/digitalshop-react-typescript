@@ -1,7 +1,7 @@
 import React from "react"
 import {NavigateFunction} from "react-router-dom"
 import {toast} from "react-hot-toast"
-import {RedirectTo} from "../lib/redirect"
+import {HistoryNavigation, RedirectTo} from "../lib/redirect"
 import {ApiUrl} from "../lib/queries"
 
 const adminProduct = ApiUrl+"admin/product"
@@ -180,7 +180,7 @@ export const AdminNewVariantQuery = async ({navigate, subtype, product, name, se
         }
 
         toast.success("Успешное добавление")
-        RedirectTo('/admin/products', navigate, 100)
+        HistoryNavigation(navigate, "/admin/products", window.history.length)
     } catch (error) {
         console.error("Error fetching data: ", error)
     }

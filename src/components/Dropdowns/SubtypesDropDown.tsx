@@ -8,10 +8,11 @@ import { MdOutlineDelete} from "react-icons/md"
 import {Hint} from "@skbkontur/react-ui"
 import {AiOutlineEdit} from "react-icons/ai"
 import {handleDeleteClick} from "../../lib/deleters";
-import {ApiAdminSubtypeUrl, ApiAdminTypeUrl} from "../../lib/queries";
+import {ApiAdminSubtypeUrl} from "../../lib/queries";
+import {Link} from "react-router-dom";
 
 
-interface DataOption {
+export interface DataOption {
     subtype_no: number
     subtype_name: string
     created_at: string
@@ -54,9 +55,7 @@ const Option = (props: OptionPropsWithDelete) => {
                 <span>{data.subtype_name.toUpperCase()}</span>
                 <span className="pr-2 inline-flex space-x-5">
                     {isHovered && localStorage.getItem("role") == "admin" &&
-                        <Hint pos={"bottom"} text="Редактировать"> <AiOutlineEdit className="system-animation-2" onClick={() => {
-                            toast.success("abcd")
-                        }} /> </Hint>
+                        <Link to={"/admin/products/subtype?name=" + data.subtype_name} ><Hint pos={"bottom"} text="Редактировать"> <AiOutlineEdit className="system-animation-2"> </AiOutlineEdit> </Hint> </Link>
                     }
                     {isHovered && localStorage.getItem("role") == "admin" &&
                         <Hint pos={"bottom"} text="Удалить">
