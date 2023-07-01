@@ -33,7 +33,7 @@ export const ContentCard = ({ content, handleDelete, deleteLoading }: ContentCar
                             <h3 className="sm:text-lg text-base inline-block">
                                 содержимое {' '}
                                 <h3 className="sm:text-lg font-bold text-base inline-block cursor-copy select-text pr-20">
-                                   {content.content_id}
+                                   {content.data}
                                 </h3>
                             </h3>
                         </span>

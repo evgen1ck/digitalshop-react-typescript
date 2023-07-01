@@ -48,7 +48,7 @@ export default function AdminProducts() {
     const [sortsLoading, setSortsLoading] = useState(false)
     const [sortsDisabled, setSortsDisabled] = useState(false)
 
-    const [sortTypeIsAsc, setSortTypeIsAsc] = useState(queryParams.get("sort_type") == "asc")
+    const [sortTypeIsAsc, setSortTypeIsAsc] = useState(queryParams.get("sort_type") == "desc")
 
     const [mainData, setMainData] = useState<ProductWithVariant[]>([])
     const [mainDataLoading, setMainDataLoading] = useState(true)
